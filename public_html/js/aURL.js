@@ -7,6 +7,8 @@ var AURL = function()
     var listner = { };
     var delimiter = "&";
     var assign = "=";
+//    var part = "pathname";
+//    var part = "search";
     var part = "hash";
     //Функции
     this.setListner = function(name, fn)
@@ -14,6 +16,12 @@ var AURL = function()
         if (fn) listner[name] = fn;
         else delete listner[name];
     };
+    function checkKey(key)
+    {
+        if (typeof key === "string" && key !== "") return true;
+        if (typeof key === "number") return true;
+        return false;
+    }
     /**
      * добавление параметра с именем "card" и значением data (так-же вызывается метод подмены урла)
      * aURL.set("card", data);
@@ -23,18 +31,18 @@ var AURL = function()
      */
     this.set = function(key, value)
     {
-        if (!key && key !== 0 && key !== false) throw new Error("key : " + key + " not format");
+        if (!checkKey(key)) throw new Error("key : " + key + " not format");
         urlData[key] = value;
         updateUrl();
     };
     this.get = function(key)
     {
-        if (key === undefined) return null;
+        if (!checkKey(key)) throw new Error("key : " + key + " not format");
         return urlData[key];
     };
     this.remove = function(key)
     {
-        if (urlData[key] === undefined) return;
+        if (!checkKey(key)) throw new Error("key : " + key + " not format");
         delete urlData[key];
         updateUrl();
     };
@@ -46,7 +54,7 @@ var AURL = function()
             var value = object[key];
             if (aurl !== "") aurl += delimiter;
             aurl += key;
-            if(value !== undefined && value !== null) aurl += assign + object[key];
+            if (value !== undefined && value !== null) aurl += assign + object[key];
         }
         return aurl;
     }

@@ -16,16 +16,6 @@ and open the template in the editor.
 {
   height: 100%;
 }*/
-
-h1
-{
- padding: 15px; 
-}
-h2
-{
- padding: 12px; 
-}
-
 /*---------------------------*/
 body
 {
@@ -33,7 +23,6 @@ body
  background-color: #EEE; 
  color: #222; 
 }
-
 header
 {
  margin: 0px 0px 0px 0px;
@@ -46,7 +35,33 @@ section
  margin: -20px 20px 0px 200px;
  background-color: rgba(255, 255, 255, 1);
  color: #222;
+ padding: 10px;
 }
+footer
+{
+ 
+position: fixed;
+ 
+bottom: 0px;
+ 
+left: 0px;
+ 
+width: 100%;
+ 
+text-align: center;
+ 
+color: rgba(0, 0, 0, 0.5);
+}
+h1
+{
+ padding: 15px; 
+}
+h2
+{
+ padding: 12px; 
+}
+
+
 
 menu.absolute
 {
@@ -68,7 +83,7 @@ menu > *
  /*list-style-type: none;*/
  background-color: rgba(0, 0, 0, 0.1);
  color: #222;
- text-decoration: none;
+ /* text-decoration: none; */
  text-align: center;
  font-weight: bold;
 }
@@ -121,22 +136,119 @@ menu.circle > *:active
  color: #FFF;
  /*background-color: rgba(24, 24, 122, 0.5);*/
 }
-.box
+
+
+
+
+.buttons > *
 {
- /*position: absolute;*/
- /*border: 1px solid #FFF;*/
- background-color: #BBB;
- padding: 10px;
+ display: inline-block;  
 }
-.left
+
+.button
 {
- background-color: #BBB;
- /*left: 0px;*/
- padding-left: 33%;
+ padding: 10px 20px;
+ margin: 5px 0px 5px 5px;
+ /* border: 1px solid #E2E2E2; */
+ border-radius: 3px;
+ text-align: center;
+ font-weight: bold;
+ cursor: pointer;
+ box-shadow: 0px 0px 5px rgba(0,0,0,0.1), 0px 2px 3px rgba(0,0,0,0.1);
+ color: #363696;
+ -webkit-touch-callout: none;
+ -webkit-user-select: none;
+ -khtml-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+ user-select: none;
 }
-.right
+.button:hover
 {
- background-color: #EEE;
- padding-right: 33%;
- /*right: 0px;*/
+ border-color: #C3C3C3;
+ color: #00008B;
+ box-shadow: 0px 0px 5px rgba(0,0,0,0.2), 0px 2px 3px rgba(0,0,0,0.2);
+}
+.button:active
+{
+ box-shadow: 0px 0px 3px rgba(0,0,0,0.2), 0px 1px 3px rgba(0,0,0,0.2);
+}
+.button.success
+{
+ background-color: #0AA75F;
+ color: #FFF;
+}
+.button.warning
+{
+ background-color: #D22F2F;
+ color: #FFF;
+}
+
+
+ul
+{
+ /* border: 1px solid #E2E2E2; */
+}
+li:hover 
+{
+ background-color: rgba(0, 0, 0, 0.05);
+}
+ul.menu > li.selected
+{
+ background-color: rgba(0, 0, 0, 0.1);
+}
+
+ul.menu > li
+{
+ display: inline-block;
+ border-bottom: 3px solid #363696;
+ padding: 10px 20px;
+ cursor: pointer;
+}
+ul.menu > li:hover
+{
+ border-bottom-color: #00008B;
+}
+
+
+
+.resultBlock
+{
+ padding: 10px 0px;
+}
+.resultBlock > .circle
+{
+ display: inline-block;
+ width: 40px;
+ height: 40px;
+ border: 3px solid #E2E2E2;
+ border-radius: 40px;
+ text-align: center;
+ font-weight: bold;
+ line-height: 39px;
+ margin: 3px;
+}
+
+ul.menu > li.myItem
+{
+ position: relative;
+ padding-right: 40px;
+}
+ul.menu > li.myItem > .close
+{
+ position: absolute;
+ right: 8px;
+ top: 8px;
+ height: 20px;
+ width: 20px;
+ text-align: center;
+ border-radius: 20px;
+ /* border: 1px solid #CECECE; */
+ box-shadow: 0px 0px 5px rgba(0,0,0,0.1), 0px 1px 3px rgba(0,0,0,0.1);
+}
+
+.scrollarea
+{
+ margin: 5px;
+ box-shadow: 0px 0px 5px rgba(0,0,0,0.2), 0px 1px 3px rgba(0,0,0,0.2);
 }

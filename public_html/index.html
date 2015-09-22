@@ -8,10 +8,11 @@ and open the template in the editor.
  <head>
   <title>HTML5</title>
   <meta charset="UTF-8">
+  <link rel="shortcut icon" href="aUI.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="css/style.css" type="text/css" media="screen, projection"/>
   <script type="text/javascript" src="js/aURL.js"></script>  
-  <script type="text/javascript" src="js/aUI.js"></script>  
+  <script type="text/javascript" src="js/aUI.js"></script> 
   <script>
    var aURL = new AURL();
    function action()
@@ -27,53 +28,95 @@ and open the template in the editor.
  </head>
  <body>
   <header>
-   <hgroup>
-    <h1>HTML5</h1>
-    <h2>JS prototype</h2>
-   </hgroup>
+   <h1>aUI</h1>
   </header>
   <nav>
    <menu class="absolute">
-    <a href="javascript:aURL.set('action','add');">add</a><a href="javascript:aURL.set('action','del');">del</a>
+    <a href="javascript:aURL.set('add');">add</a><a href="javascript:aURL.remove('add');">del</a>
    </menu>
    <menu class="fixed circle">
-    <a href="javascript:aURL.set('action','добавить');">add</a><a href="javascript:aURL.set('action','удалить');">del</a>
+    <a href="javascript:aURL.set('del');">add</a><a href="javascript:aURL.remove('del');">del</a>
    </menu>
   </nav>
   <section>
-   <article>
+   <!--article>
     <h1>Заголовок статьи из блока "article"</h1>
     <p>Текст абзаца статьи из блока "article"</p>
-    <!--    <form id="form" action="http://www.google.com/search" method="get">
-         <label>Google:</label><input type="text" name="search"/><input type="submit" value="Search..."/>
-        </form>-->
     <details>
      <summary>Блок "details", текст тега "summary"</summary>
      <p>Абзац из блока "details"</p>
     </details>
-   </article>
-   <!--div class="box">
-    <div class="box right">
-     <div class="box left">
-      <div class="box right">
-       <div class="box left"> 
-        <div class="box right">
-         <div class="box left">BOX</div>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div-->
+   </article-->
   </section>
-  <footer>
-   <time datetime="2015-09-11">5 min ago</time>
-   <p>Содержимое абзаца из блока "footer"</p>
-  </footer>  
+  <footer>anatol.com</footer>  
   <script>
-   test();
-   //var form = document.getElementsById("form");
-   //form.checkValidity();
+   //var element = new aUI.Element({ text:"DIV" });
+   function click() 
+   {
+    text.setText(this.data);
+    this.toggleSelect();
+    textCnt.setText(list.selected().length);
+    
+    //console.log("selected", this.selected());
+    //text.hidden(this.selected());
+   }
+   function add()
+   {
+    list.add({ text:"btn " + list.count(), data:list.count(), onclick:click });        
+   }
+   function sum()
+   {
+    textCnt.setText(list.selected().length);
+   }
+   function clear()
+   {
+    list.clear();
+   }
+   var parent = document.getElementsByTagName("section").item(0);
+   var buttons = new aUI.Element({ class:"buttons" });
+   buttons.appendTo(parent);
+   
+   var btnAdd = new aUI.Button({ text:"Add", onclick:add });
+   btnAdd.addClass("success");
+   btnAdd.appendTo(buttons);
+   var btnClear = new aUI.Button({ text:"Clear", onclick:clear });
+   btnClear.addClass("warning");
+   btnClear.appendTo(buttons);
+   var btnSum = new aUI.Button({ text:"Sum", onclick:sum });
+   btnSum.appendTo(buttons);
+   
+   function MyItem(options)
+   {
+    var that = this;
+    aUI.ListItem.call(this, { class:"myItem", onclick:options.onclick, data:options.data });
+    var text = new aUI.Element({ class:"text", text:options.text, html:options.html });
+    var btn = new aUI.Button({ class:"close", text:"x" });
+    btn.setClick(function() 
+    { 
+     that.remove(); 
+     event.stopPropagation();
+    });
+    text.appendTo(this);
+    btn.appendTo(this);
+   }
+   aUI.proto(MyItem, aUI.ListItem);
+   
+   
+   var area = new aUI.ScrollArea({ class:"scrollarea", width:"200px", height:"200px" });
+   area.appendTo(parent);
+   
+   var list = new aUI.List({ class:"menu" });//caption:"Button"
+   list.setItemConstructor(MyItem);
+   list.appendTo(area);
+   
+   var resultBlock = new aUI.Element({ class:"resultBlock" });
+   resultBlock.appendTo(parent);
+   var text = new aUI.Element({ class:"circle", text:"?" });
+   text.appendTo(resultBlock);
+   var textCnt = new aUI.Element({ class:"circle", text:"0" });
+   textCnt.appendTo(resultBlock);
+   console.dir(list);
+   //list.setClick(function(){alert("click " + this.data);});
   </script>
  </body>
 </html>
