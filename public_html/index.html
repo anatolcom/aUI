@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+ <head>
+  <title>HTML5</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen, projection"/>
+  <script type="text/javascript" src="js/aURL.js"></script>  
+  <script type="text/javascript" src="js/aUI.js"></script>  
+  <script>
+   var aURL = new AURL();
+   function action()
+   {
+    console.log(this.get("action"));
+//    console.dir(this);
+   }
+   aURL.setListner("action", action);
+   //aURL.init();
+   //window.addEventListener("popstate", aURL.init, false);
+   aURL.init();
+  </script>
+ </head>
+ <body>
+  <header>
+   <hgroup>
+    <h1>HTML5</h1>
+    <h2>JS prototype</h2>
+   </hgroup>
+  </header>
+  <nav>
+   <menu class="absolute">
+    <a href="javascript:aURL.set('action','add');">add</a><a href="javascript:aURL.set('action','del');">del</a>
+   </menu>
+   <menu class="fixed circle">
+    <a href="javascript:aURL.set('action','добавить');">add</a><a href="javascript:aURL.set('action','удалить');">del</a>
+   </menu>
+  </nav>
+  <section>
+   <article>
+    <h1>Заголовок статьи из блока "article"</h1>
+    <p>Текст абзаца статьи из блока "article"</p>
+    <!--    <form id="form" action="http://www.google.com/search" method="get">
+         <label>Google:</label><input type="text" name="search"/><input type="submit" value="Search..."/>
+        </form>-->
+    <details>
+     <summary>Блок "details", текст тега "summary"</summary>
+     <p>Абзац из блока "details"</p>
+    </details>
+   </article>
+   <!--div class="box">
+    <div class="box right">
+     <div class="box left">
+      <div class="box right">
+       <div class="box left"> 
+        <div class="box right">
+         <div class="box left">BOX</div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div-->
+  </section>
+  <footer>
+   <time datetime="2015-09-11">5 min ago</time>
+   <p>Содержимое абзаца из блока "footer"</p>
+  </footer>  
+  <script>
+   test();
+   //var form = document.getElementsById("form");
+   //form.checkValidity();
+  </script>
+ </body>
+</html>

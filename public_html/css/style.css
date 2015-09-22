@@ -1,0 +1,142 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 11.09.2015, 11:22:10
+    Author     : anatol
+*/
+* 
+{
+ margin: 0;
+ padding: 0;
+}
+/*html 
+{
+  height: 100%;
+}*/
+
+h1
+{
+ padding: 15px; 
+}
+h2
+{
+ padding: 12px; 
+}
+
+/*---------------------------*/
+body
+{
+ font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
+ background-color: #EEE; 
+ color: #222; 
+}
+
+header
+{
+ margin: 0px 0px 0px 0px;
+ background-color: #BBB;
+ color: #000;
+ height: 100px;
+}
+section
+{
+ margin: -20px 20px 0px 200px;
+ background-color: rgba(255, 255, 255, 1);
+ color: #222;
+}
+
+menu.absolute
+{
+ position: absolute;
+}
+
+menu.fixed
+{
+ position: fixed;
+ top: 0px;
+ right: 0px;
+ /*top: 20px;*/
+ /*right: 20px;*/
+}
+menu > *
+{
+ display: inline-block;
+ vertical-align: middle;
+ /*list-style-type: none;*/
+ background-color: rgba(0, 0, 0, 0.1);
+ color: #222;
+ text-decoration: none;
+ text-align: center;
+ font-weight: bold;
+}
+menu > *:hover
+{
+ background-color: rgba(0, 0, 0, 0.15);
+}
+menu > *:active
+{
+ background-color: rgba(0, 0, 0, 0.05);
+}
+menu > a
+{
+ border-bottom: 3px solid #40FF00;
+ //height: 40px;
+ padding: 10px 20px;
+}
+menu > a:hover
+{
+ border-bottom: 3px solid #3ADF00;
+}
+menu > a:active
+{
+ border-bottom: 3px solid #40FF00;
+}
+
+
+menu.circle  > *
+{
+ margin: 15px 20px 0px -15px;
+ padding: 0px;
+ width: 40px;
+ height: 40px;
+ line-height: 38px;
+ border-radius: 40px;
+ border: 3px solid #FFF;
+ color: #FFF;
+ background-color: rgba(24, 24, 122, 0.6);
+}
+menu.circle > *:hover
+{
+ border: 3px solid #FFF;
+ color: #FFF;
+ background-color: rgba(24, 24, 122, 0.7);
+}
+menu.circle > *:active
+{
+ margin: 16px 21px 1px -14px;
+ border: 2px solid #FFF;
+ color: #FFF;
+ /*background-color: rgba(24, 24, 122, 0.5);*/
+}
+.box
+{
+ /*position: absolute;*/
+ /*border: 1px solid #FFF;*/
+ background-color: #BBB;
+ padding: 10px;
+}
+.left
+{
+ background-color: #BBB;
+ /*left: 0px;*/
+ padding-left: 33%;
+}
+.right
+{
+ background-color: #EEE;
+ padding-right: 33%;
+ /*right: 0px;*/
+}
