@@ -2,48 +2,152 @@ var AURL = function()
 {
     //Опции по умолчанию
     //Данные
-    var that = this;
-    var urlData = { };
-    var listner = { };
+    //var that = this;
+    var data = { };
+    var listeners = [ ];
     var delimiter = "&";
     var assign = "=";
 //    var part = "pathname";
 //    var part = "search";
     var part = "hash";
     //Функции
-    this.setListner = function(name, fn)
+    /**
+     * добавление слушателя
+     * @param {string | number} name уникальное имя слушателя
+     * @param {string | number} key ключ 
+     * @param {function} fn функция
+     * @returns {undefined}
+     */
+    this.setListener = function(name, key, fn)
     {
-        if (fn) listner[name] = fn;
-        else delete listner[name];
+        //console.dir(fn);
+        if (!checkKey(name)) throw new Error("name : " + name + " not format");
+        for (var index in listeners) if (listeners[index].name === name) throw new Error("name : " + name + " not unique");
+        if (!checkKey(key)) throw new Error("key : " + key + " not format");
+        if (!checkFn(fn)) throw new Error("fn is not a function");
+        listeners.push({ name : name, key : key, fn : fn });
     };
+    /**
+     * удаление слушателя
+     * @param {string | number} name уникальное имя слушателя
+     * @returns {undefined}
+     */
+    this.removeListener = function(name)
+    {
+        for (var index in listeners)
+        {
+            if (listeners[index].name !== name) continue;
+            listeners.splice(index, 1);
+        }
+    };
+    function callListeners(key)
+    {
+        for (var index in listeners)
+        {
+            var listener = listeners[index];
+            if (listener.key === key) listener.fn.call({ key : key, value : data[key] });
+        }
+    }
     function checkKey(key)
     {
         if (typeof key === "string" && key !== "") return true;
         if (typeof key === "number") return true;
         return false;
     }
+    function checkValue(value)
+    {
+        if (value === undefined) return true;
+        if (value === null) return true;
+        if (typeof value === "string") return true;
+        if (typeof value === "number") return true;
+        if (typeof value === "boolean") return true;
+        return false;
+    }
+    function checkFn(fn)
+    {
+        if (typeof fn === "function") return true;
+        return false;
+    }
     /**
-     * добавление параметра с именем "card" и значением data (так-же вызывается метод подмены урла)
-     * aURL.set("card", data);
-     * @param {type} key имя параметра
-     * @param {type} value значение параметра
+     * добавление параметра с именем key и значением value.
+     * если значение обновилось, то изменяется URL и вызываются слушатели<br/>
+     * @param {string | number} key имя параметра
+     * @param {string | number | boolean | null} value значение параметра
      * @returns {undefined}
      */
     this.set = function(key, value)
     {
         if (!checkKey(key)) throw new Error("key : " + key + " not format");
-        urlData[key] = value;
+        if (!checkValue(value)) throw new Error("value : " + value + " not format");
+        if (data[key] === value) return;
+        data[key] = String(value);
+        callListeners(key);
         updateUrl();
     };
-    this.get = function(key)
+    /**
+     * возвращает значение с именем key.<br/>
+     * если key не найден, то при required = true вызывает ошибку, 
+     * а при required = false вызывает undefined<br/>
+     * @param {string | number} key имя параметра
+     * @param {boolean} required обязательность
+     * @returns { string } значение
+     */
+    this.get = function(key, required)
     {
         if (!checkKey(key)) throw new Error("key : " + key + " not format");
-        return urlData[key];
+        if (!(key in data))
+        {
+            if(!required) return undefined;
+            throw new Error("key : " + key + " not found");
+        }
+        return data[key];
+    };
+    /**
+     * возвращает значение с именем key приведённое к типу number<br/>
+     * если key не найден, то при required = true вызывает ошибку, 
+     * а при required = false вызывает undefined<br/>
+     * @param {string | number} key имя параметра
+     * @param {boolean} required обязательность
+     * @returns {number} значение
+     */
+    this.getNumber = function(key, required)
+    {
+        if (!checkKey(key)) throw new Error("key : " + key + " not format");
+        if (!(key in data))
+        {
+            if(!required) return undefined;
+            throw new Error("key : " + key + " not found");
+        }
+        var value = data[key];
+        if (isNaN(value)) throw new Error("value : " + value + " is not a number");
+        return parseInt(value);
+    };
+    /**
+     * возвращает значение с именем key приведённое к типу number<br/>
+     * если key не найден, то при required = true вызывает ошибку, 
+     * а при required = false вызывает undefined<br/>
+     * @param {string | number} key имя параметра
+     * @param {boolean} required обязательность
+     * @returns {boolean} значение
+     */
+    this.getBoolean = function(key, required)
+    {
+        if (!checkKey(key)) throw new Error("key : " + key + " not format");
+        if (!(key in data))
+        {
+            if(!required) return undefined;
+            throw new Error("key : " + key + " not found");
+        }
+        var value = data[key];
+        if (value === "true") return true;
+        if (value === "false") return false;
+        throw new Error("value : " + value + " is not a boolean");
     };
     this.remove = function(key)
     {
         if (!checkKey(key)) throw new Error("key : " + key + " not format");
-        delete urlData[key];
+        delete data[key];
+        callListeners(key);
         updateUrl();
     };
     function encode(object)
@@ -73,32 +177,37 @@ var AURL = function()
     function updateUrl()
     {
         var url = new URL(window.location.href);
-        url[part] = encodeURI(encode(urlData));
+        url[part] = encodeURI(encode(data));
         history.pushState("", "", url);
-        callListeners();
     }
     function readUrl()
     {
         var url = new URL(window.location.href);
-        urlData = decode(decodeURI(url[part].substr(1)));
-        callListeners();
-    }
-    function callListeners()
-    {
-        for (var name in listner) listner[name].call(that);
+        var newData = decode(decodeURI(url[part].substr(1)));
+        for (var key in newData)
+        {
+            if (data[key] === newData[key]) continue;
+            data[key] = newData[key];
+            callListeners(key);
+        }
+        for (var key in data)
+        {
+            if (key in newData) continue;
+            delete data[key];
+            callListeners(key);
+        }
+        //console.log("readUrl", urlData);
     }
     /**
      * инициализация включает считывание текущего урла и его разбор<br/>
-     * необходимо сделать привязку к событию изменения состояния истории<br/>
-     * window.addEventListener("popstate", aURL.init, false);<br/>
-     * или<br/>
-     * $(window).bind("popstate", aURL.init);<br/>
+     * добавляет привязку к событию изменения состояния истории<br/>
      * @returns {undefined}
      */
     this.init = function()
     {
         readUrl();
         window.addEventListener("popstate", readUrl, false);
+        //$(window).bind("popstate", aURL.init);
     };
     //Сборка
 };
@@ -107,26 +216,22 @@ var AURL = function()
 
 
 /*
- //использование в методе онлоад
- 
+
  //создаём экземпляр
  aURL = new AURL();
+
+ //регистрирация метода changeCount под именем "changeCount" для ключа "count" вызываемого при изменеии урла
+ aURL.setListner("changeCount", "count" , changeCount);
+
  //инициализация включает считывание текущего урла и его разбор
  aURL.init();
- //привязка к событию изменения состояния истории
- //$(window).bind("popstate", aURL.init);
- window.addEventListener("popstate", aURL.init, false);
  
  
- //добавление параметра с именем "card" и значением data (так-же вызывается метод подмены урла)
- aURL.set("card", data);
+ //добавление параметра с именем "count" и значением count (так-же вызывается метод подмены урла)
+ aURL.set("count", count);
  
- //считывание параметра с именем "card"
- var card = aURL.get("card");
+ //считывание параметра с именем "count"
+ var card = aURL.get("count");
  
- //регистрирация метода show под именем "body" вызываемого при изменеии урла
- aURL.setListner("body", show);
- //удаление ранее зарегистрированного метода под именем "body" вызываемого при изменеии урла
- aURL.setListner("body", null);
  */
  

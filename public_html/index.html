@@ -15,15 +15,27 @@ and open the template in the editor.
   <script type="text/javascript" src="js/aUI.js"></script> 
   <script>
    var aURL = new AURL();
-   function action()
+   function changeAdd()
    {
-    console.log(this.get("action"));
-//    console.dir(this);
+    console.log("changeAdd", this);
    }
-   aURL.setListner("action", action);
-   //aURL.init();
-   //window.addEventListener("popstate", aURL.init, false);
+   aURL.setListener("changeAdd", "add", changeAdd);
    aURL.init();
+   function paramUp(name)
+   {
+    //console.log(name, aURL.get(name));
+    var value = aURL.getNumber(name);
+    if (value === undefined) value = 0;
+    else value++;
+    aURL.set(name, value);
+   }
+   function paramDown(name)
+   {
+    var value = aURL.getNumber(name);
+    if (value === undefined) return;
+    if (--value < 0) aURL.remove(name);
+    else aURL.set(name, value);
+   }
   </script>
  </head>
  <body>
@@ -32,10 +44,10 @@ and open the template in the editor.
   </header>
   <nav>
    <menu class="absolute">
-    <a href="javascript:aURL.set('add');">add</a><a href="javascript:aURL.remove('add');">del</a>
+    <a href="javascript:paramUp('add');">add</a><a href="javascript:paramDown('add');">del</a>
    </menu>
    <menu class="fixed circle">
-    <a href="javascript:aURL.set('del');">add</a><a href="javascript:aURL.remove('del');">del</a>
+    <a href="javascript:paramUp('del');">add</a><a href="javascript:paramDown('del');">del</a>
    </menu>
   </nav>
   <section>
@@ -115,7 +127,7 @@ and open the template in the editor.
    text.appendTo(resultBlock);
    var textCnt = new aUI.Element({ class:"circle", text:"0" });
    textCnt.appendTo(resultBlock);
-   console.dir(list);
+   //console.dir(list);
    //list.setClick(function(){alert("click " + this.data);});
   </script>
  </body>
