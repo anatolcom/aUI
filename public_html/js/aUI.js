@@ -35,17 +35,17 @@ aUI.construct = function(constructor, args)
      */
 
 };
- /**
-  * <b>Элемент DOM браузера.</b><br/>
-  * По умолчанию div.<br/>
-  * @param {object} options входные данные:<br/>
-  * element: название элемента, например "div" или "span"<br/>
-  * id: id элемента, например для привязки стилей через "#".<br/>
-  * class: класс элемента, например для привязки стилей через ".".<br/>
-  * text: содержимое элемента в виде текста.<br/>
-  * html: содержимое элемента ввиде HTML данных.<br/>
-  * @returns {aUI.Element.element|Element}
-  */
+/**
+ * <b>Элемент DOM браузера.</b><br/>
+ * По умолчанию div.<br/>
+ * @param {object} options входные данные:<br/>
+ * element: название элемента, например "div" или "span"<br/>
+ * id: id элемента, например для привязки стилей через "#".<br/>
+ * class: класс элемента, например для привязки стилей через ".".<br/>
+ * text: содержимое элемента в виде текста.<br/>
+ * html: содержимое элемента ввиде HTML данных.<br/>
+ * @returns {aUI.Element.element|Element}
+ */
 aUI.Element = function Element(options)
 {
     //Опции
@@ -147,12 +147,12 @@ aUI.Element.prototype.hidden = function(hidden)
     if (hidden === undefined) return this.getElement().hidden;
     if (hidden)
     {
-        this.getElement().hidden = true;
+//        this.getElement().hidden = true;
         this.getElement().style.display = "none";
     }
     else
     {
-        this.getElement().hidden = false;
+//        this.getElement().hidden = false;
         this.getElement().style.display = "";
     }
 };
@@ -356,16 +356,16 @@ aUI.ListItem.prototype.toggleSelect = function()
  * <b>Область прокрутки.</b><br/>
  * Методы horizontalScrollBar и verticalScrollBar управляют видимостью полос прокрутки.<br/>
  * вырианты:<br/>
+ * - auto : показывать при необходимости.<br/>
  * - show : показывать всегда,<br/>
  * - hide : скрывать всегда,<br/>
- * - auto : показывать при необходимости.<br/>
  * События onScroll и onResize.<br/>
- * @param {options} настройки
- * @param {options.height} высота
- * @param {options.width} ширина
- * @param {options.horizontal} горизонтальная полоса прокрутки
- * @param {options.vertical} вертикальная полоса прокрутки
- * @returns {aUI.ScrollArea}
+ * @param {object} options настройки:
+ * @param {number} options.height высота
+ * @param {number} options.width ширина
+ * @param {string} options.horizontal горизонтальная полоса прокрутки. варианты: "auto", "show", "hide"
+ * @param {string} options.vertical вертикальная полоса прокрутки. варианты: "auto", "show", "hide"
+ * @returns {ScrollArea}
  */
 aUI.ScrollArea = function ScrollArea(options)
 {
@@ -380,6 +380,7 @@ aUI.ScrollArea = function ScrollArea(options)
     aUI.Element.call(this, options);
 
     this.getElement().style.overflow = "auto";
+    //Переменные
 
     //Функции
     this.onScroll = function(fn)
@@ -394,16 +395,17 @@ aUI.ScrollArea = function ScrollArea(options)
     {
         switch (type)
         {
+            case "auto":
+                options.horizontal = "auto";
+                break;
             case "show":
                 options.horizontal = "scroll";
                 break;
             case "hide":
                 options.horizontal = "hidden";
                 break;
-            case "auto":
-                options.horizontal = "auto";
-                break;
             default:
+                options.horizontal = "auto";
                 throw new Error("Unknow horizontal type " + type);
         }
         this.getElement().style.overflowX = options.horizontal;
@@ -412,16 +414,17 @@ aUI.ScrollArea = function ScrollArea(options)
     {
         switch (type)
         {
+            case "auto":
+                options.vertical = "auto";
+                break;
             case "show":
                 options.vertical = "scroll";
                 break;
             case "hide":
                 options.vertical = "hidden";
                 break;
-            case "auto":
-                options.vertical = "auto";
-                break;
             default:
+                options.vertical = "auto";
                 throw new Error("Unknow vertical type " + type);
         }
         this.getElement().style.overflowY = options.vertical;
@@ -434,3 +437,70 @@ aUI.ScrollArea = function ScrollArea(options)
 };
 aUI.proto(aUI.ScrollArea, aUI.Element);
 //---------------------------------------------------------------------------
+/**
+ * 
+ * @param {object} options
+ * @returns {ScrollList}
+ */
+aUI.ScrollList = function ScrollList(options)
+{
+    //Опции по умолчанию
+    options = aUI.extend(
+    {
+        listOptions : { }
+    }, options);
+    aUI.ScrollArea.call(this, options);
+    //Переменные
+    var that = this;
+    var changeTopIndex = null;
+    var lastTopIndex = null;
+    //Функции
+    this.getList = function()
+    {
+        return list;
+    };
+    function scroll()
+    {
+        var topIndex = that.topIndex();
+        if (lastTopIndex !== topIndex)
+        {
+            lastTopIndex = topIndex;
+            if (changeTopIndex) changeTopIndex();
+            console.log("topIndex", topIndex);
+        }
+    }
+    this.onChangeTopIndex = function(fn)
+    {
+        if (typeof fn !== "function") throw new Error("fn is not a function");
+        changeTopIndex = fn;
+    };
+
+    //Сборка
+    var list = new aUI.List(options.listOptions);
+    list.appendTo(this);
+    this.onScroll(scroll);
+};
+aUI.proto(aUI.ScrollList, aUI.ScrollArea);
+aUI.ScrollList.prototype.topIndex = function(value)
+{
+    var list = this.getList();
+    var nodes = list.getElement().childNodes;
+    var count = list.count();
+    if (value === undefined)
+    {
+        var offsetTop = this.getElement().scrollTop + list.getElement().offsetTop;
+        var topIndex = 0;
+        for (var index = 0; index < count; index++)
+        {
+            if (offsetTop < nodes[index].offsetTop) break;
+            topIndex = index;
+        }
+        return topIndex;
+    }
+    else
+    {
+        if (isNaN(value)) throw new Error("value is not a number");
+        if (value < 0 || value >= count) throw new Error("value " + value + " out of range 0 - " + count);
+        this.getElement().scrollTop = nodes[value].offsetTop - list.getElement().offsetTop;
+    }
+};

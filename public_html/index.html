@@ -78,7 +78,8 @@ and open the template in the editor.
    }
    function sum()
    {
-    textCnt.setText(list.selected().length);
+    //textCnt.setText(list.selected().length);
+    scrollList.topIndex(2);
    }
    function clear()
    {
@@ -113,13 +114,43 @@ and open the template in the editor.
    }
    aUI.proto(MyItem, aUI.ListItem);
    
+//   function topItem()
+//   {
+//    console.log("scrollTop", this.scrollTop, "scrollLeft", this.scrollLeft );
+//    
+//    var nodes = list.getElement().childNodes;
+//    var offsetTop = list.getElement().offsetTop;
+//    var topIndex = 0;
+//    for (var index = 0; index < nodes.length; index++)
+//    {
+//     var node = nodes[index];
+//     var top = node.offsetTop - offsetTop;
+//     //console.log("scrollTop", index, "top", top);
+//     if (top > this.scrollTop) break;
+//     topIndex = index;
+//    }
+//    console.log("scrollTop", topIndex);
+//    console.dir(nodes[topIndex].aui);
+//        
+//   }
    
-   var area = new aUI.ScrollArea({ class:"scrollarea", width:"200px", height:"200px" });
-   area.appendTo(parent);
-   
-   var list = new aUI.List({ class:"menu" });//caption:"Button"
+//   var area = new aUI.ScrollArea({ class:"scrollarea", width:"300px", height:"100px" });
+//   area.verticalScrollBar("show");
+//   area.appendTo(parent);
+//   area.getElement().onscroll = topItem;
+//   
+//   var list = new aUI.List({ class:"menu" });//caption:"Button"
+//   list.setItemConstructor(MyItem);
+//   list.addClass("myList");
+//   list.appendTo(area);
+
+   var scrollList = new aUI.ScrollList({ class:"scrollarea", width:"300px", height:"100px" });
+   scrollList.verticalScrollBar("show");
+   scrollList.appendTo(parent);
+   var list = scrollList.getList();
    list.setItemConstructor(MyItem);
-   list.appendTo(area);
+   list.addClass("menu");
+   list.addClass("myList");
    
    var resultBlock = new aUI.Element({ class:"resultBlock" });
    resultBlock.appendTo(parent);
