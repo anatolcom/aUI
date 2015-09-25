@@ -19,7 +19,7 @@ and open the template in the editor.
    {
     console.log("changeAdd", this);
    }
-   aURL.setListener("changeAdd", "add", changeAdd);
+   aURL.setListener("changeAdd", "sections", changeAdd);
    aURL.init();
    function paramUp(name)
    {
@@ -44,10 +44,10 @@ and open the template in the editor.
   </header>
   <nav>
    <menu class="absolute">
-    <a href="javascript:paramUp('add');">add</a><a href="javascript:paramDown('add');">del</a>
+    <a href="javascript:paramUp('sections');">add</a><a href="javascript:paramDown('sections');">del</a>
    </menu>
    <menu class="fixed circle">
-    <a href="javascript:paramUp('del');">add</a><a href="javascript:paramDown('del');">del</a>
+    <a href="javascript:paramUp('selected');">add</a><a href="javascript:paramDown('selected');">del</a>
    </menu>
   </nav>
   <section>
@@ -63,27 +63,20 @@ and open the template in the editor.
   <footer>anatol.com</footer>  
   <script>
    //var element = new aUI.Element({ text:"DIV" });
-   function click() 
-   {
-    text.setText(this.data);
-    this.toggleSelect();
-    textCnt.setText(list.selected().length);
-    
-    //console.log("selected", this.selected());
-    //text.hidden(this.selected());
-   }
+   
    function add()
    {
-    list.add({ text:"btn " + list.count(), data:list.count(), onclick:click });        
+    addSection();
    }
    function sum()
    {
     //textCnt.setText(list.selected().length);
-    scrollList.topIndex(2);
+    //sectionList.topIndex(2);
    }
    function clear()
    {
-    list.clear();
+    sectionMenu.clear();
+    sections.clear();
    }
    var parent = document.getElementsByTagName("section").item(0);
    var buttons = new aUI.Element({ class:"buttons" });
@@ -98,59 +91,46 @@ and open the template in the editor.
    var btnSum = new aUI.Button({ text:"Sum", onclick:sum });
    btnSum.appendTo(buttons);
    
-   function MyItem(options)
-   {
-    var that = this;
-    aUI.ListItem.call(this, { class:"myItem", onclick:options.onclick, data:options.data });
-    var text = new aUI.Element({ class:"text", text:options.text, html:options.html });
-    var btn = new aUI.Button({ class:"close", text:"x" });
-    btn.setClick(function() 
-    { 
-     that.remove(); 
-     event.stopPropagation();
-    });
-    text.appendTo(this);
-    btn.appendTo(this);
-   }
-   aUI.proto(MyItem, aUI.ListItem);
-   
-//   function topItem()
+//   function Section(options)
 //   {
-//    console.log("scrollTop", this.scrollTop, "scrollLeft", this.scrollLeft );
-//    
-//    var nodes = list.getElement().childNodes;
-//    var offsetTop = list.getElement().offsetTop;
-//    var topIndex = 0;
-//    for (var index = 0; index < nodes.length; index++)
-//    {
-//     var node = nodes[index];
-//     var top = node.offsetTop - offsetTop;
-//     //console.log("scrollTop", index, "top", top);
-//     if (top > this.scrollTop) break;
-//     topIndex = index;
-//    }
-//    console.log("scrollTop", topIndex);
-//    console.dir(nodes[topIndex].aui);
-//        
+//    var that = this;
+//    aUI.ListItem.call(this, { element:"div", class:"section", onclick:options.onclick, data:options.data });
+//    var text = new aUI.Element({ class:"text", text:options.text, html:options.html });
+//    var btn = new aUI.Button({ class:"close", text:"x" });
+//    btn.onClick(function() 
+//    { 
+//     that.remove(); 
+//     event.stopPropagation();
+//    });
+//    text.appendTo(this);
+//    btn.appendTo(this);
 //   }
+//   aUI.proto(Section, aUI.ListItem);
    
-//   var area = new aUI.ScrollArea({ class:"scrollarea", width:"300px", height:"100px" });
-//   area.verticalScrollBar("show");
-//   area.appendTo(parent);
-//   area.getElement().onscroll = topItem;
-//   
-//   var list = new aUI.List({ class:"menu" });//caption:"Button"
-//   list.setItemConstructor(MyItem);
-//   list.addClass("myList");
-//   list.appendTo(area);
+   function addSection()
+   {
+    var caption = "section " + sections.count();
+    sectionMenu.add({ text:caption, onclick:sectionMenuClick });
+    sections.add({ class:"section", text:caption});
+   }
+  
+   function sectionMenuClick() 
+   {
+    sectionList.topIndex(this.index());
+   }
+   function changeTopSection()
+   {
+    sectionMenu.selectSingle(this.index());
+   }
+  
+   var sectionMenu = new aUI.List({ class:"sectionMenu" });//caption:"Button"
+   sectionMenu.appendTo(parent);
 
-   var scrollList = new aUI.ScrollList({ class:"scrollarea", width:"300px", height:"100px" });
-   scrollList.verticalScrollBar("show");
-   scrollList.appendTo(parent);
-   var list = scrollList.getList();
-   list.setItemConstructor(MyItem);
-   list.addClass("menu");
-   list.addClass("myList");
+   var sectionList = new aUI.ScrollList({ class:"scrollarea", vertical:"show", listOptions:{ class:"sections" } });
+   sectionList.appendTo(parent);
+   sectionList.onChangeTop(changeTopSection);
+   var sections = sectionList.getList();
+   //sections.setItemConstructor(Section);
    
    var resultBlock = new aUI.Element({ class:"resultBlock" });
    resultBlock.appendTo(parent);
@@ -159,7 +139,7 @@ and open the template in the editor.
    var textCnt = new aUI.Element({ class:"circle", text:"0" });
    textCnt.appendTo(resultBlock);
    //console.dir(list);
-   //list.setClick(function(){alert("click " + this.data);});
+   //list.onClick(function(){alert("click " + this.data);});
   </script>
  </body>
 </html>

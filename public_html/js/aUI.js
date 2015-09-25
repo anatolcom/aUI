@@ -19,44 +19,33 @@ aUI.proto = function(heir, base)
 //-------------------------------------------------------------------------------------------------------------------
 aUI.construct = function(constructor, args)
 {
-    var array = [null];
+    var array = [ null ];
     if (args instanceof Array) array = args;
     else for (var index in arguments) array.push(args[index]);
     return new (Function.prototype.bind.apply(constructor, array));
-
-    /*
-     var array = null;
-     if (args instanceof Array) array = args;
-     if (args instanceof Arguments) array = [null];
-     if (array === null) throw new Error("Incorrect type of args", args);
-     for (var index in arguments) array.push(args[index]);
-     return new (Function.prototype.bind.apply(constructor, array));
-     
-     */
-
 };
 /**
  * <b>Элемент DOM браузера.</b><br/>
  * По умолчанию div.<br/>
- * @param {object} options входные данные:<br/>
- * element: название элемента, например "div" или "span"<br/>
- * id: id элемента, например для привязки стилей через "#".<br/>
- * class: класс элемента, например для привязки стилей через ".".<br/>
- * text: содержимое элемента в виде текста.<br/>
- * html: содержимое элемента ввиде HTML данных.<br/>
- * @returns {aUI.Element.element|Element}
+ * @param {object} options параметры:<br/>
+ * - <b>element:</b> название элемента, например "div" или "span"<br/>
+ * - <b>id:</b> id элемента, например для привязки стилей через "#".<br/>
+ * - <b>class:</b> класс элемента, например для привязки стилей через ".".<br/>
+ * - <b>text:</b> содержимое элемента в виде текста.<br/>
+ * - <b>html:</b> содержимое элемента ввиде HTML данных.<br/>
+ * @returns {Element}
  */
 aUI.Element = function Element(options)
 {
     //Опции
     options = aUI.extend(
-    {
-        element : "div",
-        id : null,
-        class : null,
-        text : null,
-        html : null
-    }, options);
+            {
+                element : "div",
+                id : null,
+                class : null,
+                text : null,
+                html : null
+            }, options);
     //Переменные
     //var that = this;
     //Функции
@@ -66,10 +55,10 @@ aUI.Element = function Element(options)
     };
     //Сборка
     var element = document.createElement(options.element);
-    if (options.id) this.setId(options.id);
-    if (options.class) this.setClass(options.class);
-    if (options.text || options.text === 0 || options.text === false) this.setText(options.text);
-    if (options.html || options.html === 0 || options.html === false) this.setHtml(options.html);
+    if (options.id) this.id(options.id);
+    if (options.class) this.class(options.class);
+    if (options.text || options.text === 0 || options.text === false) this.text(options.text);
+    if (options.html || options.html === 0 || options.html === false) this.html(options.html);
 };
 /**
  * Добавление елемента как дочернего к указанному елементу.<br/>
@@ -94,20 +83,14 @@ aUI.Element.prototype.remove = function()
     var parent = element.parentElement;
     if (parent) parent.removeChild(element);
 };
-aUI.Element.prototype.getId = function()
+aUI.Element.prototype.id = function(id)
 {
-    return this.getElement().id;
-};
-aUI.Element.prototype.setId = function(id)
-{
+    if (id === undefined) return this.getElement().id;
     this.getElement().id = id;
 };
-aUI.Element.prototype.getClass = function()
+aUI.Element.prototype.class = function(name)
 {
-    return this.getElement().className;
-};
-aUI.Element.prototype.setClass = function(name)
-{
+    if (name === undefined) return this.getElement().className;
     this.getElement().className = name;
 };
 aUI.Element.prototype.addClass = function(name)
@@ -126,20 +109,14 @@ aUI.Element.prototype.toggleClass = function(name)
 {
     this.getElement().classList.toggle(name);
 };
-aUI.Element.prototype.getText = function()
+aUI.Element.prototype.text = function(text)
 {
-    return this.getElement().textContent;
-};
-aUI.Element.prototype.setText = function(text)
-{
+    if (text === undefined) return this.getElement().textContent;
     this.getElement().textContent = text;
 };
-aUI.Element.prototype.getHtml = function()
+aUI.Element.prototype.html = function(html)
 {
-    return this.getElement().innerHtml;
-};
-aUI.Element.prototype.setHtml = function(html)
-{
+    if (html === undefined) return this.getElement().innerHtml;
     this.getElement().innerHtml = html;
 };
 aUI.Element.prototype.hidden = function(hidden)
@@ -178,47 +155,52 @@ aUI.Element.prototype.height = function(value)
 //-------------------------------------------------------------------------------------------------------------------
 /*
  * <b>Кнопка.<b><br/>
- * @param {object} options параметры
- * @returns {aUI.Button}
+ * @param {object} options параметры:<br/>
+ * @returns {Button}
  */
 aUI.Button = function Button(options)
 {
     //Опции
     options = aUI.extend(
-    {
-        element : "div",
-        class : "button",
-        onclick : null,
-        data : null
-    }, options);
+            {
+                element : "div",
+                class : "button",
+                onclick : null,
+                data : null
+            }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
     this.data = options.data;
     //Функции
-    function click()
+    function onclick()
     {
         if (options.onclick) options.onclick.apply(that, arguments);
     }
-    this.setClick = function(fn)
+    this.onClick = function(fn)
     {
         options.onclick = fn;
     };
     //Сборка
-    this.getElement().onclick = click;
+    this.getElement().onclick = onclick;
 };
 aUI.proto(aUI.Button, aUI.Element);
 //-------------------------------------------------------------------------------------------------------------------
+/**
+ * <b>спиок</b><br/>
+ * @param {object} options параметры:<br/>
+ * @returns {List}
+ */
 aUI.List = function List(options)
 {
     //Опции
     options = aUI.extend(
-    {
-        element : "ul",
-        id : null,
-        class : null,
-        itemConstructor : null
-    }, options);
+            {
+                element : "ul",
+                id : null,
+                class : null,
+                itemConstructor : null
+            }, options);
     aUI.Element.call(this, options);
     //Переменные
     var itemConstructor = aUI.ListItem;
@@ -233,6 +215,10 @@ aUI.List = function List(options)
     {
         return itemConstructor;
     };
+//    this.onAdd = function()
+//    {
+//        
+//    }
     //Сборка
     if (options.itemConstructor) this.setItemConstructor(options.itemConstructor);
 };
@@ -254,36 +240,52 @@ aUI.List.prototype.item = function(index)
 aUI.List.prototype.items = function()
 {
     var nodes = this.getElement().childNodes;
-    var items = [];
+    var items = [ ];
     for (var index = 0; index < nodes.length; index++) items.push(nodes[index].aui);
     return items;
 };
 aUI.List.prototype.selected = function()
 {
     var nodes = this.getElement().childNodes;
-    var items = [];
-    for (var index = 0; index < nodes.length; index++)
+    var items = [ ];
+    for (var q = 0; q < nodes.length; q++)
     {
-        var item = nodes[index].aui;
+        var item = nodes[q].aui;
         if (!item.selected()) continue;
         items.push(item);
     }
     return items;
 };
+aUI.List.prototype.selectSingle = function(index)
+{
+    var nodes = this.getElement().childNodes;
+    for (var q = 0; q < nodes.length; q++)
+    {
+        var item = nodes[q].aui;
+        if (index === q) item.select();
+        else item.unselect();
+    }
+};
 //-------------------------------------------------------------------------------------------------------------------
+/**
+ * <b>елемент спиока List</b><br/>
+ * @param {type} options параметры:<br/>
+ * @returns {ListItem}
+ * @see List
+ */
 aUI.ListItem = function ListItem(options)
 {
     //Опции
     options = aUI.extend(
-    {
-        element : "li",
-        id : null,
-        class : null
-    }, options);
+            {
+                element : "li",
+                id : null,
+                class : null
+            }, options);
     aUI.Button.call(this, options);
     //Переменные
     //Функции
-    this.getSelectClass = function()
+    this.getSelectedClass = function()
     {
         return "selected";
     };
@@ -293,20 +295,32 @@ aUI.ListItem = function ListItem(options)
 aUI.proto(aUI.ListItem, aUI.Button);
 aUI.ListItem.prototype.select = function()
 {
-    this.addClass(this.getSelectClass());
+    this.addClass(this.getSelectedClass());
 };
 aUI.ListItem.prototype.unselect = function()
 {
-    this.removeClass(this.getSelectClass());
+    this.removeClass(this.getSelectedClass());
 };
 aUI.ListItem.prototype.selected = function()
 {
-    return this.hasClass(this.getSelectClass());
+    return this.hasClass(this.getSelectedClass());
 };
 aUI.ListItem.prototype.toggleSelect = function()
 {
-    this.toggleClass(this.getSelectClass());
+    this.toggleClass(this.getSelectedClass());
 };
+aUI.ListItem.prototype.index = function()
+{
+    var element = this.getElement();
+    var parent = element.parentElement;
+    if (!parent) return undefined;
+    for (var index = 0; index < parent.childNodes.length; index++)
+    {
+        if (parent.childNodes[index] === element) return index;
+    }
+    return undefined;
+};
+
 //-------------------------------------------------------------------------------------------------------------------
 
 
@@ -360,75 +374,27 @@ aUI.ListItem.prototype.toggleSelect = function()
  * - show : показывать всегда,<br/>
  * - hide : скрывать всегда,<br/>
  * События onScroll и onResize.<br/>
- * @param {object} options настройки:
- * @param {number} options.height высота
- * @param {number} options.width ширина
- * @param {string} options.horizontal горизонтальная полоса прокрутки. варианты: "auto", "show", "hide"
- * @param {string} options.vertical вертикальная полоса прокрутки. варианты: "auto", "show", "hide"
+ * @param {object} options настройки:<br/>
+ * - <b>height:</b> {number} высота<br/>
+ * - <b>width:</b> {number} ширина<br/>
+ * - <b>horizontal:</b> {string} горизонтальная полоса прокрутки. варианты: "auto", "show", "hide"<br/>
+ * - <b>vertical:</b> {string} вертикальная полоса прокрутки. варианты: "auto", "show", "hide"<br/>
  * @returns {ScrollArea}
  */
 aUI.ScrollArea = function ScrollArea(options)
 {
     //Опции по умолчанию
     options = aUI.extend(
-    {
-        height : null,
-        width : null,
-        horizontal : "auto",
-        vertical : "auto"
-    }, options);
+            {
+                height : null,
+                width : null,
+                horizontal : "auto",
+                vertical : "auto"
+            }, options);
     aUI.Element.call(this, options);
-
     this.getElement().style.overflow = "auto";
     //Переменные
-
     //Функции
-    this.onScroll = function(fn)
-    {
-        this.getElement().onscroll = fn;
-    };
-    this.onResize = function(fn)
-    {
-        this.getElement().onresize = fn;
-    };
-    this.horizontalScrollBar = function(type)
-    {
-        switch (type)
-        {
-            case "auto":
-                options.horizontal = "auto";
-                break;
-            case "show":
-                options.horizontal = "scroll";
-                break;
-            case "hide":
-                options.horizontal = "hidden";
-                break;
-            default:
-                options.horizontal = "auto";
-                throw new Error("Unknow horizontal type " + type);
-        }
-        this.getElement().style.overflowX = options.horizontal;
-    };
-    this.verticalScrollBar = function(type)
-    {
-        switch (type)
-        {
-            case "auto":
-                options.vertical = "auto";
-                break;
-            case "show":
-                options.vertical = "scroll";
-                break;
-            case "hide":
-                options.vertical = "hidden";
-                break;
-            default:
-                options.vertical = "auto";
-                throw new Error("Unknow vertical type " + type);
-        }
-        this.getElement().style.overflowY = options.vertical;
-    };
     //Сборка
     this.horizontalScrollBar(options.horizontal);
     this.verticalScrollBar(options.vertical);
@@ -436,6 +402,54 @@ aUI.ScrollArea = function ScrollArea(options)
     this.width(options.width);
 };
 aUI.proto(aUI.ScrollArea, aUI.Element);
+aUI.ScrollArea.prototype.onScroll = function(fn)
+{
+    this.getElement().onscroll = fn;
+};
+aUI.ScrollArea.prototype.onResize = function(fn)
+{
+    this.getElement().onresize = fn;
+};
+aUI.ScrollArea.prototype.horizontalScrollBar = function(type)
+{
+    var x = this.getElement().style.overflowX;
+    switch (type)
+    {
+        case "auto":
+            x = "auto";
+            break;
+        case "show":
+            x = "scroll";
+            break;
+        case "hide":
+            x = "hidden";
+            break;
+        default:
+            throw new Error("Unknow horizontal type " + type);
+    }
+    this.getElement().style.overflowX = x;
+};
+aUI.ScrollArea.prototype.verticalScrollBar = function(type)
+{
+    var y = this.getElement().style.overflowY;
+    switch (type)
+    {
+        case "auto":
+            y = "auto";
+            break;
+        case "show":
+            y = "scroll";
+            break;
+        case "hide":
+            y = "hidden";
+            break;
+        default:
+            throw new Error("Unknow vertical type " + type);
+    }
+    this.getElement().style.overflowY = y;
+};
+
+
 //---------------------------------------------------------------------------
 /**
  * 
@@ -446,14 +460,14 @@ aUI.ScrollList = function ScrollList(options)
 {
     //Опции по умолчанию
     options = aUI.extend(
-    {
-        listOptions : { }
-    }, options);
+            {
+                listOptions : { }
+            }, options);
     aUI.ScrollArea.call(this, options);
     //Переменные
     var that = this;
-    var changeTopIndex = null;
-    var lastTopIndex = null;
+    var changeTop = null;
+    var currentTopIndex = null;
     //Функции
     this.getList = function()
     {
@@ -462,17 +476,22 @@ aUI.ScrollList = function ScrollList(options)
     function scroll()
     {
         var topIndex = that.topIndex();
-        if (lastTopIndex !== topIndex)
+        if (currentTopIndex !== topIndex)
         {
-            lastTopIndex = topIndex;
-            if (changeTopIndex) changeTopIndex();
-            console.log("topIndex", topIndex);
+            currentTopIndex = topIndex;
+            if (changeTop)
+            {
+                var item = list.item(currentTopIndex);
+                changeTop.call(item);
+
+                //console.log("topIndex", topIndex);
+            }
         }
     }
-    this.onChangeTopIndex = function(fn)
+    this.onChangeTop = function(fn)
     {
         if (typeof fn !== "function") throw new Error("fn is not a function");
-        changeTopIndex = fn;
+        changeTop = fn;
     };
 
     //Сборка
