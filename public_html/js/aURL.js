@@ -4,7 +4,7 @@ var AURL = function()
     //Данные
     //var that = this;
     var data = { };
-    var listeners = [ ];
+    var listeners = [];
     var delimiter = "&";
     var assign = "=";
 //    var part = "pathname";
@@ -25,7 +25,9 @@ var AURL = function()
         for (var index in listeners) if (listeners[index].name === name) throw new Error("name : " + name + " not unique");
         if (!checkKey(key)) throw new Error("key : " + key + " not format");
         if (!checkFn(fn)) throw new Error("fn is not a function");
-        listeners.push({ name : name, key : key, fn : fn });
+        listeners.push({
+            name : name, key : key, fn : fn
+        });
     };
     /**
      * удаление слушателя
@@ -45,7 +47,9 @@ var AURL = function()
         for (var index in listeners)
         {
             var listener = listeners[index];
-            if (listener.key === key) listener.fn.call({ key : key, value : data[key] });
+            if (listener.key === key) listener.fn.call({
+                    key : key, value : data[key]
+                });
         }
     }
     function checkKey(key)
@@ -97,7 +101,7 @@ var AURL = function()
         if (!checkKey(key)) throw new Error("key : " + key + " not format");
         if (!(key in data))
         {
-            if(!required) return undefined;
+            if (!required) return undefined;
             throw new Error("key : " + key + " not found");
         }
         return data[key];
@@ -115,7 +119,7 @@ var AURL = function()
         if (!checkKey(key)) throw new Error("key : " + key + " not format");
         if (!(key in data))
         {
-            if(!required) return undefined;
+            if (!required) return undefined;
             throw new Error("key : " + key + " not found");
         }
         var value = data[key];
@@ -135,7 +139,7 @@ var AURL = function()
         if (!checkKey(key)) throw new Error("key : " + key + " not format");
         if (!(key in data))
         {
-            if(!required) return undefined;
+            if (!required) return undefined;
             throw new Error("key : " + key + " not found");
         }
         var value = data[key];
@@ -176,14 +180,14 @@ var AURL = function()
     }
     function updateUrl()
     {
-        var url = new URL(window.location.href);
+        var url = parseUrl(window.location.href);
         url[part] = encodeURI(encode(data));
-        history.pushState("", "", url);
+        history.pushState("", "", compileHref(url));
     }
     function readUrl()
     {
-        var url = new URL(window.location.href);
-        var newData = decode(decodeURI(url[part].substr(1)));
+        var url = parseUrl(window.location.href);
+        var newData = decode(decodeURI(url[part]));
         for (var key in newData)
         {
             if (data[key] === newData[key]) continue;
@@ -196,8 +200,47 @@ var AURL = function()
             delete data[key];
             callListeners(key);
         }
-        //console.log("readUrl", urlData);
     }
+    function parseUrl(href)
+    {
+        var url =
+        {
+            hash : "", host : "", hostname : "", origin : "", pathname : [], port : "", protocol : "", search : ""
+        };
+        var arr;
+        arr = href.split("#", 2);
+        if (arr[1]) url.hash = arr[1];
+        arr = arr[0].split("?");
+        if (arr[1]) url.search = arr[1];
+        arr = arr[0].split("//");
+        if (arr[1]) url.protocol = arr[0];
+        arr = arr[1].split("/");
+        url.host = arr[0];
+        for (var q = 1; q < arr.length; q++) url.pathname.push(arr[q]);
+        return url;
+    }
+    function compileHref(url)
+    {
+        var href = "";
+        if (url.protocol) href += url.protocol + "//";
+        href += url.host;
+        for (var index in url.pathname) href += "/" + url.pathname[index];
+        if (url.search) href += "?" + url.search;
+        if (url.hash) href += "#" + url.hash;
+        return href;
+    }
+//    function parseParams(params, delimiter, assign)
+//    {
+//        var data = {};
+//        var array = params.split(delimiter);
+//        for (var index in array)
+//        {
+//            var param = array[index].split(assign);
+//            data[param[0]] = param[1];
+//        }
+//       return data;
+//    }
+
     /**
      * инициализация включает считывание текущего урла и его разбор<br/>
      * добавляет привязку к событию изменения состояния истории<br/>
@@ -216,13 +259,13 @@ var AURL = function()
 
 
 /*
-
+ 
  //создаём экземпляр
  aURL = new AURL();
-
+ 
  //регистрирация метода changeCount под именем "changeCount" для ключа "count" вызываемого при изменеии урла
  aURL.setListner("changeCount", "count" , changeCount);
-
+ 
  //инициализация включает считывание текущего урла и его разбор
  aURL.init();
  
