@@ -39,13 +39,13 @@ aUI.Element = function Element(options)
 {
     //Опции
     options = aUI.extend(
-            {
-                element : "div",
-                id : null,
-                class : null,
-                text : null,
-                html : null
-            }, options);
+    {
+        element : "div",
+        id : null,
+        class : null,
+        text : null,
+        html : null
+    }, options);
     //Переменные
     //var that = this;
     //Функции
@@ -162,12 +162,12 @@ aUI.Button = function Button(options)
 {
     //Опции
     options = aUI.extend(
-            {
-                element : "div",
-                class : "button",
-                onclick : null,
-                data : null
-            }, options);
+    {
+        element : "div",
+        class : "button",
+        onclick : null,
+        data : null
+    }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
@@ -195,12 +195,12 @@ aUI.List = function List(options)
 {
     //Опции
     options = aUI.extend(
-            {
-                element : "ul",
-                id : null,
-                class : null,
-                itemConstructor : null
-            }, options);
+    {
+        element : "ul",
+        id : null,
+        class : null,
+        itemConstructor : null
+    }, options);
     aUI.Element.call(this, options);
     //Переменные
     var itemConstructor = aUI.ListItem;
@@ -229,13 +229,24 @@ aUI.List.prototype.add = function()
     item.appendTo(this);
     return item;
 };
+aUI.List.prototype.remove = function(index)
+{
+    this.item(index).remove();
+//    var item = aUI.construct(this.getItemConstructor(), arguments);
+//    item.appendTo(this);
+//    return item;
+
+};
+
 aUI.List.prototype.count = function()
 {
     return this.getElement().childElementCount;
 };
 aUI.List.prototype.item = function(index)
 {
-    return this.getElement().childNodes[index].aui;
+    var element =  this.getElement().childNodes[index];
+    if (element === undefined) return undefined;// throw new Error("index out of range " + index);
+    return element.aui;
 };
 aUI.List.prototype.items = function()
 {
@@ -256,6 +267,18 @@ aUI.List.prototype.selected = function()
     }
     return items;
 };
+aUI.List.prototype.unselected = function()
+{
+    var nodes = this.getElement().childNodes;
+    var items = [ ];
+    for (var q = 0; q < nodes.length; q++)
+    {
+        var item = nodes[q].aui;
+        if (item.selected()) continue;
+        items.push(item);
+    }
+    return items;
+};
 aUI.List.prototype.selectSingle = function(index)
 {
     var nodes = this.getElement().childNodes;
@@ -265,6 +288,21 @@ aUI.List.prototype.selectSingle = function(index)
         if (index === q) item.select();
         else item.unselect();
     }
+};
+aUI.List.prototype.selectAll = function()
+{
+    var nodes = this.getElement().childNodes;
+    for (var q = 0; q < nodes.length; q++) nodes[q].aui.select();
+};
+aUI.List.prototype.unselectAll = function()
+{
+    var nodes = this.getElement().childNodes;
+    for (var q = 0; q < nodes.length; q++) nodes[q].aui.unselect();
+};
+aUI.List.prototype.toggleSelectAll = function()
+{
+    var nodes = this.getElement().childNodes;
+    for (var q = 0; q < nodes.length; q++) nodes[q].aui.toggleSelect();
 };
 //-------------------------------------------------------------------------------------------------------------------
 /**
@@ -277,11 +315,11 @@ aUI.ListItem = function ListItem(options)
 {
     //Опции
     options = aUI.extend(
-            {
-                element : "li",
-                id : null,
-                class : null
-            }, options);
+    {
+        element : "li",
+        id : null,
+        class : null
+    }, options);
     aUI.Button.call(this, options);
     //Переменные
     //Функции
@@ -320,14 +358,7 @@ aUI.ListItem.prototype.index = function()
     }
     return undefined;
 };
-
 //-------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
 /*aUI.Check = function Check(options)
  {
  //Опции по умолчанию
@@ -385,12 +416,12 @@ aUI.ScrollArea = function ScrollArea(options)
 {
     //Опции по умолчанию
     options = aUI.extend(
-            {
-                height : null,
-                width : null,
-                horizontal : "auto",
-                vertical : "auto"
-            }, options);
+    {
+        height : null,
+        width : null,
+        horizontal : "auto",
+        vertical : "auto"
+    }, options);
     aUI.Element.call(this, options);
     this.getElement().style.overflow = "auto";
     //Переменные
@@ -448,8 +479,6 @@ aUI.ScrollArea.prototype.verticalScrollBar = function(type)
     }
     this.getElement().style.overflowY = y;
 };
-
-
 //---------------------------------------------------------------------------
 /**
  * 
@@ -460,14 +489,15 @@ aUI.ScrollList = function ScrollList(options)
 {
     //Опции по умолчанию
     options = aUI.extend(
-            {
-                listOptions : { }
-            }, options);
+    {
+        listOptions : { }
+    }, options);
     aUI.ScrollArea.call(this, options);
     //Переменные
     var that = this;
     var changeTop = null;
     var currentTopIndex = null;
+    var onScroll = null;
     //Функции
     this.getList = function()
     {
@@ -479,25 +509,24 @@ aUI.ScrollList = function ScrollList(options)
         if (currentTopIndex !== topIndex)
         {
             currentTopIndex = topIndex;
-            if (changeTop)
-            {
-                var item = list.item(currentTopIndex);
-                changeTop.call(item);
-
-                //console.log("topIndex", topIndex);
-            }
+            if (changeTop) changeTop.call(list.item(currentTopIndex));
         }
+        if (onScroll) onScroll();
     }
     this.onChangeTop = function(fn)
     {
         if (typeof fn !== "function") throw new Error("fn is not a function");
         changeTop = fn;
     };
-
     //Сборка
     var list = new aUI.List(options.listOptions);
     list.appendTo(this);
     this.onScroll(scroll);
+    this.onScroll = function(fn)
+    {
+        onScroll = fn;
+    };
+
 };
 aUI.proto(aUI.ScrollList, aUI.ScrollArea);
 aUI.ScrollList.prototype.topIndex = function(value)
@@ -519,7 +548,7 @@ aUI.ScrollList.prototype.topIndex = function(value)
     else
     {
         if (isNaN(value)) throw new Error("value is not a number");
-        if (value < 0 || value >= count) throw new Error("value " + value + " out of range 0 - " + count);
+        if (value < 0 || count <= value) throw new Error("value " + value + " out of range 0 - " + (count - 1));
         this.getElement().scrollTop = nodes[value].offsetTop - list.getElement().offsetTop;
     }
 };

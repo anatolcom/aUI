@@ -4,7 +4,7 @@ var AURL = function()
     //Данные
     //var that = this;
     var data = { };
-    var listeners = [];
+    var listeners = [ ];
     var delimiter = "&";
     var assign = "=";
 //    var part = "pathname";
@@ -83,7 +83,7 @@ var AURL = function()
     {
         if (!checkKey(key)) throw new Error("key : " + key + " not format");
         if (!checkValue(value)) throw new Error("value : " + value + " not format");
-        if (data[key] === value) return;
+        if (data[key] === String(value)) return;
         data[key] = String(value);
         callListeners(key);
         updateUrl();
@@ -187,6 +187,7 @@ var AURL = function()
     function readUrl()
     {
         var url = parseUrl(window.location.href);
+        //console.log(url);
         var newData = decode(decodeURI(url[part]));
         for (var key in newData)
         {
@@ -205,7 +206,7 @@ var AURL = function()
     {
         var url =
         {
-            hash : "", host : "", hostname : "", origin : "", pathname : [], port : "", protocol : "", search : ""
+            hash : "", host : "", hostname : "", origin : "", pathname : [ ], port : "", protocol : "", search : ""
         };
         var arr;
         arr = href.split("#", 2);
