@@ -15,11 +15,16 @@ and open the template in the editor.
   <script type="text/javascript" src="js/aUI.js"></script> 
   <script>
    var aURL = new AURL();
-   function changeAdd()
+   function changeSections()
    {
-    console.log("changeAdd", this);
+    if (typeof fillSectionList === "function") fillSectionList(this.value);
    }
-   aURL.setListener("changeAdd", "sections", changeAdd);
+   function changeSelected()
+   {
+    if (typeof selectSection === "function") selectSection(this.value);
+   }
+   aURL.setListener("changeSections", "sections", changeSections);
+   aURL.setListener("changeSelected", "selected", changeSelected);
    aURL.init();
    function paramUp(name)
    {
@@ -47,7 +52,7 @@ and open the template in the editor.
     <a href="javascript:paramUp('sections');">add</a><a href="javascript:paramDown('sections');">del</a>
    </menu>
    <menu class="fixed circle">
-    <a href="javascript:paramUp('selected');">add</a><a href="javascript:paramDown('selected');">del</a>
+    <a href="javascript:paramUp('test');">add</a><a href="javascript:paramDown('test');">del</a>
    </menu>
   </nav>
   <section>
@@ -64,32 +69,32 @@ and open the template in the editor.
   <script>
    //var element = new aUI.Element({ text:"DIV" });
    
-   function add()
-   {
-    addSection();
-   }
-   function sum()
-   {
-    //textCnt.setText(list.selected().length);
-    //sectionList.topIndex(2);
-   }
-   function clear()
-   {
-    sectionMenu.clear();
-    sections.clear();
-   }
+//   function add()
+//   {
+//    addSection();
+//   }
+//   function sum()
+//   {
+//    //textCnt.setText(list.selected().length);
+//    //sectionList.topIndex(2);
+//   }
+//   function clear()
+//   {
+//    sectionMenu.clear();
+//    sections.clear();
+//   }
    var parent = document.getElementsByTagName("section").item(0);
-   var buttons = new aUI.Element({ class:"buttons" });
-   buttons.appendTo(parent);
+//   var buttons = new aUI.Element({ class:"buttons" });
+//   buttons.appendTo(parent);
    
-   var btnAdd = new aUI.Button({ text:"Add", onclick:add });
-   btnAdd.addClass("success");
-   btnAdd.appendTo(buttons);
-   var btnClear = new aUI.Button({ text:"Clear", onclick:clear });
-   btnClear.addClass("warning");
-   btnClear.appendTo(buttons);
-   var btnSum = new aUI.Button({ text:"Sum", onclick:sum });
-   btnSum.appendTo(buttons);
+//   var btnAdd = new aUI.Button({ text:"Add", onclick:add });
+//   btnAdd.addClass("success");
+//   btnAdd.appendTo(buttons);
+//   var btnClear = new aUI.Button({ text:"Clear", onclick:clear });
+//   btnClear.addClass("warning");
+//   btnClear.appendTo(buttons);
+//   var btnSum = new aUI.Button({ text:"Sum", onclick:sum });
+//   btnSum.appendTo(buttons);
    
 //   function Section(options)
 //   {
@@ -111,16 +116,33 @@ and open the template in the editor.
    {
     var caption = "section " + sections.count();
     sectionMenu.add({ text:caption, onclick:sectionMenuClick });
+    if(sectionMenu.count() === 1) sectionMenu.selectSingle(0);
     sections.add({ class:"section", text:caption});
+   }
+   function removeLastSection()
+   {
+    sectionMenu.remove(sections.count() - 1);
+    sections.remove(sections.count() - 1);
+   }
+   function selectSection(index)
+   {
+    //console.log(index, sectionList.topIndex());
+    if (sectionList.topIndex() === Number(index)) 
+    {
+      return;
+    }
+    sectionList.topIndex(index);
    }
   
    function sectionMenuClick() 
    {
-    sectionList.topIndex(this.index());
+    aURL.set("selected", this.index());
+    //sectionList.topIndex(this.index());
    }
    function changeTopSection()
    {
     sectionMenu.selectSingle(this.index());
+    aURL.set("selected", this.index());
    }
   
    var sectionMenu = new aUI.List({ class:"sectionMenu" });//caption:"Button"
@@ -131,6 +153,14 @@ and open the template in the editor.
    sectionList.onChangeTop(changeTopSection);
    var sections = sectionList.getList();
    //sections.setItemConstructor(Section);
+   function fillSectionList(count)
+   {
+    if (count === sectionList.getList().count()) return;
+    while (count < sectionList.getList().count()) removeLastSection();
+    for (var q = sectionList.getList().count(); q < count; q++) addSection();
+   }
+   fillSectionList(aURL.get("sections"));
+   selectSection(aURL.get("selected"));
    
    var resultBlock = new aUI.Element({ class:"resultBlock" });
    resultBlock.appendTo(parent);

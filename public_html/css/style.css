@@ -33,9 +33,9 @@ header
 section
 {
  margin: -20px 20px 0px 200px;
- background-color: rgba(255, 255, 255, 1);
+ /* background-color: rgba(255, 255, 255, 1); */
  color: #222;
- padding: 15px;
+ /* padding: 15px; */
 }
 footer
 {
@@ -187,10 +187,8 @@ menu.circle > *:active
 
 .sectionMenu
 {
- 
-/* background-color: #EEE; */
- 
-margin-bottom: 1px;
+ background-color: #FFF;
+ margin-bottom: 1px;
 }
 .sectionMenu > *
 {
@@ -255,9 +253,10 @@ margin-bottom: 1px;
 }
 .scrollarea > .sections > .section
 {
- min-height: 299px;
+ min-height: 259px;
  margin-bottom: 1px;
- background-color: #EEE;
+ background-color: #FFF;
+ padding: 20px 20px;
 }
 
 
