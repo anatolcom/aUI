@@ -187,8 +187,10 @@ menu.circle > *:active
 
 .sectionMenu
 {
- background-color: #FFF;
- margin-bottom: 1px;
+ 
+background-color: #FFF;
+ 
+margin-bottom: 1px;
 }
 .sectionMenu > *
 {
@@ -279,3 +281,36 @@ menu.circle > *:active
 
 
 
+.calendar
+{
+  
+}
+.calendar > tr > th,
+.calendar > tr > td
+{
+ text-align: center;
+ width: 20px;
+ cursor: default;
+}
+.calendar > tr > td:hover
+{
+ background-color: #DDD;
+}
+.calendar > tr > td:active
+{
+ background-color: #FFF;
+}
+.calendar > tr > td.current
+{
+ font-weight: bolder;
+}
+.calendar > tr > th.sa,
+.calendar > tr > th.su
+{
+ color: red;
+}
+.calendar > tr > td.prev,
+.calendar > tr > td.next
+{
+ color: silver;
+}
