@@ -162,6 +162,9 @@ and open the template in the editor.
    fillSectionList(aURL.get("sections"));
    selectSection(aURL.get("selected"));
    
+   var edit = new aUI.Edit();
+   edit.appendTo(parent);
+
    var resultBlock = new aUI.Element({ class:"resultBlock" });
    resultBlock.appendTo(parent);
    var text = new aUI.Element({ class:"circle", text:"?" });
@@ -170,6 +173,9 @@ and open the template in the editor.
    textCnt.appendTo(resultBlock);
    //console.dir(list);
    //list.onClick(function(){alert("click " + this.data);});
+   
+   
+   
   </script>
  </body>
 </html>

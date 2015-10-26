@@ -39,13 +39,13 @@ aUI.Element = function Element(options)
 {
     //Опции
     options = aUI.extend(
-    {
-        element : "div",
-        id : null,
-        class : null,
-        text : null,
-        html : null
-    }, options);
+            {
+                element : "div",
+                id : null,
+                class : null,
+                text : null,
+                html : null
+            }, options);
     //Переменные
     //var that = this;
     //Функции
@@ -162,12 +162,12 @@ aUI.Button = function Button(options)
 {
     //Опции
     options = aUI.extend(
-    {
-        element : "div",
-        class : "button",
-        onclick : null,
-        data : null
-    }, options);
+            {
+                element : "div",
+                class : "button",
+                onclick : null,
+                data : null
+            }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
@@ -187,7 +187,7 @@ aUI.Button = function Button(options)
 aUI.proto(aUI.Button, aUI.Element);
 //-------------------------------------------------------------------------------------------------------------------
 /**
- * <b>спиок</b><br/>
+ * <b>Спиок.</b><br/>
  * @param {object} options параметры:<br/>
  * @returns {List}
  */
@@ -195,12 +195,12 @@ aUI.List = function List(options)
 {
     //Опции
     options = aUI.extend(
-    {
-        element : "ul",
-        id : null,
-        class : null,
-        itemConstructor : null
-    }, options);
+            {
+                element : "ul",
+                id : null,
+                class : null,
+                itemConstructor : null
+            }, options);
     aUI.Element.call(this, options);
     //Переменные
     var itemConstructor = aUI.ListItem;
@@ -244,7 +244,7 @@ aUI.List.prototype.count = function()
 };
 aUI.List.prototype.item = function(index)
 {
-    var element =  this.getElement().childNodes[index];
+    var element = this.getElement().childNodes[index];
     if (element === undefined) return undefined;// throw new Error("index out of range " + index);
     return element.aui;
 };
@@ -306,7 +306,7 @@ aUI.List.prototype.toggleSelectAll = function()
 };
 //-------------------------------------------------------------------------------------------------------------------
 /**
- * <b>елемент спиока List</b><br/>
+ * <b>Элемент спиока List.</b><br/>
  * @param {type} options параметры:<br/>
  * @returns {ListItem}
  * @see List
@@ -315,11 +315,11 @@ aUI.ListItem = function ListItem(options)
 {
     //Опции
     options = aUI.extend(
-    {
-        element : "li",
-        id : null,
-        class : null
-    }, options);
+            {
+                element : "li",
+                id : null,
+                class : null
+            }, options);
     aUI.Button.call(this, options);
     //Переменные
     //Функции
@@ -416,12 +416,12 @@ aUI.ScrollArea = function ScrollArea(options)
 {
     //Опции по умолчанию
     options = aUI.extend(
-    {
-        height : null,
-        width : null,
-        horizontal : "auto",
-        vertical : "auto"
-    }, options);
+            {
+                height : null,
+                width : null,
+                horizontal : "auto",
+                vertical : "auto"
+            }, options);
     aUI.Element.call(this, options);
     this.getElement().style.overflow = "auto";
     //Переменные
@@ -449,6 +449,12 @@ aUI.ScrollArea.prototype.horizontalScrollBar = function(type)
         case "auto":
             x = "auto";
             break;
+        case "scroll":
+            x = "scroll";
+            break;
+        case "hidden":
+            x = "hidden";
+            break;
         case "show":
             x = "scroll";
             break;
@@ -468,6 +474,12 @@ aUI.ScrollArea.prototype.verticalScrollBar = function(type)
         case "auto":
             y = "auto";
             break;
+        case "scroll":
+            y = "scroll";
+            break;
+        case "hidden":
+            y = "hidden";
+            break;
         case "show":
             y = "scroll";
             break;
@@ -481,7 +493,7 @@ aUI.ScrollArea.prototype.verticalScrollBar = function(type)
 };
 //---------------------------------------------------------------------------
 /**
- * 
+ * <b>Список в области прокрутки.</b><br/>
  * @param {object} options
  * @returns {ScrollList}
  */
@@ -489,9 +501,9 @@ aUI.ScrollList = function ScrollList(options)
 {
     //Опции по умолчанию
     options = aUI.extend(
-    {
-        listOptions : { }
-    }, options);
+            {
+                listOptions : { }
+            }, options);
     aUI.ScrollArea.call(this, options);
     //Переменные
     var that = this;
@@ -552,3 +564,54 @@ aUI.ScrollList.prototype.topIndex = function(value)
         this.getElement().scrollTop = nodes[value].offsetTop - list.getElement().offsetTop;
     }
 };
+//---------------------------------------------------------------------------
+//aUI.Edit = function Edit(options)
+//{
+//    //Опции по умолчанию
+//    options = aUI.extend(
+//            {
+////               element : "div"
+//            }, options);
+//    //Переменные
+//    //Функции
+//    //Сборка
+//
+////    var input = new aUI.Element({ element : "input" });
+////    input.getElement().style.width = "100%";
+////    input.getElement().style.height = "100%";
+////    input.appendTo(this.getElement());
+//};
+//aUI.proto(aUI.Edit, aUI.Element);
+//---------------------------------------------------------------------------
+aUI.Edit = function Edit(options)
+{
+    //Опции
+    options = aUI.extend(
+            {
+//                element : "div",
+//                class : "button",
+//                onclick : null,
+//                data : null
+            }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+//    var that = this;
+//    this.data = options.data;
+    //Функции
+//    function onclick()
+//    {
+//        if (options.onclick) options.onclick.apply(that, arguments);
+//    }
+//    this.onClick = function(fn)
+//    {
+//        options.onclick = fn;
+//    };
+    //Сборка
+//    this.getElement().onclick = onclick;
+    var input = new aUI.Element({ element : "input" });
+    input.getElement().style.width = "100%";
+    input.getElement().style.height = "100%";
+    input.appendTo(this.getElement());
+};
+aUI.proto(aUI.Edit, aUI.Element);
+//---------------------------------------------------------------------------
