@@ -565,6 +565,7 @@ aUI.ScrollList.prototype.topIndex = function(value)
     }
 };
 //---------------------------------------------------------------------------
+<<<<<<< HEAD
 //aUI.Edit = function Edit(options)
 //{
 //    //Опции по умолчанию
@@ -615,3 +616,134 @@ aUI.Edit = function Edit(options)
 };
 aUI.proto(aUI.Edit, aUI.Element);
 //---------------------------------------------------------------------------
+=======
+aUI.Calendar = function Calendar(options)
+{
+    //Опции по умолчанию
+    options = aUI.extend(
+    {
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+//    var that = this;
+    var shortNameDayOfWeekRu = [ "вс", "пн", "вт", "ср", "чт", "пт", "сб" ];
+    var shortNameDayOfWeek = [ "su", "mo", "tu", "we", "th", "fr", "sa" ];
+    var fullNameDayOfWeekRu = [ "воскпесенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота" ];
+    //Функции
+    function numToLStr(number, length)
+    {
+        var value = String(number);
+        while (value.length < length) value = "0" + value;
+        return value;
+    }
+
+    //Сборка
+    var date = new Date();
+
+    var array = this.calendarData(date);
+
+    var table = new aUI.Element({ element : "table", class : "calendar" });
+
+    var th = new aUI.Element({ element : "tr" });
+    for (var d = 0; d < 7; d++)
+    {
+        var day = d + 1;
+        if (d === 6) day = 0;
+        var td = new aUI.Element({ element : "th", class : shortNameDayOfWeek[day], text : shortNameDayOfWeekRu[day] });
+        td.appendTo(th);
+    }
+    th.appendTo(table);
+
+    for (var w = 0; w < 6; w++)
+    {
+        var tr = new aUI.Element({ element : "tr" });
+        for (var d = 0; d < 7; d++)
+        {
+            var item = array[(w * 7) + d];
+            var td = new aUI.Button({ element : "td", class : shortNameDayOfWeek[item.dayOfWeek] });
+            if (item.state) td.addClass(item.state);
+            if (item.current) td.addClass("current");
+            td.text(item.day);
+            td.data = new Date(item.year, item.month - 1, item.day);
+            td.appendTo(tr);
+        }
+        tr.appendTo(table);
+    }
+    table.appendTo(this);
+};
+aUI.proto(aUI.Calendar, aUI.Element);
+aUI.Calendar.prototype.calendarData = function(date)
+{
+    function getCountDayInMonth(year, month)
+    {
+        var date = new Date(year, month, 0);
+        return date.getDate();
+    }
+    function getFirsInMonthDayOfWeek(year, month)
+    {
+        var date = new Date(year, month - 1, 1);
+        return date.getDay();
+    }
+
+//    var dayOfWeek = date.getDay();
+    var dayNumber = date.getDate();
+    var monthNumber = date.getMonth() + 1;
+    var yearNumber = date.getFullYear();
+
+    var firstInMonthDayOfWeek = getFirsInMonthDayOfWeek(yearNumber, monthNumber);
+
+    var prevMonthNumber = monthNumber - 1;
+    var prevYearNumber = yearNumber;
+    if (prevMonthNumber === 0)
+    {
+        prevMonthNumber = 12;
+        prevYearNumber--;
+    }
+
+    var nextMonthNumber = monthNumber + 1;
+    var nextYearNumber = yearNumber;
+    if (nextMonthNumber === 13)
+    {
+        nextMonthNumber = 1;
+        nextYearNumber++;
+    }
+
+    var countDayInPrevMonth = getCountDayInMonth(prevYearNumber, prevMonthNumber);
+    var countDayInMonth = getCountDayInMonth(yearNumber, monthNumber);
+
+    var prevCount = firstInMonthDayOfWeek - 1;
+    var prevDIndex = countDayInPrevMonth - prevCount;
+    var nextCount = 42 - prevCount - countDayInMonth;
+
+    var array = [ ];
+
+    for (var q = 0; q < prevCount; q++) array.push({ day : q + prevDIndex + 1, month : prevMonthNumber, year : prevYearNumber, state : "prev" });
+    for (var q = 0; q < countDayInMonth; q++) array.push({ day : q + 1, month : monthNumber, year : yearNumber, state : "" });
+    for (var q = 0; q < nextCount; q++) array.push({ day : q + 1, month : nextMonthNumber, year : nextYearNumber, state : "next" });
+
+    var dayOfWeekCounter = 1;
+
+    var now = new Date();
+
+//    console.log(now.getDate(), now.getMonth() + 1, now.getYear());
+//    console.log(typeof array[28].day, array[28].day, array[28].day === now.getDate());
+
+    for (var q = 0; q < array.length; q++)
+    {
+        var item = array[q];
+        //if (item.day === now.getDate() && item.month === now.getMonth() + 1 && item.year === now.getYear()) item.current = true;
+        if (item.day === now.getDate()) item.current = true;
+        if (dayOfWeekCounter === 7) dayOfWeekCounter = 0;
+        item.dayOfWeek = dayOfWeekCounter;
+        dayOfWeekCounter++;
+    }
+//    console.log(array[28].current);
+
+    return array;
+
+};
+
+
+//---------------------------------------------------------------------------
+
+>>>>>>> origin/master
