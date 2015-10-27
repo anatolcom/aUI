@@ -1,0 +1,162 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 11.09.2015, 11:22:10
+    Author     : anatol
+*/
+
+input
+{
+ box-sizing: border-box; 
+}
+
+/* Button
+-----------------------------------------------------------------------------------------------*/
+
+.buttons > .button
+{
+ display: inline-block;  
+ margin: 5px 0px 5px 5px;
+}
+
+.button
+{
+ padding: 10px 20px;
+ /* border: 1px solid #E2E2E2; */
+ /*margin: 5px 5px 5px 5px;*/
+ border-radius: 3px;
+ text-align: center;
+ font-weight: bold;
+ cursor: pointer;
+ box-shadow: 0px 0px 5px rgba(0,0,0,0.1), 0px 2px 3px rgba(0,0,0,0.1);
+ color: #363696;
+ -webkit-touch-callout: none;
+ -webkit-user-select: none;
+ -khtml-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+ user-select: none;
+}
+.button:hover
+{
+ border-color: #C3C3C3;
+ color: #00008B;
+ box-shadow: 0px 0px 5px rgba(0,0,0,0.2), 0px 2px 3px rgba(0,0,0,0.2);
+}
+.button:active
+{
+ box-shadow: 0px 0px 3px rgba(0,0,0,0.2), 0px 1px 3px rgba(0,0,0,0.2);
+}
+.button.success
+{
+ background-color: #0AA75F;
+ color: #FFF;
+}
+.button.warning
+{
+ background-color: #D22F2F;
+ color: #FFF;
+}
+
+
+/* Calendar
+-----------------------------------------------------------------------------------------------*/
+.calendar
+{
+ width: 140px; 
+}
+.calendar > .prev,
+.calendar > .next,
+.calendar > .levelUp,
+.calendar > .year
+{
+ display: inline-block;
+ text-align: center;
+ padding: 2px 0px;
+ cursor: default;
+}
+.calendar > .levelUp
+{
+ width: 100px;
+}
+.calendar > .prev,
+.calendar > .next
+{
+ width: 20px;
+}
+.calendar > table
+{
+ border-collapse: collapse;
+}
+.calendar > table.days > tr > th,
+.calendar > table.days > tr > td
+{
+ text-align: center;
+ width: 20px;
+ height: 20px;
+ cursor: default;
+}
+.calendar > table.months
+{
+  margin-top: 20px;
+  /*margin-bottom: 18px;*/
+}
+.calendar > table.months > tr > td
+{
+ text-align: center;
+ width: 35px;
+ height: 35px;
+ /* margin-top: 2px; */
+ /*margin-bottom: 3px;*/
+ cursor: default;
+}
+
+.calendar > .prev:hover,
+.calendar > .next:hover,
+.calendar > .levelUp:hover,
+.calendar > table > tr > td:hover
+{
+ background-color: #DDDDDD;
+}
+.calendar > .prev:active,
+.calendar > .next:active,
+.calendar > .levelUp:active,
+.calendar > table > tr > td:active
+{
+ background-color: #E8E8E8;
+}
+.calendar > table > tr > td.selected
+{
+ font-weight: bolder;
+ background-color: silver;
+}
+.calendar > table > tr > td.current:before
+{
+ content: " ";
+ display: block;
+ position: absolute;
+ border: gray dotted 1px;
+ box-sizing: border-box;
+}
+.calendar > table.days > tr > td.current:before
+{
+ width: 20px;
+ height: 20px;
+ margin-top: -1px;
+}
+.calendar > table.months > tr > td.current:before,
+.calendar > table.years > tr > td.current:before
+{
+ width: 35px;
+ height: 35px;
+ /*border-radius: 17px;*/
+ margin-top: -8px;
+}
+.calendar > table > tr > td.prev,
+.calendar > table > tr > td.next
+{
+ color: silver;
+}

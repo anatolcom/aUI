@@ -10,6 +10,7 @@ and open the template in the editor.
   <meta charset="UTF-8">
   <link rel="shortcut icon" href="aUI.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/aUI.css" type="text/css" media="screen, projection"/>
   <link rel="stylesheet" href="css/style.css" type="text/css" media="screen, projection"/>
   <script type="text/javascript" src="js/aURL.js"></script>  
   <script type="text/javascript" src="js/aUI.js"></script> 
@@ -174,13 +175,12 @@ and open the template in the editor.
    //console.dir(list);
    //list.onClick(function(){alert("click " + this.data);});
    
-<<<<<<< HEAD
-   
-   
-=======
-   var calendar = new aUI.Calendar();
+   function selectDate()
+   {
+    //alert("Select : " + this.data);
+   }
+   var calendar = new aUI.Calendar({ onselect:selectDate });
    calendar.appendTo(parent);
->>>>>>> origin/master
   </script>
  </body>
 </html>

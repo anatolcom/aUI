@@ -140,57 +140,15 @@ menu.circle > *:active
 
 
 
-.buttons > *
-{
- display: inline-block;  
-}
 
-.button
-{
- padding: 10px 20px;
- margin: 5px 0px 5px 5px;
- /* border: 1px solid #E2E2E2; */
- border-radius: 3px;
- text-align: center;
- font-weight: bold;
- cursor: pointer;
- box-shadow: 0px 0px 5px rgba(0,0,0,0.1), 0px 2px 3px rgba(0,0,0,0.1);
- color: #363696;
- -webkit-touch-callout: none;
- -webkit-user-select: none;
- -khtml-user-select: none;
- -moz-user-select: none;
- -ms-user-select: none;
- user-select: none;
-}
-.button:hover
-{
- border-color: #C3C3C3;
- color: #00008B;
- box-shadow: 0px 0px 5px rgba(0,0,0,0.2), 0px 2px 3px rgba(0,0,0,0.2);
-}
-.button:active
-{
- box-shadow: 0px 0px 3px rgba(0,0,0,0.2), 0px 1px 3px rgba(0,0,0,0.2);
-}
-.button.success
-{
- background-color: #0AA75F;
- color: #FFF;
-}
-.button.warning
-{
- background-color: #D22F2F;
- color: #FFF;
-}
 
 
 .sectionMenu
 {
- 
-background-color: #FFF;
- 
-margin-bottom: 1px;
+
+ background-color: #FFF;
+
+ margin-bottom: 1px;
 }
 .sectionMenu > *
 {
@@ -227,7 +185,7 @@ margin-bottom: 1px;
 .sections > .section
 {
  position: relative;
-/* padding-right: 40px;*/
+ /* padding-right: 40px;*/
  /* display: inline-block; */
  /* border-bottom: 3px solid #363696; */
  //border: 1px solid #363696;
@@ -280,37 +238,3 @@ margin-bottom: 1px;
 }
 
 
-
-.calendar
-{
-  
-}
-.calendar > tr > th,
-.calendar > tr > td
-{
- text-align: center;
- width: 20px;
- cursor: default;
-}
-.calendar > tr > td:hover
-{
- background-color: #DDD;
-}
-.calendar > tr > td:active
-{
- background-color: #FFF;
-}
-.calendar > tr > td.current
-{
- font-weight: bolder;
-}
-.calendar > tr > th.sa,
-.calendar > tr > th.su
-{
- color: red;
-}
-.calendar > tr > td.prev,
-.calendar > tr > td.next
-{
- color: silver;
-}
