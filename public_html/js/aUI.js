@@ -26,7 +26,13 @@ aUI.construct = function(constructor, args)
 };
 //-------------------------------------------------------------------------------------------------------------------
 aUI.validator = { };
-aUI.validator.pattern = function(value)
+//-------------------------------------------------------------------------------------------------------------------
+/**
+ * <b>Паттерн.</b><br/>
+ * @param {string} value регулярное выражение<br/>
+ * @returns {Pattern}
+ */
+aUI.validator.Pattern = function Pattern(value)
 {
     //Переменные
     var pattern = null;
@@ -151,12 +157,10 @@ aUI.Element.prototype.hidden = function(hidden)
     if (hidden) this.getElement().style.display = "none";
     else this.getElement().style.display = "";
 };
-//-------------------------------------------------------------------------------------------------------------------
 aUI.Element.prototype.toggleHidden = function()
 {
     this.getElement().hidden = !this.getElement().hidden;
 };
-//-------------------------------------------------------------------------------------------------------------------
 aUI.Element.prototype.width = function(value)
 {
     if (value === undefined) return this.getElement().style.width;
@@ -164,7 +168,6 @@ aUI.Element.prototype.width = function(value)
     if (typeof value === "number") value += "px";
     this.getElement().style.width = value;
 };
-//-------------------------------------------------------------------------------------------------------------------
 aUI.Element.prototype.height = function(value)
 {
     if (value === undefined) return this.getElement().style.height;
@@ -172,7 +175,6 @@ aUI.Element.prototype.height = function(value)
     if (typeof value === "number") value += "px";
     this.getElement().style.height = value;
 };
-//-------------------------------------------------------------------------------------------------------------------
 aUI.Element.prototype.attr = function(name, value)
 {
     if (value === undefined) return this.getElement().setAttribute(name);
@@ -592,6 +594,14 @@ aUI.ScrollList.prototype.topIndex = function(value)
     }
 };
 //---------------------------------------------------------------------------
+/**
+ * <b>Строковое поле редактирования.</b><br/>
+ * @param {object} options параметры:<br/>
+ * - <b>element:</b> название элемента "input".<br/>
+ * - <b>pattern:</b> регулярное выражение.<br/>
+ * - <b>required:</b> обязательность наличия значения.<br/>
+ * @returns {Edit}
+ */
 aUI.Edit = function Edit(options)
 {
     //Опции
@@ -623,7 +633,7 @@ aUI.Edit = function Edit(options)
         validator = value;
     };
     //Сборка
-    if (options.pattern) validator = new aUI.validator.pattern(options.pattern);//???
+    if (options.pattern) validator = new aUI.validator.Pattern(options.pattern);//???
     this.getElement().onfocus = onvalidate;
     this.getElement().onkeyup = onvalidate;
 };
@@ -638,6 +648,14 @@ aUI.Edit.prototype.invalid = function()
     return this.hasClass("invalid");
 };
 //---------------------------------------------------------------------------
+/**
+ * <b>Календарь.</b><br/>
+ * @param {object} options параметры:<br/>
+ * - <b>class:</b> по умолчанию имеет значение "calendar".<br/>
+ * - <b>onselect:</b> функция, вызываемая в момент выбора даты.<br/>
+ * - <b>date:</b> по умолчанию имеет значение текущей даты.<br/>
+ * @returns {Calendar}
+ */
 aUI.Calendar = function Calendar(options)
 {
     //Опции по умолчанию
@@ -654,7 +672,7 @@ aUI.Calendar = function Calendar(options)
 //    var mode = "months";
     var shortNameDayOfWeekRu = [ "вс", "пн", "вт", "ср", "чт", "пт", "сб" ];
     var shortNameDayOfWeek = [ "su", "mo", "tu", "we", "th", "fr", "sa" ];
-    var fullNameDayOfWeekRu = [ "воскпесенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота" ];
+//    var fullNameDayOfWeekRu = [ "воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота" ];
 //    var shortNameMonth = [ "su", "mo", "tu", "we", "th", "fr", "sa" ];
 //    var fullNameMonthNum = [ "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" ];
     var shortNameMonth = [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" ];
@@ -697,7 +715,6 @@ aUI.Calendar = function Calendar(options)
     function clickDay()
     {
         that.date(this.data);
-//        if (options.onselect) ({ data : this.data, onselect : options.onselect }).onselect();
         if (options.onselect) options.onselect.call(that);
     }
     function clickMonth()
@@ -720,11 +737,6 @@ aUI.Calendar = function Calendar(options)
         that.clear();
         var dayTableData = that.getDayTableData(date);
 
-//    var year = new aUI.Element({ class : "year", text : calendar.year });
-//    year.appendTo(this);
-//    var month = new aUI.Element({ class : "month", text : fullNameMonthRu[calendar.month] });
-//    month.appendTo(this);
-
         var prevMonth = new aUI.Button({ class : "prev", text : "<", data : dayTableData.prev });
         prevMonth.onClick(clickPrev);
         prevMonth.appendTo(that);
@@ -736,7 +748,6 @@ aUI.Calendar = function Calendar(options)
         var nextMonth = new aUI.Button({ class : "prev", text : ">", data : dayTableData.next });
         nextMonth.onClick(clickNext);
         nextMonth.appendTo(that);
-
 
         var table = new aUI.Element({ element : "table", class : "days" });
 
@@ -894,13 +905,12 @@ aUI.Calendar.prototype.getDayTableData = function(date)
     data.month = date.getMonth();
     data.year = date.getFullYear();
 
-    var firstInMonthDayOfWeek = getFirsInMonthDayOfWeek(data.year, data.month);
-
     data.prev = prevMonth(data.date);
     data.next = nextMonth(data.date);
 
     var countDayInPrevMonth = countDayInMonth(data.prev.getFullYear(), data.prev.getMonth());
     var countDayInMonth = countDayInMonth(data.year, data.month);
+    var firstInMonthDayOfWeek = getFirsInMonthDayOfWeek(data.year, data.month);
 
     var prevCount = firstInMonthDayOfWeek - 1;
     if (prevCount < 0) prevCount = 6;
@@ -955,7 +965,6 @@ aUI.Calendar.prototype.getMonthTableData = function(date)
         return new Date(year, month, trimDay(year, month, day));
     }
 
-
     var data = { date : date };
     data.day = date.getDate();
     data.month = date.getMonth();
@@ -1003,7 +1012,6 @@ aUI.Calendar.prototype.getYearTableData = function(date)
         return new Date(year, month, trimDay(year, month, day));
     }
 
-
     var data = { date : date };
     data.day = date.getDate();
     data.month = date.getMonth();
@@ -1033,6 +1041,11 @@ aUI.Calendar.prototype.getYearTableData = function(date)
     return data;
 };
 //---------------------------------------------------------------------------
+/**
+ * <b>Дата.</b><br/>
+ * @param {object} options параметры:<br/>
+ * @returns {Date}
+ */
 aUI.Date = function Date(options)
 {
     //Опции
@@ -1040,5 +1053,10 @@ aUI.Date = function Date(options)
             {
             }, options);
     aUI.Element.call(this, options);
+    //Переменные
+//    var that = this;
+    //Функции
+    //Сборка
 };
+aUI.proto(aUI.Date, aUI.Element);
 //---------------------------------------------------------------------------
