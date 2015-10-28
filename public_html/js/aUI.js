@@ -24,6 +24,32 @@ aUI.construct = function(constructor, args)
     else for (var index in arguments) array.push(args[index]);
     return new (Function.prototype.bind.apply(constructor, array));
 };
+//-------------------------------------------------------------------------------------------------------------------
+aUI.validator = { };
+aUI.validator.pattern = function(value)
+{
+    //Переменные
+    var pattern = null;
+    var expression = null;
+    //Функции
+    this.pattern = function(value)
+    {
+        if (value === undefined) return pattern;
+        pattern = value;
+        if (!pattern) expression = null;
+        else expression = new RegExp(pattern, "");
+    };
+    this.validate = function(value)
+    {
+        if (expression === null) return true;
+        var match = value.match(expression);
+        if (!match) return false;
+        return match[0] === value;
+    };
+    //Сборка
+    this.pattern(value);
+};
+//-------------------------------------------------------------------------------------------------------------------
 /**
  * <b>Элемент DOM браузера.</b><br/>
  * По умолчанию div.<br/>
@@ -122,16 +148,8 @@ aUI.Element.prototype.html = function(html)
 aUI.Element.prototype.hidden = function(hidden)
 {
     if (hidden === undefined) return this.getElement().hidden;
-    if (hidden)
-    {
-//        this.getElement().hidden = true;
-        this.getElement().style.display = "none";
-    }
-    else
-    {
-//        this.getElement().hidden = false;
-        this.getElement().style.display = "";
-    }
+    if (hidden) this.getElement().style.display = "none";
+    else this.getElement().style.display = "";
 };
 //-------------------------------------------------------------------------------------------------------------------
 aUI.Element.prototype.toggleHidden = function()
@@ -143,6 +161,7 @@ aUI.Element.prototype.width = function(value)
 {
     if (value === undefined) return this.getElement().style.width;
     if (value === null) value = "";
+    if (typeof value === "number") value += "px";
     this.getElement().style.width = value;
 };
 //-------------------------------------------------------------------------------------------------------------------
@@ -150,7 +169,15 @@ aUI.Element.prototype.height = function(value)
 {
     if (value === undefined) return this.getElement().style.height;
     if (value === null) value = "";
+    if (typeof value === "number") value += "px";
     this.getElement().style.height = value;
+};
+//-------------------------------------------------------------------------------------------------------------------
+aUI.Element.prototype.attr = function(name, value)
+{
+    if (value === undefined) return this.getElement().setAttribute(name);
+    if (value === null) value = "";
+    this.getElement().setAttribute(name, value);
 };
 //-------------------------------------------------------------------------------------------------------------------
 /*
@@ -570,32 +597,46 @@ aUI.Edit = function Edit(options)
     //Опции
     options = aUI.extend(
             {
-//                element : "div",
-//                class : "button",
-//                onclick : null,
-//                data : null
+                element : "input",
+                pattern : null, //??? лишает гибкости
+                required : false
             }, options);
     aUI.Element.call(this, options);
     //Переменные
-//    var that = this;
-//    this.data = options.data;
+    var that = this;
+    var validator = null;
     //Функции
-//    function onclick()
-//    {
-//        if (options.onclick) options.onclick.apply(that, arguments);
-//    }
-//    this.onClick = function(fn)
-//    {
-//        options.onclick = fn;
-//    };
+    function onvalidate()
+    {
+        if (validate(that.value(), options.required)) that.removeClass("invalid");
+        else that.addClass("invalid");
+    }
+    function validate(value, required)
+    {
+        if (value.length === 0) return !required;
+        if (validator) return validator.validate(value);
+        return true;
+    }
+    this.validator = function(value)
+    {
+        if (value === undefined) return validator;
+        validator = value;
+    };
     //Сборка
-//    this.getElement().onclick = onclick;
-    var input = new aUI.Element({ element : "input" });
-    input.getElement().style.width = "100%";
-    input.getElement().style.height = "100%";
-    input.appendTo(this.getElement());
+    if (options.pattern) validator = new aUI.validator.pattern(options.pattern);//???
+    this.getElement().onfocus = onvalidate;
+    this.getElement().onkeyup = onvalidate;
 };
 aUI.proto(aUI.Edit, aUI.Element);
+aUI.Edit.prototype.value = function(value)
+{
+    if (value === undefined) return this.getElement().value;
+    this.getElement().value = value;
+};
+aUI.Edit.prototype.invalid = function()
+{
+    return this.hasClass("invalid");
+};
 //---------------------------------------------------------------------------
 aUI.Calendar = function Calendar(options)
 {
@@ -627,8 +668,9 @@ aUI.Calendar = function Calendar(options)
         return value;
     }
 
-    this.setDate = function(date)
+    this.date = function(date)
     {
+        if (date === undefined) return options.date;
         options.date = date;
         if (mode === "days") showDays(options.date);
         if (mode === "months") showMonths(options.date);
@@ -637,35 +679,36 @@ aUI.Calendar = function Calendar(options)
     function clickMonthsMode()
     {
         mode = "months";
-        that.setDate(options.date);
+        that.date(options.date);
     }
     function clickYearsMode()
     {
         mode = "years";
-        that.setDate(options.date);
+        that.date(options.date);
     }
     function clickPrev()
     {
-        that.setDate(this.data);
+        that.date(this.data);
     }
     function clickNext()
     {
-        that.setDate(this.data);
+        that.date(this.data);
     }
     function clickDay()
     {
-        that.setDate(this.data);
-        if (options.onselect) ({ data : this.data, onselect : options.onselect }).onselect();
+        that.date(this.data);
+//        if (options.onselect) ({ data : this.data, onselect : options.onselect }).onselect();
+        if (options.onselect) options.onselect.call(that);
     }
     function clickMonth()
     {
         mode = "days";
-        that.setDate(this.data);
+        that.date(this.data);
     }
     function clickYear()
     {
         mode = "months";
-        that.setDate(this.data);
+        that.date(this.data);
     }
     this.onSelect = function(fn)
     {
@@ -773,7 +816,7 @@ aUI.Calendar = function Calendar(options)
         prevYear.onClick(clickPrev);
         prevYear.appendTo(that);
 
-        var year = new aUI.Button({ class : "levelUp", text : yearTableData.startDec + " - " + yearTableData.endDec});
+        var year = new aUI.Button({ class : "levelUp", text : yearTableData.startDec + " - " + yearTableData.endDec });
 //        year.onClick(clickYearsMode);
         year.appendTo(that);
 
@@ -803,7 +846,7 @@ aUI.Calendar = function Calendar(options)
         table.appendTo(that);
     }
     //Сборка
-    this.setDate(options.date);
+    this.date(options.date);
 };
 aUI.proto(aUI.Calendar, aUI.Element);
 aUI.Calendar.prototype.getDayTableData = function(date)
@@ -852,8 +895,6 @@ aUI.Calendar.prototype.getDayTableData = function(date)
     data.year = date.getFullYear();
 
     var firstInMonthDayOfWeek = getFirsInMonthDayOfWeek(data.year, data.month);
-
-    console.log("firstInMonthDayOfWeek", firstInMonthDayOfWeek);
 
     data.prev = prevMonth(data.date);
     data.next = nextMonth(data.date);
@@ -967,7 +1008,7 @@ aUI.Calendar.prototype.getYearTableData = function(date)
     data.day = date.getDate();
     data.month = date.getMonth();
     data.year = date.getFullYear();
-    
+
     data.startDec = data.year - (data.year % 10);
     data.endDec = data.startDec + 9;
 
@@ -990,5 +1031,14 @@ aUI.Calendar.prototype.getYearTableData = function(date)
         yearCounter++;
     }
     return data;
+};
+//---------------------------------------------------------------------------
+aUI.Date = function Date(options)
+{
+    //Опции
+    options = aUI.extend(
+            {
+            }, options);
+    aUI.Element.call(this, options);
 };
 //---------------------------------------------------------------------------

@@ -8,10 +8,6 @@ and open the template in the editor.
     Author     : anatol
 */
 
-input
-{
- box-sizing: border-box; 
-}
 
 /* Button
 -----------------------------------------------------------------------------------------------*/
@@ -24,9 +20,8 @@ input
 
 .button
 {
- padding: 10px 20px;
+ padding: 5px 10px;
  /* border: 1px solid #E2E2E2; */
- /*margin: 5px 5px 5px 5px;*/
  border-radius: 3px;
  text-align: center;
  font-weight: bold;
@@ -39,6 +34,21 @@ input
  -moz-user-select: none;
  -ms-user-select: none;
  user-select: none;
+}
+.button.large
+{
+ padding: 10px 20px;
+ border-radius: 3px;
+}
+.button.medium
+{
+ padding: 5px 10px;
+ border-radius: 3px;
+}
+.button.small
+{
+ padding: 0px 5px;
+ border-radius: 3px;
 }
 .button:hover
 {
@@ -59,6 +69,24 @@ input
 {
  background-color: #D22F2F;
  color: #FFF;
+}
+
+/* Input
+-----------------------------------------------------------------------------------------------*/
+input
+{
+ box-sizing: border-box;
+}
+input:focus
+{
+  /* box-shadow: 0px 0px 5px 1px #F88; */
+  outline: rgba(0, 127, 255, 0.7) auto 5px; 
+  outline-offset: -2px;
+}
+input.invalid
+{
+  outline: rgba(255, 0, 0, 0.7) auto 5px; 
+  outline-offset: -2px;
 }
 
 
@@ -102,15 +130,12 @@ input
 .calendar > table.months
 {
   margin-top: 20px;
-  /*margin-bottom: 18px;*/
 }
 .calendar > table.months > tr > td
 {
  text-align: center;
  width: 35px;
  height: 35px;
- /* margin-top: 2px; */
- /*margin-bottom: 3px;*/
  cursor: default;
 }
 
@@ -152,11 +177,114 @@ input
 {
  width: 35px;
  height: 35px;
- /*border-radius: 17px;*/
  margin-top: -8px;
 }
 .calendar > table > tr > td.prev,
 .calendar > table > tr > td.next
 {
  color: silver;
+}
+
+/* Calendar medium
+-----------------------------------------------------------------------------------------------*/
+
+.calendar.medium
+{
+ width: 168px; 
+}
+.calendar.medium > .prev,
+.calendar.medium > .next,
+.calendar.medium > .levelUp,
+.calendar.medium > .year
+{
+ padding: 3px 0px;
+}
+.calendar.medium > .levelUp
+{
+ width: 120px;
+}
+.calendar.medium > .prev,
+.calendar.medium > .next
+{
+ width: 24px;
+}
+.calendar.medium > table.days > tr > th,
+.calendar.medium > table.days > tr > td
+{
+ width: 24px;
+ height: 24px;
+}
+.calendar.medium > table.months
+{
+  margin-top: 24px;
+}
+.calendar.medium > table.months > tr > td
+{
+ width: 42px;
+ height: 42px;
+}
+.calendar.medium > table.days > tr > td.current:before
+{
+ width: 24px;
+ height: 24px;
+ margin-top: -3px;
+}
+.calendar.medium > table.months > tr > td.current:before,
+.calendar.medium > table.years > tr > td.current:before
+{
+ width: 42px;
+ height: 42px;
+ margin-top: -12px;
+}
+
+/* Calendar large
+-----------------------------------------------------------------------------------------------*/
+
+.calendar.large
+{
+ width: 196px; 
+}
+.calendar.large > .prev,
+.calendar.large > .next,
+.calendar.large > .levelUp,
+.calendar.large > .year
+{
+ padding: 5px 0px;
+}
+.calendar.large > .levelUp
+{
+ width: 140px;
+}
+.calendar.large > .prev,
+.calendar.large > .next
+{
+ width: 28px;
+}
+.calendar.large > table.days > tr > th,
+.calendar.large > table.days > tr > td
+{
+ width: 28px;
+ height: 28px;
+}
+.calendar.large > table.months
+{
+  margin-top: 28px;
+}
+.calendar.large > table.months > tr > td
+{
+ width: 49px;
+ height: 49px;
+}
+.calendar.large > table.days > tr > td.current:before
+{
+ width: 28px;
+ height: 28px;
+ margin-top: -5px;
+}
+.calendar.large > table.months > tr > td.current:before,
+.calendar.large > table.years > tr > td.current:before
+{
+ width: 49px;
+ height: 49px;
+ margin-top: -15px;
 }
