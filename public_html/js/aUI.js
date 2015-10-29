@@ -71,13 +71,13 @@ aUI.Element = function Element(options)
 {
     //Опции
     options = aUI.extend(
-            {
-                element : "div",
-                id : null,
-                class : null,
-                text : null,
-                html : null
-            }, options);
+    {
+        element : "div",
+        id : null,
+        class : null,
+        text : null,
+        html : null
+    }, options);
     //Переменные
     //var that = this;
     //Функции
@@ -100,9 +100,11 @@ aUI.Element = function Element(options)
  */
 aUI.Element.prototype.appendTo = function(parent)
 {
+    if (parent === null) throw new Error("can not apply appendTo for null");
     if (parent instanceof aUI.Element) parent = parent.getElement();
     if (!parent instanceof HTMLElement) throw new Error("can not apply appendTo for non HTMLElement");
     parent.appendChild(this.getElement());
+    return this;
 };
 aUI.Element.prototype.clear = function()
 {
@@ -191,12 +193,12 @@ aUI.Button = function Button(options)
 {
     //Опции
     options = aUI.extend(
-            {
-                element : "div",
-                class : "button",
-                onclick : null,
-                data : null
-            }, options);
+    {
+        element : "div",
+        class : "button",
+        onclick : null,
+        data : null
+    }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
@@ -224,12 +226,12 @@ aUI.List = function List(options)
 {
     //Опции
     options = aUI.extend(
-            {
-                element : "ul",
-                id : null,
-                class : null,
-                itemConstructor : null
-            }, options);
+    {
+        element : "ul",
+        id : null,
+        class : null,
+        itemConstructor : null
+    }, options);
     aUI.Element.call(this, options);
     //Переменные
     var itemConstructor = aUI.ListItem;
@@ -261,12 +263,7 @@ aUI.List.prototype.add = function()
 aUI.List.prototype.remove = function(index)
 {
     this.item(index).remove();
-//    var item = aUI.construct(this.getItemConstructor(), arguments);
-//    item.appendTo(this);
-//    return item;
-
 };
-
 aUI.List.prototype.count = function()
 {
     return this.getElement().childElementCount;
@@ -344,11 +341,11 @@ aUI.ListItem = function ListItem(options)
 {
     //Опции
     options = aUI.extend(
-            {
-                element : "li",
-                id : null,
-                class : null
-            }, options);
+    {
+        element : "li",
+        id : null,
+        class : null
+    }, options);
     aUI.Button.call(this, options);
     //Переменные
     //Функции
@@ -445,12 +442,12 @@ aUI.ScrollArea = function ScrollArea(options)
 {
     //Опции по умолчанию
     options = aUI.extend(
-            {
-                height : null,
-                width : null,
-                horizontal : "auto",
-                vertical : "auto"
-            }, options);
+    {
+        height : null,
+        width : null,
+        horizontal : "auto",
+        vertical : "auto"
+    }, options);
     aUI.Element.call(this, options);
     this.getElement().style.overflow = "auto";
     //Переменные
@@ -530,9 +527,9 @@ aUI.ScrollList = function ScrollList(options)
 {
     //Опции по умолчанию
     options = aUI.extend(
-            {
-                listOptions : { }
-            }, options);
+    {
+        listOptions : { }
+    }, options);
     aUI.ScrollArea.call(this, options);
     //Переменные
     var that = this;
@@ -606,11 +603,14 @@ aUI.Edit = function Edit(options)
 {
     //Опции
     options = aUI.extend(
-            {
-                element : "input",
-                pattern : null, //??? лишает гибкости
-                required : false
-            }, options);
+    {
+        element : "input",
+        type : null,
+        placeholder : null,
+        //examples : null,
+        pattern : null, //??? лишает гибкости
+        required : false
+    }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
@@ -633,6 +633,8 @@ aUI.Edit = function Edit(options)
         validator = value;
     };
     //Сборка
+    if (options.type) this.type(options.type);
+    if (options.placeholder) this.placeholder(options.placeholder);
     if (options.pattern) validator = new aUI.validator.Pattern(options.pattern);//???
     this.getElement().onfocus = onvalidate;
     this.getElement().onkeyup = onvalidate;
@@ -642,6 +644,16 @@ aUI.Edit.prototype.value = function(value)
 {
     if (value === undefined) return this.getElement().value;
     this.getElement().value = value;
+};
+aUI.Edit.prototype.type = function(value)
+{
+    if (value === undefined) return this.attr("type");
+    this.attr("type", value);
+};
+aUI.Edit.prototype.placeholder = function(value)
+{
+    if (value === undefined) return this.attr("placeholder");
+    this.attr("placeholder", value);
 };
 aUI.Edit.prototype.invalid = function()
 {
@@ -660,11 +672,11 @@ aUI.Calendar = function Calendar(options)
 {
     //Опции по умолчанию
     options = aUI.extend(
-            {
-                class : "calendar",
-                onselect : null,
-                date : new Date()
-            }, options);
+    {
+        class : "calendar",
+        onselect : null,
+        date : new Date()
+    }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
@@ -686,7 +698,7 @@ aUI.Calendar = function Calendar(options)
         return value;
     }
 
-    this.date = function(date)
+    this.value = function(date)
     {
         if (date === undefined) return options.date;
         options.date = date;
@@ -697,35 +709,35 @@ aUI.Calendar = function Calendar(options)
     function clickMonthsMode()
     {
         mode = "months";
-        that.date(options.date);
+        that.value(options.date);
     }
     function clickYearsMode()
     {
         mode = "years";
-        that.date(options.date);
+        that.value(options.date);
     }
     function clickPrev()
     {
-        that.date(this.data);
+        that.value(this.data);
     }
     function clickNext()
     {
-        that.date(this.data);
+        that.value(this.data);
     }
     function clickDay()
     {
-        that.date(this.data);
+        that.value(this.data);
         if (options.onselect) options.onselect.call(that);
     }
     function clickMonth()
     {
         mode = "days";
-        that.date(this.data);
+        that.value(this.data);
     }
     function clickYear()
     {
         mode = "months";
-        that.date(this.data);
+        that.value(this.data);
     }
     this.onSelect = function(fn)
     {
@@ -857,7 +869,7 @@ aUI.Calendar = function Calendar(options)
         table.appendTo(that);
     }
     //Сборка
-    this.date(options.date);
+    this.value(options.date);
 };
 aUI.proto(aUI.Calendar, aUI.Element);
 aUI.Calendar.prototype.getDayTableData = function(date)
@@ -1050,8 +1062,8 @@ aUI.Date = function Date(options)
 {
     //Опции
     options = aUI.extend(
-            {
-            }, options);
+    {
+    }, options);
     aUI.Element.call(this, options);
     //Переменные
 //    var that = this;

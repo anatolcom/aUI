@@ -76,6 +76,7 @@ and open the template in the editor.
 input
 {
  box-sizing: border-box;
+ width: 100%;
 }
 input:focus
 {

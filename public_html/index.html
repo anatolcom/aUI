@@ -18,29 +18,29 @@ and open the template in the editor.
    var aURL = new AURL();
    function changeSections()
    {
-    if (typeof fillSectionList === "function") fillSectionList(this.value);
+       if (typeof fillSectionList === "function") fillSectionList(this.value);
    }
    function changeSelected()
    {
-    if (typeof selectSection === "function") selectSection(this.value);
+       if (typeof selectSection === "function") selectSection(this.value);
    }
    aURL.setListener("changeSections", "sections", changeSections);
    aURL.setListener("changeSelected", "selected", changeSelected);
    aURL.init();
    function paramUp(name)
    {
-    //console.log(name, aURL.get(name));
-    var value = aURL.getNumber(name);
-    if (value === undefined) value = 0;
-    else value++;
-    aURL.set(name, value);
+       //console.log(name, aURL.get(name));
+       var value = aURL.getNumber(name);
+       if (value === undefined) value = 0;
+       else value++;
+       aURL.set(name, value);
    }
    function paramDown(name)
    {
-    var value = aURL.getNumber(name);
-    if (value === undefined) return;
-    if (--value < 0) aURL.remove(name);
-    else aURL.set(name, value);
+       var value = aURL.getNumber(name);
+       if (value === undefined) return;
+       if (--value < 0) aURL.remove(name);
+       else aURL.set(name, value);
    }
   </script>
  </head>
@@ -57,129 +57,68 @@ and open the template in the editor.
    </menu>
   </nav>
   <section>
-   <!--article>
-    <h1>Заголовок статьи из блока "article"</h1>
-    <p>Текст абзаца статьи из блока "article"</p>
-    <details>
-     <summary>Блок "details", текст тега "summary"</summary>
-     <p>Абзац из блока "details"</p>
-    </details>
-   </article-->
+
   </section>
   <footer>anatol.com</footer>  
   <script>
-   //var element = new aUI.Element({ text:"DIV" });
-   
-//   function add()
-//   {
-//    addSection();
-//   }
-//   function sum()
-//   {
-//    //textCnt.setText(list.selected().length);
-//    //sectionList.topIndex(2);
-//   }
-//   function clear()
-//   {
-//    sectionMenu.clear();
-//    sections.clear();
-//   }
    var parent = document.getElementsByTagName("section").item(0);
-//   var buttons = new aUI.Element({ class:"buttons" });
-//   buttons.appendTo(parent);
-   
-//   var btnAdd = new aUI.Button({ text:"Add", onclick:add });
-//   btnAdd.addClass("success");
-//   btnAdd.appendTo(buttons);
-//   var btnClear = new aUI.Button({ text:"Clear", onclick:clear });
-//   btnClear.addClass("warning");
-//   btnClear.appendTo(buttons);
-//   var btnSum = new aUI.Button({ text:"Sum", onclick:sum });
-//   btnSum.appendTo(buttons);
-   
-//   function Section(options)
-//   {
-//    var that = this;
-//    aUI.ListItem.call(this, { element:"div", class:"section", onclick:options.onclick, data:options.data });
-//    var text = new aUI.Element({ class:"text", text:options.text, html:options.html });
-//    var btn = new aUI.Button({ class:"close", text:"x" });
-//    btn.onClick(function() 
-//    { 
-//     that.remove(); 
-//     event.stopPropagation();
-//    });
-//    text.appendTo(this);
-//    btn.appendTo(this);
-//   }
-//   aUI.proto(Section, aUI.ListItem);
-   
+
    function addSection()
    {
-    var caption = "section " + sections.count();
-    sectionMenu.add({ text:caption, onclick:sectionMenuClick });
-    if(sectionMenu.count() === 1) sectionMenu.selectSingle(0);
-    sections.add({ class:"section", text:caption});
+       var caption = "section " + sections.count();
+       sectionMenu.add({ text : caption, onclick : sectionMenuClick });
+       if (sectionMenu.count() === 1) sectionMenu.selectSingle(0);
+       sections.add({ class : "section", text : caption });
    }
    function removeLastSection()
    {
-    sectionMenu.remove(sections.count() - 1);
-    sections.remove(sections.count() - 1);
+       sectionMenu.remove(sections.count() - 1);
+       sections.remove(sections.count() - 1);
    }
    function selectSection(index)
    {
-    //console.log(index, sectionList.topIndex());
-    if (sectionList.topIndex() === Number(index)) 
-    {
-      return;
-    }
-    sectionList.topIndex(index);
+       if (sectionList.topIndex() === Number(index)) return;
+       sectionList.topIndex(index);
    }
-  
-   function sectionMenuClick() 
+
+   function sectionMenuClick()
    {
-    aURL.set("selected", this.index());
-    //sectionList.topIndex(this.index());
+       aURL.set("selected", this.index());
    }
    function changeTopSection()
    {
-    sectionMenu.selectSingle(this.index());
-    aURL.set("selected", this.index());
+       sectionMenu.selectSingle(this.index());
+       aURL.set("selected", this.index());
    }
-  
-   var sectionMenu = new aUI.List({ class:"sectionMenu" });//caption:"Button"
-   sectionMenu.appendTo(parent);
 
-   var sectionList = new aUI.ScrollList({ class:"scrollarea", vertical:"show", listOptions:{ class:"sections" } });
+   var sectionMenu = new aUI.List({ class : "sectionMenu" }).appendTo(parent);//caption:"Button"
+
+   var sectionList = new aUI.ScrollList({ class : "scrollarea", vertical : "show", listOptions : { class : "sections" } });
    sectionList.appendTo(parent);
    sectionList.onChangeTop(changeTopSection);
    var sections = sectionList.getList();
-   //sections.setItemConstructor(Section);
    function fillSectionList(count)
    {
-    if (count === sectionList.getList().count()) return;
-    while (count < sectionList.getList().count()) removeLastSection();
-    for (var q = sectionList.getList().count(); q < count; q++) addSection();
+       if (count === sectionList.getList().count()) return;
+       while (count < sectionList.getList().count()) removeLastSection();
+       for (var q = sectionList.getList().count(); q < count; q++) addSection();
    }
    fillSectionList(aURL.get("sections"));
    selectSection(aURL.get("selected"));
-   
-   var edit = new aUI.Edit();
-   edit.appendTo(parent);
 
-   var resultBlock = new aUI.Element({ class:"resultBlock" });
-   resultBlock.appendTo(parent);
-   var text = new aUI.Element({ class:"circle", text:"?" });
-   text.appendTo(resultBlock);
-   var textCnt = new aUI.Element({ class:"circle", text:"0" });
-   textCnt.appendTo(resultBlock);
+   var edit = new aUI.Edit({ type : "text", placeholder : "date" }).appendTo(parent);
+
+   //var resultBlock = new aUI.Element({ class : "resultBlock" }).appendTo(parent);
+   //var text = new aUI.Element({ class : "circle", text : "?" }).appendTo(resultBlock);
+   //var textCnt = new aUI.Element({ class : "circle", text : "0" }).appendTo(resultBlock);
    //console.dir(list);
    //list.onClick(function(){alert("click " + this.data);});
-   
+
    function selectDate()
    {
-    //alert("Select : " + this.data);
+       edit.value(this.value());
    }
-   var calendar = new aUI.Calendar({ onselect:selectDate });
+   var calendar = new aUI.Calendar({ onselect : selectDate });
    calendar.appendTo(parent);
   </script>
  </body>
