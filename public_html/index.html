@@ -117,7 +117,7 @@ and open the template in the editor.
 
    function selectDate()
    {
-       edit.value(this.value());
+       edit.value(aUtils.dateToStr(this.value(), "dd.MM.yyyy"));
    }
    var calendar = new aUI.Calendar({ onselect : selectDate });
    calendar.appendTo(parent);

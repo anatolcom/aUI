@@ -681,23 +681,7 @@ aUI.Calendar = function Calendar(options)
     //Переменные
     var that = this;
     var mode = "days";
-//    var mode = "months";
-    var shortNameDayOfWeekRu = [ "вс", "пн", "вт", "ср", "чт", "пт", "сб" ];
-    var shortNameDayOfWeek = [ "su", "mo", "tu", "we", "th", "fr", "sa" ];
-//    var fullNameDayOfWeekRu = [ "воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота" ];
-//    var shortNameMonth = [ "su", "mo", "tu", "we", "th", "fr", "sa" ];
-//    var fullNameMonthNum = [ "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" ];
-    var shortNameMonth = [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" ];
-    var shortNameMonthRu = [ "янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек" ];
-    var fullNameMonthRu = [ "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" ];
     //Функции
-    function numToLStr(number, length)
-    {
-        var value = String(number);
-        while (value.length < length) value = "0" + value;
-        return value;
-    }
-
     this.value = function(date)
     {
         if (date === undefined) return options.date;
@@ -749,26 +733,17 @@ aUI.Calendar = function Calendar(options)
         that.clear();
         var dayTableData = that.getDayTableData(date);
 
-        var prevMonth = new aUI.Button({ class : "prev", text : "<", data : dayTableData.prev });
-        prevMonth.onClick(clickPrev);
-        prevMonth.appendTo(that);
-
-        var monthAndYear = new aUI.Button({ class : "levelUp", text : fullNameMonthRu[dayTableData.month] + " " + dayTableData.year });
-        monthAndYear.onClick(clickMonthsMode);
-        monthAndYear.appendTo(that);
-
-        var nextMonth = new aUI.Button({ class : "prev", text : ">", data : dayTableData.next });
-        nextMonth.onClick(clickNext);
-        nextMonth.appendTo(that);
+        new aUI.Button({ class : "prev", text : "<", data : dayTableData.prev, onclick : clickPrev }).appendTo(that);
+        new aUI.Button({ class : "level days", text : dayTableData.caption, onclick : clickMonthsMode }).appendTo(that);
+        new aUI.Button({ class : "prev", text : ">", data : dayTableData.next, onclick : clickNext }).appendTo(that);
 
         var table = new aUI.Element({ element : "table", class : "days" });
 
         var th = new aUI.Element({ element : "tr" });
         for (var d = 0; d < 7; d++)
         {
-            var day = d + 1;
-            if (d === 6) day = 0;
-            var td = new aUI.Element({ element : "th", class : shortNameDayOfWeek[day], text : shortNameDayOfWeekRu[day] });
+            var item = dayTableData.head[d];
+            var td = new aUI.Element({ element : "th", class : item.class, text : item.text });
             td.appendTo(th);
         }
         th.appendTo(table);
@@ -779,12 +754,10 @@ aUI.Calendar = function Calendar(options)
             for (var d = 0; d < 7; d++)
             {
                 var item = dayTableData.array[(w * 7) + d];
-                var td = new aUI.Button({ element : "td", class : shortNameDayOfWeek[item.dayOfWeek] });
+                var td = new aUI.Button({ element : "td", class : item.class, text : item.text, data : item.date });
                 if (item.state) td.addClass(item.state);
                 if (item.current) td.addClass("current");
                 if (item.selected) td.addClass("selected");
-                td.text(item.day);
-                td.data = new Date(item.year, item.month, item.day);
                 td.onClick(clickDay);
                 td.appendTo(tr);
             }
@@ -797,17 +770,9 @@ aUI.Calendar = function Calendar(options)
         that.clear();
         var monthTableData = that.getMonthTableData(date);
 
-        var prevYear = new aUI.Button({ class : "prev", text : "<", data : monthTableData.prev });
-        prevYear.onClick(clickPrev);
-        prevYear.appendTo(that);
-
-        var year = new aUI.Button({ class : "levelUp", text : monthTableData.year });
-        year.onClick(clickYearsMode);
-        year.appendTo(that);
-
-        var nextYear = new aUI.Button({ class : "prev", text : ">", data : monthTableData.next });
-        nextYear.onClick(clickNext);
-        nextYear.appendTo(that);
+        new aUI.Button({ class : "prev", text : "<", data : monthTableData.prev, onclick : clickPrev }).appendTo(that);
+        new aUI.Button({ class : "level days", text : monthTableData.caption, onclick : clickYearsMode }).appendTo(that);
+        new aUI.Button({ class : "prev", text : ">", data : monthTableData.next, onclick : clickNext }).appendTo(that);
 
         var table = new aUI.Element({ element : "table", class : "months" });
 
@@ -817,12 +782,10 @@ aUI.Calendar = function Calendar(options)
             for (var w = 0; w < 4; w++)
             {
                 var item = monthTableData.array[(h * 4) + w];
-                var td = new aUI.Button({ element : "td", class : shortNameMonth[item.month] });
+                var td = new aUI.Button({ element : "td", class : item.class, text : item.text, data : item.date });
                 if (item.state) td.addClass(item.state);
                 if (item.current) td.addClass("current");
                 if (item.selected) td.addClass("selected");
-                td.text(shortNameMonthRu[item.month]);
-                td.data = new Date(item.year, item.month, item.day);
                 td.onClick(clickMonth);
                 td.appendTo(tr);
             }
@@ -835,17 +798,9 @@ aUI.Calendar = function Calendar(options)
         that.clear();
         var yearTableData = that.getYearTableData(date);
 
-        var prevYear = new aUI.Button({ class : "prev", text : "<", data : yearTableData.prev });
-        prevYear.onClick(clickPrev);
-        prevYear.appendTo(that);
-
-        var year = new aUI.Button({ class : "levelUp", text : yearTableData.startDec + " - " + yearTableData.endDec });
-//        year.onClick(clickYearsMode);
-        year.appendTo(that);
-
-        var nextYear = new aUI.Button({ class : "prev", text : ">", data : yearTableData.next });
-        nextYear.onClick(clickNext);
-        nextYear.appendTo(that);
+        new aUI.Button({ class : "prev", text : "<", data : yearTableData.prev, onclick : clickPrev }).appendTo(that);
+        new aUI.Button({ class : "level years", text : yearTableData.startDec + " - " + yearTableData.endDec }).appendTo(that);
+        new aUI.Button({ class : "prev", text : ">", data : yearTableData.next, onclick : clickNext }).appendTo(that);
 
         var table = new aUI.Element({ element : "table", class : "months" });
 
@@ -855,12 +810,10 @@ aUI.Calendar = function Calendar(options)
             for (var w = 0; w < 4; w++)
             {
                 var item = yearTableData.array[(h * 4) + w];
-                var td = new aUI.Button({ element : "td", class : item.year });
+                var td = new aUI.Button({ element : "td", class : item.class, text : item.text, data : item.date });
                 if (item.state) td.addClass(item.state);
                 if (item.current) td.addClass("current");
                 if (item.selected) td.addClass("selected");
-                td.text(item.year);
-                td.data = new Date(item.year, item.month, item.day);
                 td.onClick(clickYear);
                 td.appendTo(tr);
             }
@@ -874,39 +827,6 @@ aUI.Calendar = function Calendar(options)
 aUI.proto(aUI.Calendar, aUI.Element);
 aUI.Calendar.prototype.getDayTableData = function(date)
 {
-    function countDayInMonth(year, month)
-    {
-        return (new Date(year, month + 1, 0)).getDate();
-    }
-    function trimDay(year, month, day)
-    {
-        while (day > countDayInMonth(year, month)) day--;
-        return day;
-    }
-    function prevMonth(date)
-    {
-        var day = date.getDate();
-        var month = date.getMonth() - 1;
-        var year = date.getFullYear();
-        if (month === 0)
-        {
-            month = 11;
-            year--;
-        }
-        return new Date(year, month, trimDay(year, month, day));
-    }
-    function nextMonth(date)
-    {
-        var day = date.getDate();
-        var month = date.getMonth() + 1;
-        var year = date.getFullYear();
-        if (month === 12)
-        {
-            month = 0;
-            year++;
-        }
-        return new Date(year, month, trimDay(year, month, day));
-    }
     function getFirsInMonthDayOfWeek(year, month)
     {
         return (new Date(year, month, 1)).getDay();
@@ -917,11 +837,13 @@ aUI.Calendar.prototype.getDayTableData = function(date)
     data.month = date.getMonth();
     data.year = date.getFullYear();
 
-    data.prev = prevMonth(data.date);
-    data.next = nextMonth(data.date);
+    data.caption = aUtils.getFullNameMonthRu(data.month) + " " + data.year;
 
-    var countDayInPrevMonth = countDayInMonth(data.prev.getFullYear(), data.prev.getMonth());
-    var countDayInMonth = countDayInMonth(data.year, data.month);
+    data.prev = aUtils.shiftMonth(data.date, -1);
+    data.next = aUtils.shiftMonth(data.date, +1);
+
+    var countDayInPrevMonth = aUtils.countDayInMonth(data.prev.getFullYear(), data.prev.getMonth());
+    var countDayInMonth = aUtils.countDayInMonth(data.year, data.month);
     var firstInMonthDayOfWeek = getFirsInMonthDayOfWeek(data.year, data.month);
 
     var prevCount = firstInMonthDayOfWeek - 1;
@@ -929,101 +851,65 @@ aUI.Calendar.prototype.getDayTableData = function(date)
     var prevDIndex = countDayInPrevMonth - prevCount;
     var nextCount = 42 - prevCount - countDayInMonth;
 
+    data.head = [ ];
+    for (var q = 0; q < 7; q++)
+        {
+            var item = {}
+            var dayOfWeekCounter = q + 1;
+            if (q === 6) dayOfWeekCounter = 0;
+            item.text = aUtils.getShortNameDayOfWeekRu(dayOfWeekCounter);
+            item.class = aUtils.getShortNameDayOfWeek(dayOfWeekCounter);
+            data.head.push(item);
+        }
+    
     data.array = [ ];
-
-    for (var q = 0; q < prevCount; q++) data.array.push({ day : q + prevDIndex + 1, month : data.prev.getMonth(), year : data.prev.getFullYear(), state : "prev" });
-    for (var q = 0; q < countDayInMonth; q++) data.array.push({ day : q + 1, month : data.month, year : data.year, state : "" });
-    for (var q = 0; q < nextCount; q++) data.array.push({ day : q + 1, month : data.next.getMonth(), year : data.next.getFullYear(), state : "next" });
-
-    var dayOfWeekCounter = 1;
-
+    for (var q = 0; q < prevCount; q++) data.array.push({ date : new Date(data.prev.getFullYear(), data.prev.getMonth(), q + prevDIndex + 1), state : "prev" });
+    for (var q = 0; q < countDayInMonth; q++) data.array.push({ date : new Date(data.year, data.month, q + 1) });
+    for (var q = 0; q < nextCount; q++) data.array.push({ date : new Date(data.next.getFullYear(), data.next.getMonth(), q + 1), state : "next" });
     var now = new Date();
-
+    var dayOfWeekCounter = 1;
     for (var q = 0; q < data.array.length; q++)
     {
         var item = data.array[q];
-        if ((item.day === now.getDate()) && (item.month === now.getMonth()) && (item.year === now.getFullYear())) item.current = true;
-        if ((item.day === data.day) && (item.month === data.month) && (item.year === data.year)) item.selected = true;
-        if (dayOfWeekCounter === 7) dayOfWeekCounter = 0;
-        item.dayOfWeek = dayOfWeekCounter;
+        item.text = item.date.getDate();
+        item.class = aUtils.getShortNameDayOfWeek(dayOfWeekCounter);
+        if ((item.date.getDate() === now.getDate()) && (item.date.getMonth() === now.getMonth()) && (item.date.getFullYear() === now.getFullYear())) item.current = true;
+        if ((item.date.getDate() === data.day) && (item.date.getMonth() === data.month) && (item.date.getFullYear() === data.year)) item.selected = true;
         dayOfWeekCounter++;
+        if (dayOfWeekCounter === 7) dayOfWeekCounter = 0;
     }
-
     return data;
 };
 aUI.Calendar.prototype.getMonthTableData = function(date)
 {
-    function countDayInMonth(year, month)
-    {
-        return (new Date(year, month + 1, 0)).getDate();
-    }
-    function trimDay(year, month, day)
-    {
-        while (day > countDayInMonth(year, month)) day--;
-        return day;
-    }
-    function prevYear(date)
-    {
-        var day = date.getDate();
-        var month = date.getMonth();
-        var year = date.getFullYear() - 1;
-        return new Date(year, month, trimDay(year, month, day));
-    }
-    function nextYear(date)
-    {
-        var day = date.getDate();
-        var month = date.getMonth();
-        var year = date.getFullYear() + 1;
-        return new Date(year, month, trimDay(year, month, day));
-    }
-
     var data = { date : date };
     data.day = date.getDate();
     data.month = date.getMonth();
     data.year = date.getFullYear();
 
-    data.prev = prevYear(data.date);
-    data.next = nextYear(data.date);
+    data.caption = data.year;
+
+    data.prev = aUtils.shiftYear(data.date, -1);
+    data.next = aUtils.shiftYear(data.date, +1);
 
     data.array = [ ];
-
     var now = new Date();
-
+    var monthCounter = 0;
     for (var q = 0; q < 12; q++)
     {
-        var item = { day : trimDay(data.year, q, data.day), month : q, year : data.year };
-        if ((item.month === now.getMonth()) && (item.year === now.getFullYear())) item.current = true;
-        if ((data.month === item.month) && (data.year === item.year)) item.selected = true;
+        var item = { };
+        item.date = new Date(data.year, monthCounter, aUtils.trimDay(data.year, q, data.day));
+        item.text = aUtils.getShortNameMonthRu(monthCounter);
+        item.class = aUtils.getShortNameMonth(monthCounter);
+        if ((monthCounter === now.getMonth()) && (data.year === now.getFullYear())) item.current = true;
+        if ((monthCounter === data.month)) item.selected = true;
         data.array.push(item);
+        monthCounter++;
     }
     return data;
 };
 aUI.Calendar.prototype.getYearTableData = function(date)
 {
-    function countDayInMonth(year, month)
-    {
-        return (new Date(year, month + 1, 0)).getDate();
-    }
-    function trimDay(year, month, day)
-    {
-        while (day > countDayInMonth(year, month)) day--;
-        return day;
-    }
-    function prevYearDec(date)
-    {
-        var day = date.getDate();
-        var month = date.getMonth();
-        var year = date.getFullYear() - 10;
-        return new Date(year, month, trimDay(year, month, day));
-    }
-    function nextYearDec(date)
-    {
-        var day = date.getDate();
-        var month = date.getMonth();
-        var year = date.getFullYear() + 10;
-        return new Date(year, month, trimDay(year, month, day));
-    }
-
     var data = { date : date };
     data.day = date.getDate();
     data.month = date.getMonth();
@@ -1032,19 +918,22 @@ aUI.Calendar.prototype.getYearTableData = function(date)
     data.startDec = data.year - (data.year % 10);
     data.endDec = data.startDec + 9;
 
-    data.prev = prevYearDec(data.date);
-    data.next = nextYearDec(data.date);
+    data.caption = data.startDec + " - " + data.endDec
+
+    data.prev = aUtils.shiftYear(data.date, -10);
+    data.next = aUtils.shiftYear(data.date, +10);
 
     data.array = [ ];
-
     var now = new Date();
     var yearCounter = data.startDec - 1;
-
     for (var q = 0; q < 12; q++)
     {
-        var item = { day : trimDay(data.year, q, data.day), month : data.month, year : yearCounter, state : "" };
-        if ((item.year === now.getFullYear())) item.current = true;
-        if ((data.year === item.year)) item.selected = true;
+        var item = { };
+        item.date = new Date(yearCounter, data.month, aUtils.trimDay(data.year, q, data.day));
+        item.text = yearCounter;
+        item.class = yearCounter;
+        if ((yearCounter === now.getFullYear())) item.current = true;
+        if ((yearCounter === data.year)) item.selected = true;
         if (q === 0) item.state = "prev";
         if (q === 11) item.state = "next";
         data.array.push(item);

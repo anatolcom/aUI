@@ -99,7 +99,7 @@ input.invalid
 }
 .calendar > .prev,
 .calendar > .next,
-.calendar > .levelUp,
+.calendar > .level,
 .calendar > .year
 {
  display: inline-block;
@@ -107,7 +107,7 @@ input.invalid
  padding: 2px 0px;
  cursor: default;
 }
-.calendar > .levelUp
+.calendar > .level
 {
  width: 100px;
 }
@@ -142,14 +142,16 @@ input.invalid
 
 .calendar > .prev:hover,
 .calendar > .next:hover,
-.calendar > .levelUp:hover,
+.calendar > .level.days:hover,
+.calendar > .level.months:hover,
 .calendar > table > tr > td:hover
 {
  background-color: #DDDDDD;
 }
 .calendar > .prev:active,
 .calendar > .next:active,
-.calendar > .levelUp:active,
+.calendar > .level.days:active,
+.calendar > .level.months:active,
 .calendar > table > tr > td:active
 {
  background-color: #E8E8E8;
@@ -195,12 +197,12 @@ input.invalid
 }
 .calendar.medium > .prev,
 .calendar.medium > .next,
-.calendar.medium > .levelUp,
+.calendar.medium > .level,
 .calendar.medium > .year
 {
  padding: 3px 0px;
 }
-.calendar.medium > .levelUp
+.calendar.medium > .level
 {
  width: 120px;
 }
@@ -247,12 +249,12 @@ input.invalid
 }
 .calendar.large > .prev,
 .calendar.large > .next,
-.calendar.large > .levelUp,
+.calendar.large > .level,
 .calendar.large > .year
 {
  padding: 5px 0px;
 }
-.calendar.large > .levelUp
+.calendar.large > .level
 {
  width: 140px;
 }
