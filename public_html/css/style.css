@@ -154,6 +154,13 @@ menu.circle > *:active
 {
  display: inline-block;
  padding: 10px 20px;
+ cursor: default;
+ -webkit-touch-callout: none;
+ -webkit-user-select: none;
+ -khtml-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+ user-select: none;
 }
 .sectionMenu > *:hover
 {
@@ -204,7 +211,21 @@ menu.circle > *:active
  /* border: 1px solid #CECECE; */
  box-shadow: 0px 0px 5px rgba(0,0,0,0.1), 0px 1px 3px rgba(0,0,0,0.1);
 }
-
+.sections > .section > .caption
+{
+ font-size: 1.3em;
+ padding: 20px 20px 0px 20px;
+}
+.sections > .section > .content
+{
+ padding: 20px;
+}
+.sections > .section > .content > *
+{
+ display: inline-block;
+ margin-right: 10px;
+ vertical-align: top;
+}
 .scrollarea
 {
  max-height: 300px;
@@ -213,10 +234,10 @@ menu.circle > *:active
 }
 .scrollarea > .sections > .section
 {
- min-height: 259px;
+ min-height: 299px;
  margin-bottom: 1px;
  background-color: #FFF;
- padding: 20px 20px;
+ /* padding: 20px 20px; */
 }
 
 

@@ -20,16 +20,17 @@ and open the template in the editor.
 
 .button
 {
- display: inline-block;
- vertical-align: middle;
+ /* display: inline-block; */
+ /* vertical-align: middle; */
  padding: 5px 10px;
  /* border: 1px solid #CECECE; */
  border-radius: 3px;
  font-size: 1em;
  text-align: center;
+ text-decoration: blink;
  font-weight: bold;
- cursor: pointer;
- box-shadow: 0px 0px 1px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1);
+ cursor: default;
+ box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 2px rgba(0,0,0,0.2);
  color: #363696;
  -webkit-touch-callout: none;
  -webkit-user-select: none;
@@ -40,7 +41,7 @@ and open the template in the editor.
 }
 .button.selected
 {
- box-shadow: 0px 0px 2px rgba(0,0,0,0.1) inset, 0px 1px 2px rgba(0,0,0,0.1) inset;
+ box-shadow: 0px 0px 1px rgba(0,0,0,0.2) inset, 0px 1px 2px rgba(0,0,0,0.2) inset;
  background-color: rgba(255,255,255,0.5);
 }
 .button.large
@@ -62,7 +63,7 @@ and open the template in the editor.
 {
  border-color: #C3C3C3;
  color: #00008B;
- box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2);
+ box-shadow: 0px 0px 1px rgba(0,0,0,0.3), 0px 1px 2px rgba(0,0,0,0.3);
 }
 .button.selected:hover
 {
@@ -70,7 +71,7 @@ and open the template in the editor.
 }
 .button:active
 {
- box-shadow: 0px 0px 3px rgba(0,0,0,0.2), 0px 1px 3px rgba(0,0,0,0.2);
+ box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2);
 }
 .button.selected:active
 {
@@ -91,8 +92,9 @@ and open the template in the editor.
 -----------------------------------------------------------------------------------------------*/
 input
 {
- display: inline-block;
- vertical-align: middle;
+ /* display: block; */
+ /* display: inline-block; */
+ /* vertical-align: middle; */
  box-sizing: border-box;
  font-size: 1em;
  /* width: 100%; */
@@ -102,16 +104,40 @@ input
 }
 input:focus
 {
-  /* box-shadow: 0px 0px 5px 1px #F88; */
-  outline: rgba(0, 127, 255, 0.7) auto 5px; 
-  outline-offset: -2px;
+ outline: rgba(0, 127, 255, 0.7) auto 5px; 
+ outline-offset: -2px;
 }
 input.invalid
 {
-  outline: rgba(255, 0, 0, 0.7) auto 5px; 
-  outline-offset: -2px;
+ outline: rgba(255, 0, 0, 0.7) auto 5px; 
+ outline-offset: -2px;
 }
 
+
+/* Textarea
+-----------------------------------------------------------------------------------------------*/
+textarea
+{
+ /* display: block; */
+ /* display: inline-block; */
+ /* vertical-align: middle; */
+ box-sizing: border-box;
+ font-size: 1em;
+ /* width: 100%; */
+ padding: 6px 10px;
+ border: #C3C3C3 solid 1px;
+ border-radius: 3px; 
+}
+textarea:focus
+{
+ outline: rgba(0, 127, 255, 0.7) auto 5px; 
+ outline-offset: -2px;
+}
+textarea.invalid
+{
+ outline: rgba(255, 0, 0, 0.7) auto 5px; 
+ outline-offset: -2px;
+}
 
 /* Calendar
 -----------------------------------------------------------------------------------------------*/
@@ -142,33 +168,48 @@ input.invalid
 {
  border-collapse: collapse;
 }
+.calendar > .level,
+.calendar > .prev,
+.calendar > .next,
+.calendar > table > tr > th,
+.calendar > table > tr > td
+{
+ border-radius: 3px;
+ font-weight: normal;
+ font-size: 1em;
+ text-align: center;
+ cursor: default;
+ -webkit-touch-callout: none;
+ -webkit-user-select: none;
+ -khtml-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+ user-select: none;
+}
 .calendar > table.days > tr > th,
 .calendar > table.days > tr > td
 {
- text-align: center;
  width: 20px;
  height: 20px;
- cursor: default;
 }
 .calendar > table.months
 {
-  margin-top: 20px;
+ margin-top: 20px;
 }
 .calendar > table.months > tr > td
 {
- text-align: center;
  width: 35px;
  height: 35px;
- cursor: default;
+ 
 }
-
 .calendar > .prev:hover,
 .calendar > .next:hover,
 .calendar > .level.days:hover,
 .calendar > .level.months:hover,
 .calendar > table > tr > td:hover
 {
- background-color: #DDDDDD;
+ /* background-color: rgba(0, 0, 0, 0.15); */
+ box-shadow: 0px 0px 1px rgba(0,0,0,0.4), 0px 1px 1px rgba(0,0,0,0.4);
 }
 .calendar > .prev:active,
 .calendar > .next:active,
@@ -176,18 +217,20 @@ input.invalid
 .calendar > .level.months:active,
 .calendar > table > tr > td:active
 {
- background-color: #E8E8E8;
+ /* background-color: rgba(0, 0, 0, 0.08); */
+ box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2);
 }
 .calendar > table > tr > td.selected
 {
  font-weight: bolder;
- background-color: silver;
+ background-color: rgba(0, 0, 0, 0.1);
 }
 .calendar > table > tr > td.current:before
 {
  content: " ";
  display: block;
  position: absolute;
+ border-radius: 3px;
  border: gray dotted 1px;
  box-sizing: border-box;
 }
@@ -241,7 +284,7 @@ input.invalid
 }
 .calendar.medium > table.months
 {
-  margin-top: 24px;
+ margin-top: 24px;
 }
 .calendar.medium > table.months > tr > td
 {
@@ -289,11 +332,11 @@ input.invalid
 .calendar.large > table.days > tr > td
 {
  width: 28px;
- height: 28px;
+ height: 28px; 
 }
 .calendar.large > table.months
 {
-  margin-top: 28px;
+ margin-top: 28px;
 }
 .calendar.large > table.months > tr > td
 {

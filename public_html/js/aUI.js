@@ -60,7 +60,9 @@ aUI.extensions = { };
 //-------------------------------------------------------------------------------------------------------------------
 aUI.extensions.selectable = function(owner)
 {
+    //Переменные
     var className = "selected";
+    //Функции
     owner.selectedClass = function(name)
     {
         if (name === undefined) return className;
@@ -86,7 +88,9 @@ aUI.extensions.selectable = function(owner)
 //-------------------------------------------------------------------------------------------------------------------
 aUI.extensions.clickable = function(owner)
 {
+    //Переменные
     var onclick = null;
+    //Функции
     owner.onclick = function(fn)
     {
         if (fn === undefined) return onclick;
@@ -94,15 +98,52 @@ aUI.extensions.clickable = function(owner)
         onclick = fn;
     };
     //Сборка
-    owner.getElement().onclick = function ()
+    owner.getElement().onclick = function()
     {
         if (onclick) onclick.apply(owner, arguments);
     };
 };
 //-------------------------------------------------------------------------------------------------------------------
+aUI.extensions.validable = function(owner)
+{
+    //Переменные
+    var required = false;
+    var validator = null;
+    //Функции
+    function onvalidate()
+    {
+        if (validate(owner.value(), required)) owner.removeClass("invalid");
+        else owner.addClass("invalid");
+    }
+    function validate(value, required)
+    {
+        if (value.length === 0) return !required;
+        if (validator) return validator.validate(value);
+        return true;
+    }
+    /**
+     * Обязательность заполнения.<br/>
+     * @param {Boolean | undefined} value true - обязательно, false - не обязательно, undefined - возврат текущего значения.
+     * @returns {Boolean | undefined}
+     */
+    owner.required = function(value)
+    {
+        if (value === undefined) return required;
+        required = value;
+    };
+    owner.validator = function(value)
+    {
+        if (value === undefined) return validator;
+        validator = value;
+    };
+    //Сборка
+    owner.getElement().onfocus = onvalidate;
+    owner.getElement().onkeyup = onvalidate;
+};
+//-------------------------------------------------------------------------------------------------------------------
 aUI.extensions.dragable = function(owner)
 {
-    
+
 };
 //-------------------------------------------------------------------------------------------------------------------
 /**
@@ -256,6 +297,7 @@ aUI.Button = function Button(options)
     //Функции
     //Сборка
     if (options.onclick) this.onclick(options.onclick);
+//    this.attr("href", "javascript:;");
 };
 aUI.proto(aUI.Button, aUI.Element);
 //-------------------------------------------------------------------------------------------------------------------
@@ -681,6 +723,64 @@ aUI.Edit.prototype.invalid = function()
     return this.hasClass("invalid");
 };
 //---------------------------------------------------------------------------
+aUI.Memo = function Memo(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        element : "textarea",
+        required : false
+    }, options);
+    aUI.Element.call(this, options);
+    aUI.extensions.validable(this);
+    //Переменные
+    var that = this;
+    //Функции
+    this.value = function(value)
+    {
+        if (value === undefined) return that.getElement().value;
+        that.getElement().value = value;
+    };
+    this.placeholder = function(value)
+    {
+        if (value === undefined) return that.attr("placeholder");
+        that.attr("placeholder", value);
+    };
+    //Сборка
+    if (options.placeholder) this.placeholder(options.placeholder);
+};
+aUI.proto(aUI.Memo, aUI.Element);
+
+
+/*Memo : function (options)
+ {
+ //Опции по умолчанию
+ options = $.extend(
+ {
+ class : "Memo",
+ }, options);
+ //Функции
+ function setFocus() { $(input).focus(); }
+ //События
+ function setKeyPress(fn) { $(input).keypress(fn); }
+ //Сборка
+ var memo = aUI.Element({ class : options.class, id : options.id });
+ memo.setKeyPress = setKeyPress;
+ memo.setFocus = setFocus;
+ var input = aUI.Element({ element : "textarea" });
+ if (options.name) $(input).attr("name", options.name);
+ memo.setValue(options.value);
+ input.appendTo(memo);
+ 
+ //Возврат результата выполненого после сборки
+ return memo;
+ },*/
+//---------------------------------------------------------------------------
+
+
+
+
+
 /**
  * <b>Календарь.</b><br/>
  * @param {object} options параметры:<br/>

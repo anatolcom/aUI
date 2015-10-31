@@ -59,17 +59,24 @@ and open the template in the editor.
   </nav>
   <section>
 
+   
   </section>
+  <a href="http://learn.javascript.ru/keyboard-events">http://learn.javascript.ru/keyboard-events</a>
+<!--  <div>
+   <input list="options">
+  </div>-->
+
   <footer>anatol.com</footer>  
   <script>
    var parent = document.getElementsByTagName("section").item(0);
 
-   function addSection()
+   function addSection(caption)
    {
-       var caption = "section " + sections.count();
        sectionMenu.add({ text : caption, onclick : sectionMenuClick });
        if (sectionMenu.count() === 1) sectionMenu.selectSingle(0);
-       sections.add({ class : "section", text : caption });
+       var section = sections.add({ class : "section" });
+       new aUI.Element({ class : "caption", text : caption }).appendTo(section);
+       return new aUI.Element({ class : "content" }).appendTo(section);
    }
    function removeLastSection()
    {
@@ -98,20 +105,33 @@ and open the template in the editor.
    sectionList.appendTo(parent);
    sectionList.onChangeTop(changeTopSection);
    var sections = sectionList.getList();
-   function fillSectionList(count)
-   {
-       if (count === sectionList.getList().count()) return;
-       while (count < sectionList.getList().count()) removeLastSection();
-       for (var q = sectionList.getList().count(); q < count; q++) addSection();
-   }
-   fillSectionList(aURL.get("sections"));
+
+   var section1 = addSection("Input");
+   var section2 = addSection("Calendar");
+
+//   function fillSectionList(count)
+//   {
+//       if (count === sectionList.getList().count()) return;
+//       while (count < sectionList.getList().count()) removeLastSection();
+//       for (var q = sectionList.getList().count(); q < count; q++) addSection();
+//   }
+//   fillSectionList(aURL.get("sections"));
+
+
    selectSection(aURL.get("selected"));
 
-   var edit = new aUI.Edit({ type : "text", placeholder : "date" }).appendTo(parent);
+   var btn1 = new aUI.Button({ text : "button" }).appendTo(section1);
+//   btn1.onclick(btn.toggleSelect);
+
+   var btn2 = new aUI.Button({ text : "selectable" }).appendTo(section1);
+   btn2.onclick(btn2.toggleSelect);
+
+   var edit = new aUI.Edit({ placeholder : "Edit" }).appendTo(section1);
    edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
-   var btn = new aUI.Button({ text : "test" }).appendTo(parent);
-   btn.onclick(btn.toggleSelect);
-   
+
+   var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(section1);
+   memo.validator(new aUI.validator.Pattern("[ а-яА-ЯёЁ]{0,}"));
+
 
    //var resultBlock = new aUI.Element({ class : "resultBlock" }).appendTo(parent);
    //var text = new aUI.Element({ class : "circle", text : "?" }).appendTo(resultBlock);
@@ -123,8 +143,20 @@ and open the template in the editor.
    {
        edit.value(aUtils.dateToStr(this.value(), "dd.MM.yyyy"));
    }
-   var calendar = new aUI.Calendar({ onchange : changeDate });
-   calendar.appendTo(parent);
+   var calendar1 = new aUI.Calendar({ onchange : changeDate });
+//   calendar1.addClass("smo");
+   calendar1.appendTo(section2);
+   var calendar2 = new aUI.Calendar({ onchange : changeDate });
+   calendar2.addClass("medium");
+   calendar2.appendTo(section2);
+   var calendar3 = new aUI.Calendar({ onchange : changeDate });
+   calendar3.addClass("large");
+   calendar3.appendTo(section2);
   </script>
+<!--  <datalist id="options">
+   <option>option 1</option>
+   <option>option 2</option>
+  </datalist>-->
+
  </body>
 </html>
