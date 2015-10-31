@@ -56,6 +56,55 @@ aUI.validator.Pattern = function Pattern(value)
     this.pattern(value);
 };
 //-------------------------------------------------------------------------------------------------------------------
+aUI.extensions = { };
+//-------------------------------------------------------------------------------------------------------------------
+aUI.extensions.selectable = function(owner)
+{
+    var className = "selected";
+    owner.selectedClass = function(name)
+    {
+        if (name === undefined) return className;
+        className = name;
+    };
+    owner.select = function()
+    {
+        owner.addClass(owner.selectedClass());
+    };
+    owner.unselect = function()
+    {
+        owner.removeClass(owner.selectedClass());
+    };
+    owner.selected = function()
+    {
+        return owner.hasClass(owner.selectedClass());
+    };
+    owner.toggleSelect = function()
+    {
+        owner.toggleClass(owner.selectedClass());
+    };
+};
+//-------------------------------------------------------------------------------------------------------------------
+aUI.extensions.clickable = function(owner)
+{
+    var onclick = null;
+    owner.onclick = function(fn)
+    {
+        if (fn === undefined) return onclick;
+        if (typeof fn !== "function") throw new Error("type of onclick fn \"" + typeof fn + "\" is not a function");
+        onclick = fn;
+    };
+    //Сборка
+    owner.getElement().onclick = function ()
+    {
+        if (onclick) onclick.apply(owner, arguments);
+    };
+};
+//-------------------------------------------------------------------------------------------------------------------
+aUI.extensions.dragable = function(owner)
+{
+    
+};
+//-------------------------------------------------------------------------------------------------------------------
 /**
  * <b>Элемент DOM браузера.</b><br/>
  * По умолчанию div.<br/>
@@ -153,6 +202,12 @@ aUI.Element.prototype.html = function(html)
     if (html === undefined) return this.getElement().innerHtml;
     this.getElement().innerHtml = html;
 };
+aUI.Element.prototype.attr = function(name, value)
+{
+    if (value === undefined) return this.getElement().setAttribute(name);
+    //if (value === null) value = "";
+    this.getElement().setAttribute(name, value);
+};
 aUI.Element.prototype.hidden = function(hidden)
 {
     if (hidden === undefined) return this.getElement().hidden;
@@ -177,12 +232,6 @@ aUI.Element.prototype.height = function(value)
     if (typeof value === "number") value += "px";
     this.getElement().style.height = value;
 };
-aUI.Element.prototype.attr = function(name, value)
-{
-    if (value === undefined) return this.getElement().setAttribute(name);
-    if (value === null) value = "";
-    this.getElement().setAttribute(name, value);
-};
 //-------------------------------------------------------------------------------------------------------------------
 /*
  * <b>Кнопка.<b><br/>
@@ -200,20 +249,13 @@ aUI.Button = function Button(options)
         data : null
     }, options);
     aUI.Element.call(this, options);
+    aUI.extensions.clickable(this);
+    aUI.extensions.selectable(this);
     //Переменные
-    var that = this;
     this.data = options.data;
     //Функции
-    function onclick()
-    {
-        if (options.onclick) options.onclick.apply(that, arguments);
-    }
-    this.onClick = function(fn)
-    {
-        options.onclick = fn;
-    };
     //Сборка
-    this.getElement().onclick = onclick;
+    if (options.onclick) this.onclick(options.onclick);
 };
 aUI.proto(aUI.Button, aUI.Element);
 //-------------------------------------------------------------------------------------------------------------------
@@ -343,36 +385,15 @@ aUI.ListItem = function ListItem(options)
     options = aUI.extend(
     {
         element : "li",
-        id : null,
         class : null
     }, options);
     aUI.Button.call(this, options);
     //Переменные
     //Функции
-    this.getSelectedClass = function()
-    {
-        return "selected";
-    };
     //Сборка
     this.getElement().aui = this;
 };
 aUI.proto(aUI.ListItem, aUI.Button);
-aUI.ListItem.prototype.select = function()
-{
-    this.addClass(this.getSelectedClass());
-};
-aUI.ListItem.prototype.unselect = function()
-{
-    this.removeClass(this.getSelectedClass());
-};
-aUI.ListItem.prototype.selected = function()
-{
-    return this.hasClass(this.getSelectedClass());
-};
-aUI.ListItem.prototype.toggleSelect = function()
-{
-    this.toggleClass(this.getSelectedClass());
-};
 aUI.ListItem.prototype.index = function()
 {
     var element = this.getElement();
@@ -664,7 +685,7 @@ aUI.Edit.prototype.invalid = function()
  * <b>Календарь.</b><br/>
  * @param {object} options параметры:<br/>
  * - <b>class:</b> по умолчанию имеет значение "calendar".<br/>
- * - <b>onselect:</b> функция, вызываемая в момент выбора даты.<br/>
+ * - <b>onchange:</b> функция, вызываемая в момент выбора даты.<br/>
  * - <b>date:</b> по умолчанию имеет значение текущей даты.<br/>
  * @returns {Calendar}
  */
@@ -674,7 +695,7 @@ aUI.Calendar = function Calendar(options)
     options = aUI.extend(
     {
         class : "calendar",
-        onselect : null,
+        onchange : null,
         date : new Date()
     }, options);
     aUI.Element.call(this, options);
@@ -711,7 +732,7 @@ aUI.Calendar = function Calendar(options)
     function clickDay()
     {
         that.value(this.data);
-        if (options.onselect) options.onselect.call(that);
+        if (options.onchange) options.onchange.call(that);
     }
     function clickMonth()
     {
@@ -723,9 +744,9 @@ aUI.Calendar = function Calendar(options)
         mode = "months";
         that.value(this.data);
     }
-    this.onSelect = function(fn)
+    this.onchange = function(fn)
     {
-        options.onselect = fn;
+        options.onchange = fn;
     };
 
     function showDays(date)
@@ -758,7 +779,7 @@ aUI.Calendar = function Calendar(options)
                 if (item.state) td.addClass(item.state);
                 if (item.current) td.addClass("current");
                 if (item.selected) td.addClass("selected");
-                td.onClick(clickDay);
+                td.onclick(clickDay);
                 td.appendTo(tr);
             }
             tr.appendTo(table);
@@ -768,11 +789,11 @@ aUI.Calendar = function Calendar(options)
     function showMonths(date)
     {
         that.clear();
-        var monthTableData = that.getMonthTableData(date);
+        var data = that.getMonthTableData(date);
 
-        new aUI.Button({ class : "prev", text : "<", data : monthTableData.prev, onclick : clickPrev }).appendTo(that);
-        new aUI.Button({ class : "level days", text : monthTableData.caption, onclick : clickYearsMode }).appendTo(that);
-        new aUI.Button({ class : "prev", text : ">", data : monthTableData.next, onclick : clickNext }).appendTo(that);
+        new aUI.Button({ class : "prev", text : "<", data : data.prev, onclick : clickPrev }).appendTo(that);
+        new aUI.Button({ class : "level months", text : data.caption, onclick : clickYearsMode }).appendTo(that);
+        new aUI.Button({ class : "prev", text : ">", data : data.next, onclick : clickNext }).appendTo(that);
 
         var table = new aUI.Element({ element : "table", class : "months" });
 
@@ -781,12 +802,12 @@ aUI.Calendar = function Calendar(options)
             var tr = new aUI.Element({ element : "tr" });
             for (var w = 0; w < 4; w++)
             {
-                var item = monthTableData.array[(h * 4) + w];
+                var item = data.array[(h * 4) + w];
                 var td = new aUI.Button({ element : "td", class : item.class, text : item.text, data : item.date });
                 if (item.state) td.addClass(item.state);
                 if (item.current) td.addClass("current");
                 if (item.selected) td.addClass("selected");
-                td.onClick(clickMonth);
+                td.onclick(clickMonth);
                 td.appendTo(tr);
             }
             tr.appendTo(table);
@@ -796,11 +817,11 @@ aUI.Calendar = function Calendar(options)
     function showYears(date)
     {
         that.clear();
-        var yearTableData = that.getYearTableData(date);
+        var data = that.getYearTableData(date);
 
-        new aUI.Button({ class : "prev", text : "<", data : yearTableData.prev, onclick : clickPrev }).appendTo(that);
-        new aUI.Button({ class : "level years", text : yearTableData.startDec + " - " + yearTableData.endDec }).appendTo(that);
-        new aUI.Button({ class : "prev", text : ">", data : yearTableData.next, onclick : clickNext }).appendTo(that);
+        new aUI.Button({ class : "prev", text : "<", data : data.prev, onclick : clickPrev }).appendTo(that);
+        new aUI.Button({ class : "level years", text : data.caption }).appendTo(that);
+        new aUI.Button({ class : "prev", text : ">", data : data.next, onclick : clickNext }).appendTo(that);
 
         var table = new aUI.Element({ element : "table", class : "months" });
 
@@ -809,12 +830,12 @@ aUI.Calendar = function Calendar(options)
             var tr = new aUI.Element({ element : "tr" });
             for (var w = 0; w < 4; w++)
             {
-                var item = yearTableData.array[(h * 4) + w];
+                var item = data.array[(h * 4) + w];
                 var td = new aUI.Button({ element : "td", class : item.class, text : item.text, data : item.date });
                 if (item.state) td.addClass(item.state);
                 if (item.current) td.addClass("current");
                 if (item.selected) td.addClass("selected");
-                td.onClick(clickYear);
+                td.onclick(clickYear);
                 td.appendTo(tr);
             }
             tr.appendTo(table);
@@ -853,15 +874,15 @@ aUI.Calendar.prototype.getDayTableData = function(date)
 
     data.head = [ ];
     for (var q = 0; q < 7; q++)
-        {
-            var item = {}
-            var dayOfWeekCounter = q + 1;
-            if (q === 6) dayOfWeekCounter = 0;
-            item.text = aUtils.getShortNameDayOfWeekRu(dayOfWeekCounter);
-            item.class = aUtils.getShortNameDayOfWeek(dayOfWeekCounter);
-            data.head.push(item);
-        }
-    
+    {
+        var item = { }
+        var dayOfWeekCounter = q + 1;
+        if (q === 6) dayOfWeekCounter = 0;
+        item.text = aUtils.getShortNameDayOfWeekRu(dayOfWeekCounter);
+        item.class = aUtils.getShortNameDayOfWeek(dayOfWeekCounter);
+        data.head.push(item);
+    }
+
     data.array = [ ];
     for (var q = 0; q < prevCount; q++) data.array.push({ date : new Date(data.prev.getFullYear(), data.prev.getMonth(), q + prevDIndex + 1), state : "prev" });
     for (var q = 0; q < countDayInMonth; q++) data.array.push({ date : new Date(data.year, data.month, q + 1) });
@@ -918,7 +939,7 @@ aUI.Calendar.prototype.getYearTableData = function(date)
     data.startDec = data.year - (data.year % 10);
     data.endDec = data.startDec + 9;
 
-    data.caption = data.startDec + " - " + data.endDec
+    data.caption = data.startDec + " - " + data.endDec;
 
     data.prev = aUtils.shiftYear(data.date, -10);
     data.next = aUtils.shiftYear(data.date, +10);

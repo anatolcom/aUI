@@ -108,6 +108,10 @@ and open the template in the editor.
    selectSection(aURL.get("selected"));
 
    var edit = new aUI.Edit({ type : "text", placeholder : "date" }).appendTo(parent);
+   edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
+   var btn = new aUI.Button({ text : "test" }).appendTo(parent);
+   btn.onclick(btn.toggleSelect);
+   
 
    //var resultBlock = new aUI.Element({ class : "resultBlock" }).appendTo(parent);
    //var text = new aUI.Element({ class : "circle", text : "?" }).appendTo(resultBlock);
@@ -115,11 +119,11 @@ and open the template in the editor.
    //console.dir(list);
    //list.onClick(function(){alert("click " + this.data);});
 
-   function selectDate()
+   function changeDate()
    {
        edit.value(aUtils.dateToStr(this.value(), "dd.MM.yyyy"));
    }
-   var calendar = new aUI.Calendar({ onselect : selectDate });
+   var calendar = new aUI.Calendar({ onchange : changeDate });
    calendar.appendTo(parent);
   </script>
  </body>
