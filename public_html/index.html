@@ -109,19 +109,9 @@ and open the template in the editor.
    var section1 = addSection("Input");
    var section2 = addSection("Calendar");
 
-//   function fillSectionList(count)
-//   {
-//       if (count === sectionList.getList().count()) return;
-//       while (count < sectionList.getList().count()) removeLastSection();
-//       for (var q = sectionList.getList().count(); q < count; q++) addSection();
-//   }
-//   fillSectionList(aURL.get("sections"));
-
-
    selectSection(aURL.get("selected"));
 
    var btn1 = new aUI.Button({ text : "button" }).appendTo(section1);
-//   btn1.onclick(btn.toggleSelect);
 
    var btn2 = new aUI.Button({ text : "selectable" }).appendTo(section1);
    btn2.onclick(btn2.toggleSelect);
@@ -130,21 +120,13 @@ and open the template in the editor.
    edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
 
    var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(section1);
-   memo.validator(new aUI.validator.Pattern("[ а-яА-ЯёЁ]{0,}"));
-
-
-   //var resultBlock = new aUI.Element({ class : "resultBlock" }).appendTo(parent);
-   //var text = new aUI.Element({ class : "circle", text : "?" }).appendTo(resultBlock);
-   //var textCnt = new aUI.Element({ class : "circle", text : "0" }).appendTo(resultBlock);
-   //console.dir(list);
-   //list.onClick(function(){alert("click " + this.data);});
+   memo.validator(new aUI.validator.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
 
    function changeDate()
    {
        edit.value(aUtils.dateToStr(this.value(), "dd.MM.yyyy"));
    }
    var calendar1 = new aUI.Calendar({ onchange : changeDate });
-//   calendar1.addClass("smo");
    calendar1.appendTo(section2);
    var calendar2 = new aUI.Calendar({ onchange : changeDate });
    calendar2.addClass("medium");

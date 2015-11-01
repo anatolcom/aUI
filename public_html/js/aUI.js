@@ -136,6 +136,10 @@ aUI.extensions.validable = function(owner)
         if (value === undefined) return validator;
         validator = value;
     };
+    owner.invalid = function()
+    {
+        return owner.hasClass("invalid");
+    };
     //Сборка
     owner.getElement().onfocus = onvalidate;
     owner.getElement().onkeyup = onvalidate;
@@ -169,109 +173,109 @@ aUI.Element = function Element(options)
         html : null
     }, options);
     //Переменные
-    //var that = this;
+    var that = this;
     //Функции
     this.getElement = function()
     {
         return element;
     };
+    /**
+     * Добавление елемента как дочернего к указанному елементу.<br/>
+     * В качестве контейнера можно указывать только елементы проходящие проверку instanceof aUI.Element или instanceof HTMLElement
+     * @param {type} parent елемент, который станет контейнером для текушего элемента. 
+     * @returns {undefined}
+     */
+    this.appendTo = function(parent)
+    {
+        if (parent === null) throw new Error("can not apply appendTo for null");
+        if (parent instanceof aUI.Element) parent = parent.getElement();
+        if (!parent instanceof HTMLElement) throw new Error("can not apply appendTo for non HTMLElement");
+        parent.appendChild(this.getElement());
+        return this;
+    };
+    this.clear = function()
+    {
+        var element = that.getElement();
+        while (element.childNodes[0] !== undefined) element.removeChild(element.childNodes[0]);
+    };
+    this.remove = function()
+    {
+        var element = that.getElement();
+        var parent = element.parentElement;
+        if (parent) parent.removeChild(element);
+    };
+    this.id = function(id)
+    {
+        if (id === undefined) return that.getElement().id;
+        that.getElement().id = id;
+    };
+    this.class = function(name)
+    {
+        if (name === undefined) return that.getElement().className;
+        that.getElement().className = name;
+    };
+    this.addClass = function(name)
+    {
+        that.getElement().classList.add(name);
+    };
+    this.removeClass = function(name)
+    {
+        that.getElement().classList.remove(name);
+    };
+    this.hasClass = function(name)
+    {
+        return that.getElement().classList.contains(name);
+    };
+    this.toggleClass = function(name)
+    {
+        that.getElement().classList.toggle(name);
+    };
+    this.text = function(text)
+    {
+        if (text === undefined) return that.getElement().textContent;
+        that.getElement().textContent = text;
+    };
+    this.html = function(html)
+    {
+        if (html === undefined) return that.getElement().innerHtml;
+        that.getElement().innerHtml = html;
+    };
+    this.attr = function(name, value)
+    {
+        if (value === undefined) return that.getElement().setAttribute(name);
+        that.getElement().setAttribute(name, value);
+    };
+    this.hidden = function(hidden)
+    {
+        if (hidden === undefined) return that.getElement().hidden;
+        if (hidden) that.getElement().style.display = "none";
+        else that.getElement().style.display = "";
+    };
+    this.toggleHidden = function()
+    {
+        this.getElement().hidden = !that.getElement().hidden;
+    };
+    this.width = function(value)
+    {
+        if (value === undefined) return that.getElement().style.width;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        that.getElement().style.width = value;
+    };
+    this.height = function(value)
+    {
+        if (value === undefined) return that.getElement().style.height;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        that.getElement().style.height = value;
+    };
     //Сборка
     var element = document.createElement(options.element);
+    element.aui = this;
     if (options.id) this.id(options.id);
     if (options.class) this.class(options.class);
     if (options.text || options.text === 0 || options.text === false) this.text(options.text);
     if (options.html || options.html === 0 || options.html === false) this.html(options.html);
-};
-/**
- * Добавление елемента как дочернего к указанному елементу.<br/>
- * В качестве контейнера можно указывать только елементы проходящие проверку instanceof aUI.Element или instanceof HTMLElement
- * @param {type} parent елемент, который станет контейнером для текушего элемента. 
- * @returns {undefined}
- */
-aUI.Element.prototype.appendTo = function(parent)
-{
-    if (parent === null) throw new Error("can not apply appendTo for null");
-    if (parent instanceof aUI.Element) parent = parent.getElement();
-    if (!parent instanceof HTMLElement) throw new Error("can not apply appendTo for non HTMLElement");
-    parent.appendChild(this.getElement());
-    return this;
-};
-aUI.Element.prototype.clear = function()
-{
-    var element = this.getElement();
-    while (element.childNodes[0] !== undefined) element.removeChild(element.childNodes[0]);
-};
-aUI.Element.prototype.remove = function()
-{
-    var element = this.getElement();
-    var parent = element.parentElement;
-    if (parent) parent.removeChild(element);
-};
-aUI.Element.prototype.id = function(id)
-{
-    if (id === undefined) return this.getElement().id;
-    this.getElement().id = id;
-};
-aUI.Element.prototype.class = function(name)
-{
-    if (name === undefined) return this.getElement().className;
-    this.getElement().className = name;
-};
-aUI.Element.prototype.addClass = function(name)
-{
-    this.getElement().classList.add(name);
-};
-aUI.Element.prototype.removeClass = function(name)
-{
-    this.getElement().classList.remove(name);
-};
-aUI.Element.prototype.hasClass = function(name)
-{
-    return this.getElement().classList.contains(name);
-};
-aUI.Element.prototype.toggleClass = function(name)
-{
-    this.getElement().classList.toggle(name);
-};
-aUI.Element.prototype.text = function(text)
-{
-    if (text === undefined) return this.getElement().textContent;
-    this.getElement().textContent = text;
-};
-aUI.Element.prototype.html = function(html)
-{
-    if (html === undefined) return this.getElement().innerHtml;
-    this.getElement().innerHtml = html;
-};
-aUI.Element.prototype.attr = function(name, value)
-{
-    if (value === undefined) return this.getElement().setAttribute(name);
-    //if (value === null) value = "";
-    this.getElement().setAttribute(name, value);
-};
-aUI.Element.prototype.hidden = function(hidden)
-{
-    if (hidden === undefined) return this.getElement().hidden;
-    if (hidden) this.getElement().style.display = "none";
-    else this.getElement().style.display = "";
-};
-aUI.Element.prototype.toggleHidden = function()
-{
-    this.getElement().hidden = !this.getElement().hidden;
-};
-aUI.Element.prototype.width = function(value)
-{
-    if (value === undefined) return this.getElement().style.width;
-    if (value === null) value = "";
-    if (typeof value === "number") value += "px";
-    this.getElement().style.width = value;
-};
-aUI.Element.prototype.height = function(value)
-{
-    if (value === undefined) return this.getElement().style.height;
-    if (value === null) value = "";
-    if (typeof value === "number") value += "px";
-    this.getElement().style.height = value;
 };
 //-------------------------------------------------------------------------------------------------------------------
 /*
@@ -318,6 +322,7 @@ aUI.List = function List(options)
     }, options);
     aUI.Element.call(this, options);
     //Переменные
+    var that = this;
     var itemConstructor = aUI.ListItem;
     //Функции
     this.setItemConstructor = function(constructor)
@@ -330,90 +335,90 @@ aUI.List = function List(options)
     {
         return itemConstructor;
     };
-//    this.onAdd = function()
-//    {
-//        
-//    }
+    this.add = function()
+    {
+        var item = aUI.construct(that.getItemConstructor(), arguments);
+        item.appendTo(that);
+        return item;
+    };
+    this.remove = function(index)
+    {
+        that.item(index).remove();
+    };
+    this.count = function()
+    {
+        return that.getElement().childElementCount;
+    };
+    this.item = function(index)
+    {
+        var element = that.getElement().childNodes[index];
+        if (element === undefined) return undefined;// throw new Error("index out of range " + index);
+        return element.aui;
+    };
+    this.items = function()
+    {
+        var nodes = that.getElement().childNodes;
+        var items = [ ];
+        for (var index = 0; index < nodes.length; index++) items.push(nodes[index].aui);
+        return items;
+    };
+    this.selected = function()
+    {
+        var nodes = that.getElement().childNodes;
+        var items = [ ];
+        for (var q = 0; q < nodes.length; q++)
+        {
+            var item = nodes[q].aui;
+            if (!item.selected()) continue;
+            items.push(item);
+        }
+        return items;
+    };
+    this.unselected = function()
+    {
+        var nodes = that.getElement().childNodes;
+        var items = [ ];
+        for (var q = 0; q < nodes.length; q++)
+        {
+            var item = nodes[q].aui;
+            if (item.selected()) continue;
+            items.push(item);
+        }
+        return items;
+    };
+    this.selectSingle = function(index)
+    {
+        var nodes = that.getElement().childNodes;
+        for (var q = 0; q < nodes.length; q++)
+        {
+            var item = nodes[q].aui;
+            if (index === q) item.select();
+            else item.unselect();
+        }
+    };
+    this.selectAll = function()
+    {
+        var nodes = that.getElement().childNodes;
+        for (var q = 0; q < nodes.length; q++) nodes[q].aui.select();
+    };
+    this.unselectAll = function()
+    {
+        var nodes = that.getElement().childNodes;
+        for (var q = 0; q < nodes.length; q++) nodes[q].aui.unselect();
+    };
+    this.toggleSelectAll = function()
+    {
+        var nodes = that.getElement().childNodes;
+        for (var q = 0; q < nodes.length; q++) nodes[q].aui.toggleSelect();
+    };
+
+
+
     //Сборка
     if (options.itemConstructor) this.setItemConstructor(options.itemConstructor);
 };
 aUI.proto(aUI.List, aUI.Element);
-aUI.List.prototype.add = function()
-{
-    var item = aUI.construct(this.getItemConstructor(), arguments);
-    item.appendTo(this);
-    return item;
-};
-aUI.List.prototype.remove = function(index)
-{
-    this.item(index).remove();
-};
-aUI.List.prototype.count = function()
-{
-    return this.getElement().childElementCount;
-};
-aUI.List.prototype.item = function(index)
-{
-    var element = this.getElement().childNodes[index];
-    if (element === undefined) return undefined;// throw new Error("index out of range " + index);
-    return element.aui;
-};
-aUI.List.prototype.items = function()
-{
-    var nodes = this.getElement().childNodes;
-    var items = [ ];
-    for (var index = 0; index < nodes.length; index++) items.push(nodes[index].aui);
-    return items;
-};
-aUI.List.prototype.selected = function()
-{
-    var nodes = this.getElement().childNodes;
-    var items = [ ];
-    for (var q = 0; q < nodes.length; q++)
-    {
-        var item = nodes[q].aui;
-        if (!item.selected()) continue;
-        items.push(item);
-    }
-    return items;
-};
-aUI.List.prototype.unselected = function()
-{
-    var nodes = this.getElement().childNodes;
-    var items = [ ];
-    for (var q = 0; q < nodes.length; q++)
-    {
-        var item = nodes[q].aui;
-        if (item.selected()) continue;
-        items.push(item);
-    }
-    return items;
-};
-aUI.List.prototype.selectSingle = function(index)
-{
-    var nodes = this.getElement().childNodes;
-    for (var q = 0; q < nodes.length; q++)
-    {
-        var item = nodes[q].aui;
-        if (index === q) item.select();
-        else item.unselect();
-    }
-};
-aUI.List.prototype.selectAll = function()
-{
-    var nodes = this.getElement().childNodes;
-    for (var q = 0; q < nodes.length; q++) nodes[q].aui.select();
-};
-aUI.List.prototype.unselectAll = function()
-{
-    var nodes = this.getElement().childNodes;
-    for (var q = 0; q < nodes.length; q++) nodes[q].aui.unselect();
-};
-aUI.List.prototype.toggleSelectAll = function()
-{
-    var nodes = this.getElement().childNodes;
-    for (var q = 0; q < nodes.length; q++) nodes[q].aui.toggleSelect();
-};
+
 //-------------------------------------------------------------------------------------------------------------------
 /**
  * <b>Элемент спиока List.</b><br/>
@@ -431,22 +436,23 @@ aUI.ListItem = function ListItem(options)
     }, options);
     aUI.Button.call(this, options);
     //Переменные
+    var that = this;
     //Функции
+    this.index = function()
+    {
+        var element = that.getElement();
+        var parent = element.parentElement;
+        if (!parent) return undefined;
+        for (var index = 0; index < parent.childNodes.length; index++)
+        {
+            if (parent.childNodes[index] === element) return index;
+        }
+        return undefined;
+    };
     //Сборка
-    this.getElement().aui = this;
+
 };
 aUI.proto(aUI.ListItem, aUI.Button);
-aUI.ListItem.prototype.index = function()
-{
-    var element = this.getElement();
-    var parent = element.parentElement;
-    if (!parent) return undefined;
-    for (var index = 0; index < parent.childNodes.length; index++)
-    {
-        if (parent.childNodes[index] === element) return index;
-    }
-    return undefined;
-};
 //-------------------------------------------------------------------------------------------------------------------
 /*aUI.Check = function Check(options)
  {
@@ -671,57 +677,41 @@ aUI.Edit = function Edit(options)
         type : null,
         placeholder : null,
         //examples : null,
-        pattern : null, //??? лишает гибкости
         required : false
     }, options);
     aUI.Element.call(this, options);
+    aUI.extensions.validable(this);
     //Переменные
     var that = this;
-    var validator = null;
     //Функции
-    function onvalidate()
+    this.value = function(value)
     {
-        if (validate(that.value(), options.required)) that.removeClass("invalid");
-        else that.addClass("invalid");
-    }
-    function validate(value, required)
-    {
-        if (value.length === 0) return !required;
-        if (validator) return validator.validate(value);
-        return true;
-    }
-    this.validator = function(value)
-    {
-        if (value === undefined) return validator;
-        validator = value;
+        if (value === undefined) return that.getElement().value;
+        that.getElement().value = value;
     };
+    this.type = function(value)
+    {
+        if (value === undefined) return that.attr("type");
+        that.attr("type", value);
+    };
+    this.placeholder = function(value)
+    {
+        if (value === undefined) return that.attr("placeholder");
+        that.attr("placeholder", value);
+    };
+    function fnUID(char)
+    {
+        var r = Math.random() * 16 | 0;
+        var v = char === "x" ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    }
     //Сборка
     if (options.type) this.type(options.type);
+    if (options.required) this.required(options.required);
     if (options.placeholder) this.placeholder(options.placeholder);
-    if (options.pattern) validator = new aUI.validator.Pattern(options.pattern);//???
-    this.getElement().onfocus = onvalidate;
-    this.getElement().onkeyup = onvalidate;
+    this.attr("list", "INPUT_" + "xxxxxxxxxxxxxxxx".replace(/[x]/g, fnUID));
 };
 aUI.proto(aUI.Edit, aUI.Element);
-aUI.Edit.prototype.value = function(value)
-{
-    if (value === undefined) return this.getElement().value;
-    this.getElement().value = value;
-};
-aUI.Edit.prototype.type = function(value)
-{
-    if (value === undefined) return this.attr("type");
-    this.attr("type", value);
-};
-aUI.Edit.prototype.placeholder = function(value)
-{
-    if (value === undefined) return this.attr("placeholder");
-    this.attr("placeholder", value);
-};
-aUI.Edit.prototype.invalid = function()
-{
-    return this.hasClass("invalid");
-};
 //---------------------------------------------------------------------------
 aUI.Memo = function Memo(options)
 {
@@ -747,6 +737,7 @@ aUI.Memo = function Memo(options)
         that.attr("placeholder", value);
     };
     //Сборка
+    if (options.required) this.required(options.required);
     if (options.placeholder) this.placeholder(options.placeholder);
 };
 aUI.proto(aUI.Memo, aUI.Element);

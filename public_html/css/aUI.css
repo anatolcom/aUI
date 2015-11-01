@@ -109,7 +109,7 @@ input:focus
 }
 input.invalid
 {
- outline: rgba(255, 0, 0, 0.7) auto 5px; 
+ outline: rgba(255, 0, 0, 1) auto 5px;
  outline-offset: -2px;
 }
 
