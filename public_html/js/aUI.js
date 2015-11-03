@@ -91,7 +91,7 @@ aUI.extensions.clickable = function(owner)
     //Переменные
     var onclick = null;
     //Функции
-    owner.onclick = function(fn)
+    owner.onClick = function(fn)
     {
         if (fn === undefined) return onclick;
         if (typeof fn !== "function") throw new Error("type of onclick fn \"" + typeof fn + "\" is not a function");
@@ -147,7 +147,7 @@ aUI.extensions.validable = function(owner)
 //-------------------------------------------------------------------------------------------------------------------
 aUI.extensions.dragable = function(owner)
 {
-
+//https://learn.javascript.ru/drag-and-drop
 };
 //-------------------------------------------------------------------------------------------------------------------
 /**
@@ -242,9 +242,14 @@ aUI.Element = function Element(options)
     };
     this.attr = function(name, value)
     {
-        if (value === undefined) return that.getElement().setAttribute(name);
+        if (value === undefined) return that.getElement().getAttribute(name);
         that.getElement().setAttribute(name, value);
     };
+//    this.css = function(name, value)
+//    {
+//        if (value === undefined) return that.getElement().style.get(name);
+//        that.getElement().style.set(name, value);
+//    };
     this.hidden = function(hidden)
     {
         if (hidden === undefined) return that.getElement().hidden;
@@ -300,7 +305,7 @@ aUI.Button = function Button(options)
     this.data = options.data;
     //Функции
     //Сборка
-    if (options.onclick) this.onclick(options.onclick);
+    if (options.onclick) this.onClick(options.onclick);
 //    this.attr("href", "javascript:;");
 };
 aUI.proto(aUI.Button, aUI.Element);
@@ -325,19 +330,16 @@ aUI.List = function List(options)
     var that = this;
     var itemConstructor = aUI.ListItem;
     //Функции
-    this.setItemConstructor = function(constructor)
+    this.itemConstructor = function(constructor)
     {
+        if (constructor === undefined) return itemConstructor;
         if (typeof constructor !== "function") throw new Error("constructor not function");
         if (!constructor instanceof aUI.ListItem) throw new Error("constructor not proto aUI.ListItem");
         itemConstructor = constructor;
     };
-    this.getItemConstructor = function()
-    {
-        return itemConstructor;
-    };
     this.add = function()
     {
-        var item = aUI.construct(that.getItemConstructor(), arguments);
+        var item = aUI.construct(that.itemConstructor(), arguments);
         item.appendTo(that);
         return item;
     };
@@ -606,7 +608,7 @@ aUI.ScrollList = function ScrollList(options)
     var currentTopIndex = null;
     var onScroll = null;
     //Функции
-    this.getList = function()
+    this.list = function()
     {
         return list;
     };
@@ -625,9 +627,32 @@ aUI.ScrollList = function ScrollList(options)
         if (typeof fn !== "function") throw new Error("fn is not a function");
         changeTop = fn;
     };
+    this.topIndex = function(value)
+    {
+        var list = that.list();
+        var nodes = list.getElement().childNodes;
+        var count = list.count();
+        if (value === undefined)
+        {
+            var offsetTop = that.getElement().scrollTop + list.getElement().offsetTop;
+            var topIndex = 0;
+            for (var index = 0; index < count; index++)
+            {
+                if (offsetTop < nodes[index].offsetTop) break;
+                topIndex = index;
+            }
+            return topIndex;
+        }
+        else
+        {
+            if (isNaN(value)) throw new Error("value is not a number");
+            if (value < 0 || count <= value) throw new Error("value " + value + " out of range 0 - " + (count - 1));
+            that.getElement().scrollTop = nodes[value].offsetTop - list.getElement().offsetTop;
+        }
+    };
+
     //Сборка
-    var list = new aUI.List(options.listOptions);
-    list.appendTo(this);
+    var list = new aUI.List(options.listOptions).appendTo(this);
     this.onScroll(scroll);
     this.onScroll = function(fn)
     {
@@ -636,29 +661,6 @@ aUI.ScrollList = function ScrollList(options)
 
 };
 aUI.proto(aUI.ScrollList, aUI.ScrollArea);
-aUI.ScrollList.prototype.topIndex = function(value)
-{
-    var list = this.getList();
-    var nodes = list.getElement().childNodes;
-    var count = list.count();
-    if (value === undefined)
-    {
-        var offsetTop = this.getElement().scrollTop + list.getElement().offsetTop;
-        var topIndex = 0;
-        for (var index = 0; index < count; index++)
-        {
-            if (offsetTop < nodes[index].offsetTop) break;
-            topIndex = index;
-        }
-        return topIndex;
-    }
-    else
-    {
-        if (isNaN(value)) throw new Error("value is not a number");
-        if (value < 0 || count <= value) throw new Error("value " + value + " out of range 0 - " + (count - 1));
-        this.getElement().scrollTop = nodes[value].offsetTop - list.getElement().offsetTop;
-    }
-};
 //---------------------------------------------------------------------------
 /**
  * <b>Строковое поле редактирования.</b><br/>
@@ -835,7 +837,7 @@ aUI.Calendar = function Calendar(options)
         mode = "months";
         that.value(this.data);
     }
-    this.onchange = function(fn)
+    this.onChange = function(fn)
     {
         options.onchange = fn;
     };
@@ -870,7 +872,7 @@ aUI.Calendar = function Calendar(options)
                 if (item.state) td.addClass(item.state);
                 if (item.current) td.addClass("current");
                 if (item.selected) td.addClass("selected");
-                td.onclick(clickDay);
+                td.onClick(clickDay);
                 td.appendTo(tr);
             }
             tr.appendTo(table);
@@ -898,7 +900,7 @@ aUI.Calendar = function Calendar(options)
                 if (item.state) td.addClass(item.state);
                 if (item.current) td.addClass("current");
                 if (item.selected) td.addClass("selected");
-                td.onclick(clickMonth);
+                td.onClick(clickMonth);
                 td.appendTo(tr);
             }
             tr.appendTo(table);
@@ -926,7 +928,7 @@ aUI.Calendar = function Calendar(options)
                 if (item.state) td.addClass(item.state);
                 if (item.current) td.addClass("current");
                 if (item.selected) td.addClass("selected");
-                td.onclick(clickYear);
+                td.onClick(clickYear);
                 td.appendTo(tr);
             }
             tr.appendTo(table);
@@ -1072,4 +1074,57 @@ aUI.Date = function Date(options)
     //Сборка
 };
 aUI.proto(aUI.Date, aUI.Element);
+//---------------------------------------------------------------------------
+aUI.SList = function SList(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        class : "slist"
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+    var that = this;
+    //Функции
+//    function sectionMenuClick()
+//    {
+//       aURL.set("selected", this.index());
+//    }
+    this.add = function(params)
+    {
+        menu.add({ text : params.text, onclick : menuClick });
+        if (menu.count() === 1) menu.selectSingle(0);
+        list.add({ text : params.text });
+    };
+
+    function menuClick()
+    {
+        select(this.index());
+    }
+
+    function select(index)
+    {
+        console.log("select", index);
+        if (scrollList.topIndex() === Number(index)) return;
+//        scrollList.list().getElement().transform .css("transition", "transform 0.6s ease-in-out");
+        scrollList.topIndex(index);
+
+
+//    -webkit-transition: -webkit-transform 0.6s ease-in-out;
+//    -moz-transition: -moz-transform 0.6s ease-in-out;
+//    -o-transition: -o-transform 0.6s ease-in-out;
+//    transition: transform 0.6s ease-in-out;        
+    }
+    function changeTop()
+    {
+        menu.selectSingle(this.index());
+    }
+    //Сборка
+    var menu = new aUI.List({ class : "menu" }).appendTo(this);
+    var scrollList = new aUI.ScrollList({ class : "scrollarea" }).appendTo(this);
+    scrollList.onChangeTop(changeTop);
+    var list = scrollList.list();
+    //menu.css("background-color", "red");
+};
+aUI.proto(aUI.SList, aUI.Element);
 //---------------------------------------------------------------------------
