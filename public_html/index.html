@@ -59,14 +59,14 @@ and open the template in the editor.
   </nav>
   <section>
 
-   
+
   </section>
   <a href="http://learn.javascript.ru/keyboard-events">keyboard-events</a>
   <a href="https://learn.javascript.ru/ajax-xmlhttprequest">ajax-xmlhttprequest</a>
   <a href="http://stackoverflow.com/questions/8742249/how-to-set-css3-transition-using-javascript">how-to-set-css3-transition-using-javascript</a>
-<!--  <div>
-   <input list="options">
-  </div>-->
+  <!--  <div>
+     <input list="options">
+    </div>-->
 
   <footer>anatol.com</footer>  
   <script>
@@ -107,12 +107,12 @@ and open the template in the editor.
    var section2 = addSection("Calendar");
 
    selectSection(aURL.get("selected"));
-   
-   
-   var slist = new aUI.SList({}).appendTo(parent);
-   var buttonItem = slist.add({ text : "Button"});
-   var inputItem = slist.add({ text : "Input"});
-   var calendarItem = slist.add({ text : "Calendar"});
+
+
+   var slist = new aUI.SList({ }).appendTo(parent);
+   var buttonItem = slist.add({ text : "Button" });
+   var inputItem = slist.add({ text : "Input" });
+   var calendarItem = slist.add({ text : "Calendar" });
 
    var btn1 = new aUI.Button({ text : "button" }).appendTo(section1);
 
@@ -122,8 +122,11 @@ and open the template in the editor.
    var edit = new aUI.Edit({ placeholder : "Edit" }).appendTo(section1);
    edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
 
+   var select = new aUI.Select({ items : [ "...", "edit", "memo", "select" ], disabled : 0, value : 0 }).appendTo(section1);
+
    var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(section1);
    memo.validator(new aUI.validator.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
+
 
    function changeDate()
    {
@@ -138,10 +141,10 @@ and open the template in the editor.
    calendar3.addClass("large");
    calendar3.appendTo(section2);
   </script>
-<!--  <datalist id="options">
-   <option>option 1</option>
-   <option>option 2</option>
-  </datalist>-->
+  <!--  <datalist id="options">
+     <option>option 1</option>
+     <option>option 2</option>
+    </datalist>-->
 
  </body>
 </html>

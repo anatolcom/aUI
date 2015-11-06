@@ -138,6 +138,7 @@ aUI.extensions.validable = function(owner)
     };
     owner.invalid = function()
     {
+        onvalidate();
         return owner.hasClass("invalid");
     };
     //Сборка
@@ -190,8 +191,9 @@ aUI.Element = function Element(options)
         if (parent === null) throw new Error("can not apply appendTo for null");
         if (parent instanceof aUI.Element) parent = parent.getElement();
         if (!parent instanceof HTMLElement) throw new Error("can not apply appendTo for non HTMLElement");
-        parent.appendChild(this.getElement());
-        return this;
+        if (typeof parent.appendChild !== "function") throw new Error("can not apply appendTo for this parent");
+        parent.appendChild(that.getElement());
+        return that;
     };
     this.clear = function()
     {
@@ -252,13 +254,14 @@ aUI.Element = function Element(options)
 //    };
     this.hidden = function(hidden)
     {
-        if (hidden === undefined) return that.getElement().hidden;
+        if (hidden === undefined) return that.getElement().style.display === "none";
         if (hidden) that.getElement().style.display = "none";
         else that.getElement().style.display = "";
     };
     this.toggleHidden = function()
     {
-        this.getElement().hidden = !that.getElement().hidden;
+        //this.getElement().hidden = !that.getElement().hidden;
+        that.hidden(!that.hidden());
     };
     this.width = function(value)
     {
@@ -701,6 +704,11 @@ aUI.Edit = function Edit(options)
         if (value === undefined) return that.attr("placeholder");
         that.attr("placeholder", value);
     };
+    this.focus = function()
+    {
+        //if (value === undefined) return that.attr("placeholder");
+        that.getElement().focus();
+    };
     function fnUID(char)
     {
         var r = Math.random() * 16 | 0;
@@ -714,6 +722,103 @@ aUI.Edit = function Edit(options)
     this.attr("list", "INPUT_" + "xxxxxxxxxxxxxxxx".replace(/[x]/g, fnUID));
 };
 aUI.proto(aUI.Edit, aUI.Element);
+//---------------------------------------------------------------------------
+ /**
+  * <b>Выпадающий список.</b><br/>
+  * Метод value возвращает и устанавливает текущее значение.<br/>
+  * Метод focus делает компанент активным.<br/>
+  * @param {object} options входные данные:<br/>
+  * value: текущее значение, null если нет значения<br/>
+  * items: имеет разные варианты заполнения:
+  * - список названий ["Название1","Название2"]. значением будет порядковый номер названия.<br/>
+  * - ключи и значения {value1:"Название1",value2:"Название2"}. не гарантируется последовательность.<br/>
+  * - список ключей и значений [{value:key1,text:"Название1"},{value:key2,text:"Название2"}].<br/>
+  * disabled: значение невыбираемого элемента, null если нет значения<br/>
+  * @returns {Select}
+  */
+aUI.Select = function Select(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        element : "select",
+        value : null,
+        items : null,
+        disabled : null,
+        required : false
+    }, options);
+    aUI.Element.call(this, options);
+    aUI.extensions.validable(this);
+    //Переменные
+    var that = this;
+    //Функции
+    this.value = function(value)
+    {
+        if (value === undefined) return that.getElement().value;
+        that.getElement().value = value;
+    };
+    /**
+     * <b>Установка полей.</b><br/>
+     * допустимы разные варианты заполнения полей:<br/>
+     * - <b>список названий</b> ["Название1","Название2"]. значением будет порядковый номер названия.<br/>
+     * - <b>ключи и значения</b> {value1:"Название1",value2:"Название2"}. не гарантируется последовательность.<br/>
+     * - <b>список ключей и значений</b> [{value:key1,text:"Название1"},{value:key2,text:"Название2"}].<br/>
+     * @param {type} items поля выпадающего списка.
+     * @param {type} disabled значение невыбираемого элемента, null если нет значения<br/>
+     * @returns {undefined}
+     */
+    this.items = function(items, disabled)
+    {
+        that.clear();
+        options.items = items;
+        if (disabled === undefined) disabled = null;
+        if (disabled === null) options.disabled = null;
+        else disabled = String(disabled);
+        options.disabled = disabled;
+        if (items === null) return;
+        if (items instanceof Array)
+        {
+            for (var index in items)
+            {
+                var item = items[index];
+                var option = new aUI.Element({ element : "option" });
+                if (item instanceof Object)
+                {
+                    option.text(item.text);
+                    option.attr("value", item.value);
+                    if (item.value === disabled) option.attr("disabled", "");
+                }
+                else
+                {
+                    option.text(items[index]);
+                    option.attr("value", index);
+                    if (index === disabled) option.attr("disabled", "");
+                }
+                option.appendTo(that);
+            }
+        }
+        else
+        {
+            for (var index in items)
+            {
+                var option = new aUI.Element({ element : "option", text : items[index] });
+                option.attr("value", index);
+                if (index === disabled) option.attr("disabled", "");
+                option.appendTo(that);
+            }
+        }
+    };
+    this.focus = function()
+    {
+        that.getElement().focus();
+    };
+    //Сборка
+    if (options.type) this.type(options.type);
+    if (options.required) this.required(options.required);
+    this.items(options.items, options.disabled);
+    this.value(options.value);
+};
+aUI.proto(aUI.Select, aUI.Element);
 //---------------------------------------------------------------------------
 aUI.Memo = function Memo(options)
 {
