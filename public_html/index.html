@@ -119,8 +119,9 @@ and open the template in the editor.
    var btn2 = new aUI.Button({ text : "selectable" }).appendTo(section1);
    btn2.onClick(btn2.toggleSelect);
 
-   var edit = new aUI.Edit({ placeholder : "Edit" }).appendTo(section1);
+   var edit = new aUI.Edit({ placeholder : "Edit", examples : ["01.01.2014", "01.01.2015"] }).appendTo(section1);
    edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
+   edit.maxLength(10);
 
    var select = new aUI.Select({ items : [ "...", "edit", "memo", "select" ], disabled : 0, value : 0 }).appendTo(section1);
 

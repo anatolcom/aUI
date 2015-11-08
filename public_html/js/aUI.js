@@ -260,7 +260,6 @@ aUI.Element = function Element(options)
     };
     this.toggleHidden = function()
     {
-        //this.getElement().hidden = !that.getElement().hidden;
         that.hidden(!that.hidden());
     };
     this.width = function(value)
@@ -681,7 +680,7 @@ aUI.Edit = function Edit(options)
         element : "input",
         type : null,
         placeholder : null,
-        //examples : null,
+        examples : null,
         required : false
     }, options);
     aUI.Element.call(this, options);
@@ -704,6 +703,11 @@ aUI.Edit = function Edit(options)
         if (value === undefined) return that.attr("placeholder");
         that.attr("placeholder", value);
     };
+    this.maxLength = function(value)
+    {
+        if (value === undefined) that.getElement().maxLength;
+        that.getElement().maxLength = value;
+    };
     this.focus = function()
     {
         //if (value === undefined) return that.attr("placeholder");
@@ -719,23 +723,34 @@ aUI.Edit = function Edit(options)
     if (options.type) this.type(options.type);
     if (options.required) this.required(options.required);
     if (options.placeholder) this.placeholder(options.placeholder);
-    this.attr("list", "INPUT_" + "xxxxxxxxxxxxxxxx".replace(/[x]/g, fnUID));
+    if (options.maxLength) this.maxLength(options.maxLength);
+
+    if (options.examples)
+    {
+        var id = "INPUT_" + "xxxxxxxxxxxxxxxx".replace(/[x]/g, fnUID);
+        this.attr("list", id);
+        var datalist = new aUI.Element({ element : "datalist", id : id }).appendTo(this);
+        for (var index in options.examples)
+        {
+            new aUI.Element({ element : "option", text: options.examples[index] }).appendTo(datalist);
+        }
+    }
 };
 aUI.proto(aUI.Edit, aUI.Element);
 //---------------------------------------------------------------------------
- /**
-  * <b>Выпадающий список.</b><br/>
-  * Метод value возвращает и устанавливает текущее значение.<br/>
-  * Метод focus делает компанент активным.<br/>
-  * @param {object} options входные данные:<br/>
-  * value: текущее значение, null если нет значения<br/>
-  * items: имеет разные варианты заполнения:
-  * - список названий ["Название1","Название2"]. значением будет порядковый номер названия.<br/>
-  * - ключи и значения {value1:"Название1",value2:"Название2"}. не гарантируется последовательность.<br/>
-  * - список ключей и значений [{value:key1,text:"Название1"},{value:key2,text:"Название2"}].<br/>
-  * disabled: значение невыбираемого элемента, null если нет значения<br/>
-  * @returns {Select}
-  */
+/**
+ * <b>Выпадающий список.</b><br/>
+ * Метод value возвращает и устанавливает текущее значение.<br/>
+ * Метод focus делает компанент активным.<br/>
+ * @param {object} options входные данные:<br/>
+ * value: текущее значение, null если нет значения<br/>
+ * items: имеет разные варианты заполнения:
+ * - список названий ["Название1","Название2"]. значением будет порядковый номер названия.<br/>
+ * - ключи и значения {value1:"Название1",value2:"Название2"}. не гарантируется последовательность.<br/>
+ * - список ключей и значений [{value:key1,text:"Название1"},{value:key2,text:"Название2"}].<br/>
+ * disabled: значение невыбираемого элемента, null если нет значения<br/>
+ * @returns {Select}
+ */
 aUI.Select = function Select(options)
 {
     //Опции
@@ -843,9 +858,15 @@ aUI.Memo = function Memo(options)
         if (value === undefined) return that.attr("placeholder");
         that.attr("placeholder", value);
     };
+    this.maxLength = function(value)
+    {
+        if (value === undefined) that.getElement().maxLength;
+        that.getElement().maxLength = value;
+    };
     //Сборка
     if (options.required) this.required(options.required);
     if (options.placeholder) this.placeholder(options.placeholder);
+    if (options.maxLength) this.maxLength(options.maxLength);
 };
 aUI.proto(aUI.Memo, aUI.Element);
 
