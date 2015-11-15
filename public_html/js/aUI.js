@@ -282,7 +282,9 @@ aUI.Element = function Element(options)
     if (options.id) this.id(options.id);
     if (options.class) this.class(options.class);
     if (options.text || options.text === 0 || options.text === false) this.text(options.text);
-    if (options.html || options.html === 0 || options.html === false) this.html(options.html);
+    //if (options.html || options.html === 0 || options.html === false) this.html(options.html);
+    if (options.width || options.width === 0) this.width(options.width);
+    if (options.height || options.height === 0) this.height(options.height);
 };
 //-------------------------------------------------------------------------------------------------------------------
 /*
@@ -732,7 +734,7 @@ aUI.Edit = function Edit(options)
         var datalist = new aUI.Element({ element : "datalist", id : id }).appendTo(this);
         for (var index in options.examples)
         {
-            new aUI.Element({ element : "option", text: options.examples[index] }).appendTo(datalist);
+            new aUI.Element({ element : "option", text : options.examples[index] }).appendTo(datalist);
         }
     }
 };
@@ -1253,4 +1255,128 @@ aUI.SList = function SList(options)
     //menu.css("background-color", "red");
 };
 aUI.proto(aUI.SList, aUI.Element);
+//---------------------------------------------------------------------------
+aUI.XY = function XY(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        class : "xy",
+        x : 0,
+        y : 0,
+        rangeX : { min : 0, max : 99 },
+        rangeY : { min : 0, max : 99 }
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+    var that = this;
+    var position = { };
+    position.top = 0;
+    position.left = 0;
+
+
+    //Функции
+    function posToValue(pos, range, len)
+    {
+        if (len === 0) return 0;
+        return range.min + ((pos * (range.max - range.min + 1)) / len);
+    }
+    function posFromValue(value, range, len)
+    {
+        return ((value - range.min) * len) / (range.max - range.min + 1);
+    }
+    function moveTo(left, top)
+    {
+        if (top < 0) top = 0;
+        if (left < 0) left = 0;
+        if (top >= e.clientHeight) top = e.clientHeight - 1;
+        if (left >= e.clientWidth) left = e.clientWidth - 1;
+
+        position.top = top;
+        position.left = left;
+
+        update();
+
+        //text.textContent = "T:" + top + " - L:" + left;
+    }
+    function inRect(rect)
+    {
+        var x = event.x - rect.left;
+        var y = event.y - rect.top;
+        var inX = (x >= 0) && (x < rect.width);
+        var inY = (y >= 0) && (y < rect.height);
+        return inX && inY;
+    }
+    function onMouseDown(event)
+    {
+        document.addEventListener("mousemove", onMove);
+        onMove(event);
+    }
+    function onMouseUp(event)
+    {
+        document.removeEventListener("mousemove", onMove);
+    }
+    function onMove(event)
+    {
+        var rect = e.getBoundingClientRect();
+        var borderWidth = Math.floor((rect.width - e.clientHeight) / 2);
+        var borderHeight = Math.floor((rect.height - e.clientHeight) / 2);
+        var left = event.x - rect.left - borderWidth;
+        var top = event.y - rect.top - borderHeight;
+        moveTo(left, top);
+    }
+    function onDragStart()
+    {
+        return false;
+    }
+    function update()
+    {
+        pX.style.width = position.left + "px";
+        pY.style.height = position.top + "px";
+
+        var rect = m.getBoundingClientRect();
+        var dl = Math.floor(rect.width / 2);
+        var dt = Math.floor(rect.height / 2);
+        m.style.left = (position.left - dl) + "px";
+        m.style.top = (position.top - dt) + "px";
+    }
+
+    //Сборка
+    var area = new aUI.Element({ class : "area" }).appendTo(this);
+    var progressX = new aUI.Element({ class : "x" }).appendTo(area);
+    var progressY = new aUI.Element({ class : "y" }).appendTo(area);
+    var move = new aUI.Element({ class : "move", width : 15, height : 15 }).appendTo(area);
+    var e = area.getElement();
+    var pX = progressX.getElement();
+    var pY = progressY.getElement();
+    var m = move.getElement();
+    e.style.position = "relative";
+    pX.style.position = "absolute";
+    pX.style.height = "100%";
+    pY.style.position = "absolute";
+    pY.style.width = "100%";
+    m.style.position = "absolute";
+
+    //e.onmousedown = onMouseDown;
+    e.ondragstart = onDragStart;
+    e.addEventListener("mousedown", onMouseDown);
+    //e.addEventListener("dragstart", onDragStart);
+    document.addEventListener("mouseup", onMouseUp);
+
+
+//    var observer = new MutationObserver(function(mutations) 
+//    {
+//        mutations.forEach(function(mutationRecord) 
+//        {
+//            console.log('style changed!');
+//            update;
+//        });
+//    });
+//    observer.observe(m, { attributes : true, attributeFilter : [ 'style' ] });
+
+    update();
+    m.style.left = "-7px";
+    m.style.top = "-7px";
+};
+aUI.proto(aUI.XY, aUI.Element);
 //---------------------------------------------------------------------------

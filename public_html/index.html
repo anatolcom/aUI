@@ -105,6 +105,7 @@ and open the template in the editor.
 
    var section1 = addSection("Input");
    var section2 = addSection("Calendar");
+   var section3 = addSection("Mouse");
 
    selectSection(aURL.get("selected"));
 
@@ -141,6 +142,10 @@ and open the template in the editor.
    var calendar3 = new aUI.Calendar({ onchange : changeDate });
    calendar3.addClass("large");
    calendar3.appendTo(section2);
+   
+   
+   var xy = new aUI.XY().appendTo(section3);
+   
   </script>
   <!--  <datalist id="options">
      <option>option 1</option>

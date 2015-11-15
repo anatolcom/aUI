@@ -218,7 +218,7 @@ textarea.invalid
 {
  width: 35px;
  height: 35px;
- 
+
 }
 .calendar > .prev:hover,
 .calendar > .next:hover,
@@ -373,4 +373,49 @@ textarea.invalid
  width: 49px;
  height: 49px;
  margin-top: -15px;
+}
+
+/* XY
+-----------------------------------------------------------------------------------------------*/
+.xy
+{
+ cursor: default;
+ /* border: #BBB solid 1px; */
+ /* border-radius: 3px; */
+ /* padding: 10px; */
+}
+.xy > .area
+{
+ border: rgba(127, 127, 127, 0.1) solid 1px;
+ cursor: default;
+ width: 200px;
+ height: 200px;
+ overflow: hidden;
+}
+.xy > .area > .x
+{
+ border-right: #BBB solid 1px;
+}
+.xy > .area > .y
+{
+ border-bottom: #BBB solid 1px;
+}
+.xy > .area > .move
+{
+ cursor: default;
+ /*width: 15px;*/
+ /*height: 15px;*/
+ border: #BBB solid 1px;
+ border-radius: 2px;
+ /* background-color: rgba(0, 0, 0, 0.1); */
+}
+.xy > .area > .move:hover
+{
+ /* background-color: rgba(0, 0, 0, 0.15); */
+ /* box-shadow: 0px 0px 1px rgba(0,0,0,0.4), 0px 1px 1px rgba(0,0,0,0.4); */
+}
+.xy > .area > .move:active
+{
+ /* background-color: rgba(0, 0, 0, 0.08); */
+ /* box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2); */
 }
