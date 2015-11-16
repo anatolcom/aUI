@@ -417,11 +417,8 @@ aUI.List = function List(options)
         var nodes = that.getElement().childNodes;
         for (var q = 0; q < nodes.length; q++) nodes[q].aui.toggleSelect();
     };
-
-
-
     //Сборка
-    if (options.itemConstructor) this.setItemConstructor(options.itemConstructor);
+    if (options.itemConstructor) this.itemConstructor(options.itemConstructor);
 };
 aUI.proto(aUI.List, aUI.Element);
 
