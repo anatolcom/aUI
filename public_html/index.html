@@ -149,6 +149,12 @@ and open the template in the editor.
    xy2.roundX(function(value){ return Math.round(value); });
    xy2.roundY(function(value){ return Math.round(value); });
    
+   var progressGroup = new aUI.Element({ class : "group" }).appendTo(section3);
+   var progress1 = new aUI.Progress({ width : 200 }).appendTo(progressGroup);
+   progress1.value(30);
+   var progress2 = new aUI.Progress({ width : 200 }).appendTo(progressGroup);
+   progress2.value(70);
+   
   </script>
   <!--  <datalist id="options">
      <option>option 1</option>

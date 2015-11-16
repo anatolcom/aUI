@@ -400,6 +400,29 @@ textarea.invalid
  margin-right: 10px;
 }
 
+.progress
+{
+ /* border: #BBB solid 1px; */
+ border-radius: 4px;
+ overflow: hidden;
+ background-color: rgba(54, 54, 150, 0.2);
+}
+.progress.horisontal
+{
+ height: 4px;
+ width: 100px;
+}
+.progress.vertical
+{
+ height: 100px;
+ width: 4px;
+}
+.progress > .value
+{
+ 
+ background-color: #363696;
+}
+
 /* XY
 -----------------------------------------------------------------------------------------------*/
 .xy

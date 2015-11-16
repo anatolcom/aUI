@@ -7,6 +7,57 @@
 var aUtils = new (function()
 {
 //------------------------------------------------------------------------------------------------------------------- 
+    /**
+     * Подрезка значения value по диапазону от min до max включительно.<br/>
+     * @param {Number} value значение
+     * @param {Number} min минимум
+     * @param {Number} max махимум
+     * @returns {Number}
+     */
+    this.trimByRange = function(value, min, max)
+    {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    };
+//------------------------------------------------------------------------------------------------------------------- 
+    /**
+     * Находится ли значение value в диапазоне между min и max включительно.<br/>
+     * @param {Number} value значение
+     * @param {Number} min минимум
+     * @param {Number} max махимум
+     * @returns {Boolean}
+     */
+    this.inRange = function(value, min, max)
+    {
+        if (value < min) return false;
+        if (value > max) return false;
+        return true;
+//        return (min <= value) && (value <= max);
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    /**
+     * Находится ли точка x,y в пределах области rect включительно.<br/>
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Rect} rect прямоугольная область
+     * @returns {Boolean}
+     */
+    this.inRect = function(x, y, rect)
+    {
+        if (!aUtils.inRange(x, rect.left, rect.right)) return false;
+        if (!aUtils.inRange(y, rect.top, rect.bottom)) return false;
+        return true;
+    };
+//------------------------------------------------------------------------------------------------------------------- 
+    this.convertRangedValue = function(a, minA, maxA, minB, maxB)
+    {
+        var lenA = (maxA - minA) + 1;
+        var lenB = (maxB - minB) + 1;
+        var b = minB + (((a - minA) * lenB) / lenA);
+        return b;
+    };
+//------------------------------------------------------------------------------------------------------------------- 
     /** 
      * Преобразование числа number в строку с минимальной длиной length, при необходимости дополняет строку символом 0.<br/>
      * Если число не вмещается в строку длиной length, то формируется строка необходимой длинны.<br/>

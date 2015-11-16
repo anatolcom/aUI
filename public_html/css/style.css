@@ -259,3 +259,7 @@ menu.circle > *:active
 }
 
 
+.group > *
+{
+ margin-bottom: 10px;
+}

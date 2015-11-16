@@ -1275,6 +1275,61 @@ aUI.SList = function SList(options)
 };
 aUI.proto(aUI.SList, aUI.Element);
 //---------------------------------------------------------------------------
+aUI.Progress = function Progress(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        class : "progress",
+        value : 0,
+        min : 0,
+        max : 100,
+        round : null
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+    var that = this;
+
+
+    //Функции
+    function update()
+    {
+        var min = 0;
+//        var max = e.clientHeight - 1;
+        var max = e.clientWidth - 1;
+        var value = aUtils.convertRangedValue(options.value, options.min, options.max, min, max);
+//        p.style.height = value + "px";
+        p.style.width = value + "px";
+    }
+    this.value = function(value)
+    {
+        if (value === undefined) return options.value;
+        options.value = aUtils.trimByRange(value, options.min, options.max);
+        update();
+    };
+    this.round = function(fn)
+    {
+        if (fn === undefined) return options.round;
+        if (typeof fn !== "function") throw new Error("fn for round not a function");
+        options.round = fn;
+    };
+    //Сборка
+    var progress = new aUI.Element({ class : "value" }).appendTo(this);
+//    this.addClass("vertical");
+    this.addClass("horisontal");
+//    progress.width("100%");
+//    progress.height("100%");
+    var e = this.getElement();
+    var p = progress.getElement();
+    e.style.position = "relative";
+    p.style.position = "absolute";
+    p.style.width = "100%";
+    p.style.height = "100%";
+    update();
+};
+aUI.proto(aUI.Progress, aUI.Element);
+//---------------------------------------------------------------------------
+
 aUI.XY = function XY(options)
 {
     //Опции
@@ -1283,8 +1338,12 @@ aUI.XY = function XY(options)
         class : "xy",
         x : 0,
         y : 0,
-        rangeX : { min : -5, max : 5 },
-        rangeY : { min : -5, max : 5 },
+        minX : -5,
+        maxX : 5,
+        minY : -5,
+        maxY : 5,
+        //rangeX : { min : -5, max : 5 },
+        //rangeY : { min : -5, max : 5 },
         roundX : null,
         roundY : null
     }, options);
@@ -1297,52 +1356,31 @@ aUI.XY = function XY(options)
 
 
     //Функции
-    function posToValue(pos, range, len, round)
+    function posToValue(pos, min, max, len, round)
     {
         if (len === 0) return 0;
-        var rangeLen = (range.max - range.min) + 1;
-        var value = range.min + ((pos * rangeLen) / len);
+        var value = min + ((pos * ((max - min) + 1)) / len);
         if (typeof round !== "function") return value;
         return round(value);
     }
-    function trimByRange(value, min, max)
+    function valueToPos(value, min, max, len)
     {
-        if (value < min) return min;
-        if (value > max) return max;
-        return value;
-    }
-    function trimPos(pos, len)
-    {
-        if (pos < 0) return 0;
-        if (pos >= len) return len - 1;
-        return pos;
-    }
-    function valueToPos(value, range, len)
-    {
-        var rangeLen = (range.max - range.min) + 1;
-        var pos = Math.round(((value - range.min) * len) / rangeLen);
-        return trimPos(pos, len);
+        var pos = Math.round(((value - min) * len) / ((max - min) + 1));
+        return aUtils.trimByRange(pos, 0, len - 1);
     }
     function moveTo(left, top)
     {
-        top = trimPos(top, e.clientHeight);
-        left = trimPos(left, e.clientWidth);
+        top = aUtils.trimByRange(top, 0, e.clientHeight - 1);
+        left = aUtils.trimByRange(left, 0, e.clientWidth - 1);
 
-        options.x = posToValue(left, options.rangeX, e.clientWidth, options.roundX);
-        options.y = posToValue(top, options.rangeY, e.clientHeight, options.roundY);
-        position.left = valueToPos(options.x, options.rangeX, e.clientWidth);
-        position.top = valueToPos(options.y, options.rangeY, e.clientHeight);
+        options.x = posToValue(left, options.minX, options.maxX, e.clientWidth, options.roundX);
+        options.y = posToValue(top, options.minY, options.maxY, e.clientHeight, options.roundY);
+        position.left = valueToPos(options.x, options.minX, options.maxX, e.clientWidth);
+        position.top = valueToPos(options.y, options.minY, options.maxY, e.clientHeight);
 
         update();
     }
-    function inRect(rect)
-    {
-        var x = event.x - rect.left;
-        var y = event.y - rect.top;
-        var inX = (x >= 0) && (x < rect.width);
-        var inY = (y >= 0) && (y < rect.height);
-        return inX && inY;
-    }
+
     function onMouseDown(event)
     {
         document.addEventListener("mousemove", onMove);
@@ -1380,12 +1418,12 @@ aUI.XY = function XY(options)
     this.x = function(value)
     {
         if (value === undefined) return options.x;
-        options.x = trimByRange(value, options.rangeX.min, options.rangeX.max);
+        options.x = aUtils.trimByRange(value, options.minX, options.maxX);
     };
     this.y = function(value)
     {
         if (value === undefined) return options.y;
-        options.y = trimByRange(value, options.rangeY.min, options.rangeY.max);
+        options.y = aUtils.trimByRange(value, options.minY, options.maxY);
     };
     this.roundX = function(fn)
     {
