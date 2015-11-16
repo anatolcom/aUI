@@ -783,6 +783,7 @@ aUI.Select = function Select(options)
      */
     this.items = function(items, disabled)
     {
+        options.value = this.value();
         that.clear();
         options.items = items;
         if (disabled === undefined) disabled = null;
@@ -821,6 +822,7 @@ aUI.Select = function Select(options)
                 option.appendTo(that);
             }
         }
+        this.value(options.value);
     };
     this.focus = function()
     {
@@ -829,8 +831,8 @@ aUI.Select = function Select(options)
     //Сборка
     if (options.type) this.type(options.type);
     if (options.required) this.required(options.required);
-    this.items(options.items, options.disabled);
     this.value(options.value);
+    this.items(options.items, options.disabled);
 };
 aUI.proto(aUI.Select, aUI.Element);
 //---------------------------------------------------------------------------
@@ -1200,6 +1202,26 @@ aUI.Date = function Date(options)
 };
 aUI.proto(aUI.Date, aUI.Element);
 //---------------------------------------------------------------------------
+aUI.Field = function Field(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        class : "field",
+        caption : null
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+//    var that = this;
+    //Функции
+    //Сборка
+    this.caption = new aUI.Element({ class : "caption" }).appendTo(this);
+    this.value = new aUI.Element({ class : "value" }).appendTo(this);
+    if (options.caption) this.caption.text(options.caption);
+};
+aUI.proto(aUI.Field, aUI.Element);
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 aUI.SList = function SList(options)
 {
     //Опции
@@ -1261,40 +1283,57 @@ aUI.XY = function XY(options)
         class : "xy",
         x : 0,
         y : 0,
-        rangeX : { min : 0, max : 99 },
-        rangeY : { min : 0, max : 99 }
+        rangeX : { min : -5, max : 5 },
+        rangeY : { min : -5, max : 5 },
+        roundX : null,
+        roundY : null
     }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
     var position = { };
-    position.top = 0;
-    position.left = 0;
+    position.left = options.x;
+    position.top = options.y;
 
 
     //Функции
-    function posToValue(pos, range, len)
+    function posToValue(pos, range, len, round)
     {
         if (len === 0) return 0;
-        return range.min + ((pos * (range.max - range.min + 1)) / len);
+        var rangeLen = (range.max - range.min) + 1;
+        var value = range.min + ((pos * rangeLen) / len);
+        if (typeof round !== "function") return value;
+        return round(value);
     }
-    function posFromValue(value, range, len)
+    function trimByRange(value, min, max)
     {
-        return ((value - range.min) * len) / (range.max - range.min + 1);
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+    function trimPos(pos, len)
+    {
+        if (pos < 0) return 0;
+        if (pos >= len) return len - 1;
+        return pos;
+    }
+    function valueToPos(value, range, len)
+    {
+        var rangeLen = (range.max - range.min) + 1;
+        var pos = Math.round(((value - range.min) * len) / rangeLen);
+        return trimPos(pos, len);
     }
     function moveTo(left, top)
     {
-        if (top < 0) top = 0;
-        if (left < 0) left = 0;
-        if (top >= e.clientHeight) top = e.clientHeight - 1;
-        if (left >= e.clientWidth) left = e.clientWidth - 1;
+        top = trimPos(top, e.clientHeight);
+        left = trimPos(left, e.clientWidth);
 
-        position.top = top;
-        position.left = left;
+        options.x = posToValue(left, options.rangeX, e.clientWidth, options.roundX);
+        options.y = posToValue(top, options.rangeY, e.clientHeight, options.roundY);
+        position.left = valueToPos(options.x, options.rangeX, e.clientWidth);
+        position.top = valueToPos(options.y, options.rangeY, e.clientHeight);
 
         update();
-
-        //text.textContent = "T:" + top + " - L:" + left;
     }
     function inRect(rect)
     {
@@ -1338,6 +1377,29 @@ aUI.XY = function XY(options)
         m.style.top = (position.top - dt) + "px";
     }
 
+    this.x = function(value)
+    {
+        if (value === undefined) return options.x;
+        options.x = trimByRange(value, options.rangeX.min, options.rangeX.max);
+    };
+    this.y = function(value)
+    {
+        if (value === undefined) return options.y;
+        options.y = trimByRange(value, options.rangeY.min, options.rangeY.max);
+    };
+    this.roundX = function(fn)
+    {
+        if (fn === undefined) return options.roundX;
+        if (typeof fn !== "function") throw new Error("fn for roundX not a function");
+        options.roundX = fn;
+    };
+    this.roundY = function(fn)
+    {
+        if (fn === undefined) return options.roundY;
+        if (typeof fn !== "function") throw new Error("fn for roundY not a function");
+        options.roundY = fn;
+    };
+
     //Сборка
     var area = new aUI.Element({ class : "area" }).appendTo(this);
     var progressX = new aUI.Element({ class : "x" }).appendTo(area);
@@ -1355,8 +1417,10 @@ aUI.XY = function XY(options)
     m.style.position = "absolute";
 
     //e.onmousedown = onMouseDown;
+    m.ondragstart = onDragStart;
     e.ondragstart = onDragStart;
     e.addEventListener("mousedown", onMouseDown);
+//    m.addEventListener("mousedown", onMouseDown);
     //e.addEventListener("dragstart", onDragStart);
     document.addEventListener("mouseup", onMouseUp);
 

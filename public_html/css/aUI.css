@@ -82,10 +82,19 @@ and open the template in the editor.
  background-color: #0AA75F;
  color: #FFF;
 }
+.button.success.selected
+{
+ background-color: rgb(68, 202, 140);
+}
+
 .button.warning
 {
  background-color: #D22F2F;
  color: #FFF;
+}
+.button.warning.selected
+{
+ background-color: rgb(228, 104, 104);
 }
 
 /* Input, Select
@@ -374,6 +383,21 @@ textarea.invalid
  width: 49px;
  height: 49px;
  margin-top: -15px;
+}
+
+/* Field
+-----------------------------------------------------------------------------------------------*/
+
+.field > .caption,
+.field > .value
+{
+ display: inline-block;
+ vertical-align: middle;
+}
+.field > .caption
+{
+ font-weight: bold;
+ margin-right: 10px;
 }
 
 /* XY

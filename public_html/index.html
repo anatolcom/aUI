@@ -144,7 +144,10 @@ and open the template in the editor.
    calendar3.appendTo(section2);
    
    
-   var xy = new aUI.XY().appendTo(section3);
+   var xy1 = new aUI.XY().appendTo(section3);
+   var xy2 = new aUI.XY().appendTo(section3);
+   xy2.roundX(function(value){ return Math.round(value); });
+   xy2.roundY(function(value){ return Math.round(value); });
    
   </script>
   <!--  <datalist id="options">
