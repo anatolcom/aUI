@@ -15,8 +15,15 @@ var aUtils = new (function()
 //        return this.attachEvent(e, callback);
 //    };
 //}
-//------------------------------------------------------------------------------------------------------------------- 
-    this.addEvent = function(obj, type, fn)
+//-------------------------------------------------------------------------------------------------------------------
+    /**
+     * Добавление слушателя на событие eventName у объекта object и устанавливает функцию обратного вызова on.<br/>
+     * @param {object} object
+     * @param {string} eventName имя события, например click, mousedown и тд. (без on)
+     * @param {function} on функция обратного вызова
+     * @returns {undefined}
+     */
+    this.addEvent = function(object, eventName, on)
     {
 //        if (obj.attachEvent) 
 //        {
@@ -28,10 +35,17 @@ var aUtils = new (function()
 //            obj.attachEvent('on' + type, obj[type + fn]);
 //            return;
 //        } 
-        obj.addEventListener(type, fn, false);
+        object.addEventListener(eventName, on, false);
     };
 //------------------------------------------------------------------------------------------------------------------- 
-    this.removeEvent = function(obj, type, fn)
+    /**
+     * Удаляет слушателя на событие eventName у объекта object и с функцией обратного вызова on.<br/>
+     * @param {object} object
+     * @param {string} eventName имя события, например click, mousedown и тд. (без on)
+     * @param {function} on функция обратного вызова
+     * @returns {undefined}
+     */
+    this.removeEvent = function(object, eventName, on)
     {
 //        if (obj.detachEvent) 
 //        {
@@ -39,7 +53,7 @@ var aUtils = new (function()
 //            obj[type + fn] = null;
 //            return;
 //        } 
-        obj.removeEventListener(type, fn, false);
+        object.removeEventListener(eventName, on, false);
     };
 //------------------------------------------------------------------------------------------------------------------- 
     /**

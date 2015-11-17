@@ -1221,6 +1221,29 @@ aUI.Field = function Field(options)
 };
 aUI.proto(aUI.Field, aUI.Element);
 //---------------------------------------------------------------------------
+aUI.SItem = function SItem(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+    }, options);
+    aUI.ListItem.call(this, options);
+    //Переменные
+    var that = this;
+    //Функции
+    this.caption = function()
+    {
+        return caption;
+    };
+    this.content = function()
+    {
+        return content;
+    };
+    //Сборка
+    var caption = new aUI.Element({ class : "caption" }).appendTo(this);
+    var content = new aUI.Element({ class : "content" }).appendTo(this);
+};
+aUI.proto(aUI.SItem, aUI.ListItem);
 //---------------------------------------------------------------------------
 aUI.SList = function SList(options)
 {
@@ -1241,7 +1264,8 @@ aUI.SList = function SList(options)
     {
         menu.add({ text : params.text, onclick : menuClick });
         if (menu.count() === 1) menu.selectSingle(0);
-        list.add({ text : params.text });
+        var item = list.add();//{ text : params.text }
+        item.caption().text(params.text);
     };
 
     function menuClick()
@@ -1268,7 +1292,7 @@ aUI.SList = function SList(options)
     }
     //Сборка
     var menu = new aUI.List({ class : "menu" }).appendTo(this);
-    var scrollList = new aUI.ScrollList({ class : "scrollarea" }).appendTo(this);
+    var scrollList = new aUI.ScrollList({ class : "scrollarea", listOptions : { itemConstructor : aUI.SItem } }).appendTo(this);
     scrollList.onChangeTop(changeTop);
     var list = scrollList.list();
     //menu.css("background-color", "red");
@@ -1663,7 +1687,7 @@ aUI.Popup = function Popup(options)
         aUtils.removeEvent(document, "mousedown", onMouseDown);
         alert("hide");
     }
-    show();//???
+//    show();//???
     that.getElement().onmousedown = function()
     {
         isClicked = true;

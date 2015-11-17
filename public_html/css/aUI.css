@@ -433,6 +433,7 @@ textarea.invalid
  border: rgba(128, 128, 128, 0.2) solid 1px;
  border-radius: 3px;
  /* overflow: hidden; */
+ box-sizing: border-box;
 }
 .scroll.horisontal
 {
@@ -446,8 +447,8 @@ textarea.invalid
 }
 .scroll > .drag
 {
- border: #FFF solid 3px;
- background-color: #BBB;
+ border: #FFF solid 2px;
+ background-color: #888;
  border-radius: 3px;
  box-sizing: border-box;
 }
@@ -460,7 +461,7 @@ textarea.invalid
 .scroll:hover > .drag,
 .scroll.move > .drag
 {
- border-width: 2px;
+ border-width: 1px;
 }
 
 
@@ -508,10 +509,62 @@ textarea.invalid
  /* background-color: rgba(0, 0, 0, 0.08); */
  /* box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2); */
 }
+/* Popup
+-----------------------------------------------------------------------------------------------*/
 
 .popup
 {
  border: #BBB solid 1px;
  border-radius: 3px;
  padding: 10px;
+}
+
+
+/* SList
+-----------------------------------------------------------------------------------------------*/
+
+.slist
+{
+
+}
+.slist > ul.menu
+{
+ background-color: #FFF;
+ margin-bottom: 1px;
+}
+.slist > ul.menu > li
+{
+ display: inline-block;      
+ padding: 10px 20px;      
+ cursor: default;      
+ -webkit-touch-callout: none;      
+ -webkit-user-select: none;      
+ -khtml-user-select: none;      
+ -moz-user-select: none;      
+ -ms-user-select: none;      
+ user-select: none;
+}
+.slist > ul.menu > li.selected
+{
+ background-color: rgba(0, 0, 0, 0.1);}
+.slist > .scrollarea
+{
+}
+.slist > .scrollarea > ul
+{
+}
+.slist > .scrollarea > ul > li
+{
+ min-height: 299px;
+ margin-bottom: 1px;
+ background-color: #FFF;
+}
+.slist > .scrollarea > ul > li > .caption
+{
+ font-size: 1.3em;
+ padding: 20px 20px 0px 20px;
+}
+.slist > .scrollarea > ul > li > .content
+{
+ padding: 20px;
 }
