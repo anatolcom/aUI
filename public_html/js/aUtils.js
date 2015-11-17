@@ -7,6 +7,41 @@
 var aUtils = new (function()
 {
 //------------------------------------------------------------------------------------------------------------------- 
+//if (typeof Element.prototype.addEventListener === 'undefined') 
+//{
+//    Element.prototype.addEventListener = function(e, callback) 
+//    {
+//        e = 'on' + e;
+//        return this.attachEvent(e, callback);
+//    };
+//}
+//------------------------------------------------------------------------------------------------------------------- 
+    this.addEvent = function(obj, type, fn)
+    {
+//        if (obj.attachEvent) 
+//        {
+//            obj['e' + type + fn] = fn;
+//            obj[type + fn] = function() 
+//            {
+//                obj['e' + type + fn](window.event);
+//            }
+//            obj.attachEvent('on' + type, obj[type + fn]);
+//            return;
+//        } 
+        obj.addEventListener(type, fn, false);
+    };
+//------------------------------------------------------------------------------------------------------------------- 
+    this.removeEvent = function(obj, type, fn)
+    {
+//        if (obj.detachEvent) 
+//        {
+//            obj.detachEvent('on' + type, obj[type + fn]);
+//            obj[type + fn] = null;
+//            return;
+//        } 
+        obj.removeEventListener(type, fn, false);
+    };
+//------------------------------------------------------------------------------------------------------------------- 
     /**
      * Подрезка значения value по диапазону от min до max включительно.<br/>
      * @param {Number} value значение
@@ -52,9 +87,12 @@ var aUtils = new (function()
 //------------------------------------------------------------------------------------------------------------------- 
     this.convertRangedValue = function(a, minA, maxA, minB, maxB)
     {
-        var lenA = (maxA - minA) + 1;
-        var lenB = (maxB - minB) + 1;
+        var lenA = (maxA - minA);
+        var lenB = (maxB - minB);
+//        var lenA = (maxA - minA) + 1;
+//        var lenB = (maxB - minB) + 1;
         var b = minB + (((a - minA) * lenB) / lenA);
+//        console.log(a, minA, maxA, minB, maxB, b);
         return b;
     };
 //------------------------------------------------------------------------------------------------------------------- 

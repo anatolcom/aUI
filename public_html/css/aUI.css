@@ -400,12 +400,14 @@ textarea.invalid
  margin-right: 10px;
 }
 
+/* Progress
+-----------------------------------------------------------------------------------------------*/
+
 .progress
 {
- /* border: #BBB solid 1px; */
  border-radius: 4px;
  overflow: hidden;
- background-color: rgba(54, 54, 150, 0.2);
+ background-color: rgba(128, 128, 128, 0.2);
 }
 .progress.horisontal
 {
@@ -419,9 +421,48 @@ textarea.invalid
 }
 .progress > .value
 {
- 
- background-color: #363696;
+
+ background-color: #888;
 }
+
+/* Scroll
+-----------------------------------------------------------------------------------------------*/
+
+.scroll
+{
+ border: rgba(128, 128, 128, 0.2) solid 1px;
+ border-radius: 3px;
+ /* overflow: hidden; */
+}
+.scroll.horisontal
+{
+ height: 8px;
+ width: 100px;
+}
+.scroll.vertical
+{
+ height: 100px;
+ width: 8px;
+}
+.scroll > .drag
+{
+ border: #FFF solid 3px;
+ background-color: #BBB;
+ border-radius: 3px;
+ box-sizing: border-box;
+}
+.scroll:hover,
+.scroll.move
+{
+ background-color: #FFF;
+ border-color: #C3C3C3;
+}
+.scroll:hover > .drag,
+.scroll.move > .drag
+{
+ border-width: 2px;
+}
+
 
 /* XY
 -----------------------------------------------------------------------------------------------*/
@@ -466,4 +507,11 @@ textarea.invalid
 {
  /* background-color: rgba(0, 0, 0, 0.08); */
  /* box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2); */
+}
+
+.popup
+{
+ border: #BBB solid 1px;
+ border-radius: 3px;
+ padding: 10px;
 }

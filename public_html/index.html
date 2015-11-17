@@ -64,6 +64,10 @@ and open the template in the editor.
   <a href="http://learn.javascript.ru/keyboard-events">keyboard-events</a>
   <a href="https://learn.javascript.ru/ajax-xmlhttprequest">ajax-xmlhttprequest</a>
   <a href="http://stackoverflow.com/questions/8742249/how-to-set-css3-transition-using-javascript">how-to-set-css3-transition-using-javascript</a>
+  event
+  <a href="http://www.w3schools.com/jsref/dom_obj_event.asp">dom_obj_event</a>
+  <a href="http://javascript.ru/tutorial/events/intro#poryadok-srabatyvaniya-sobytiy">poryadok-srabatyvaniya-sobytiy</a>
+  <a href="http://javascript.ru/tutorial/events/comparison#dobavlenie-cherez-on-imya-sobytiya">dobavlenie-cherez-on-imya-sobytiya</a>
   <!--  <div>
      <input list="options">
     </div>-->
@@ -143,6 +147,8 @@ and open the template in the editor.
    calendar3.addClass("large");
    calendar3.appendTo(section2);
    
+   var popup = new aUI.Popup().appendTo(section2);
+   
    
    var xy1 = new aUI.XY().appendTo(section3);
    var xy2 = new aUI.XY().appendTo(section3);
@@ -152,8 +158,15 @@ and open the template in the editor.
    var progressGroup = new aUI.Element({ class : "group" }).appendTo(section3);
    var progress1 = new aUI.Progress({ width : 200 }).appendTo(progressGroup);
    progress1.value(30);
-   var progress2 = new aUI.Progress({ width : 200 }).appendTo(progressGroup);
+   var progress2 = new aUI.Progress({ height : 200, orientation : "vertical" }).appendTo(section3);
    progress2.value(70);
+
+   var scroll1 = new aUI.Scroll({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
+   scroll1.value(70);
+   var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(section3);
+   scroll2.value(70);
+   
+   
    
   </script>
   <!--  <datalist id="options">

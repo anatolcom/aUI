@@ -146,10 +146,10 @@ aUI.extensions.validable = function(owner)
     owner.getElement().onkeyup = onvalidate;
 };
 //-------------------------------------------------------------------------------------------------------------------
-aUI.extensions.dragable = function(owner)
-{
+//aUI.extensions.dragable = function(owner)
+//{
 //https://learn.javascript.ru/drag-and-drop
-};
+//};
 //-------------------------------------------------------------------------------------------------------------------
 /**
  * <b>Элемент DOM браузера.</b><br/>
@@ -1281,25 +1281,26 @@ aUI.Progress = function Progress(options)
     options = aUI.extend(
     {
         class : "progress",
+        orientation : "horizontal",
         value : 0,
         min : 0,
-        max : 100,
+        max : 99,
         round : null
     }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
-
-
+    var isHorizontal = true;
     //Функции
     function update()
     {
         var min = 0;
-//        var max = e.clientHeight - 1;
-        var max = e.clientWidth - 1;
+        var max = 0;
+        if (isHorizontal) max = e.clientWidth;
+        else max = e.clientHeight;
         var value = aUtils.convertRangedValue(options.value, options.min, options.max, min, max);
-//        p.style.height = value + "px";
-        p.style.width = value + "px";
+        if (isHorizontal) p.style.width = value + "px";
+        else p.style.height = value + "px";
     }
     this.value = function(value)
     {
@@ -1314,9 +1315,10 @@ aUI.Progress = function Progress(options)
         options.round = fn;
     };
     //Сборка
+    isHorizontal = options.orientation !== "vertical";
     var progress = new aUI.Element({ class : "value" }).appendTo(this);
-//    this.addClass("vertical");
-    this.addClass("horisontal");
+    if (isHorizontal) this.addClass("horisontal");
+    else this.addClass("vertical");
 //    progress.width("100%");
 //    progress.height("100%");
     var e = this.getElement();
@@ -1325,11 +1327,160 @@ aUI.Progress = function Progress(options)
     p.style.position = "absolute";
     p.style.width = "100%";
     p.style.height = "100%";
+    p.style.left = "0px";
+    p.style.bottom = "0px";
+
     update();
 };
 aUI.proto(aUI.Progress, aUI.Element);
 //---------------------------------------------------------------------------
+aUI.Scroll = function Scroll(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        class : "scroll",
+        orientation : "horizontal",
+        value : 0,
+        min : 0,
+        max : 99,
+        round : null,
+        onchange : null
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+    var that = this;
+    var isHorizontal = true;
+    var size = 50;
+    var progressRect;
+    var dragRect;
+    var dragOffset = 0;
 
+    var update;
+    var onMouseMove;
+    //Функции
+    function updateHorizontal()
+    {
+        var min = 0;
+        var max = e.clientWidth - size;
+        d.style.width = size + "px";
+        var value = aUtils.convertRangedValue(options.value, options.min, options.max, min, max);
+        value = Math.round(value);
+        d.style.left = value + "px";
+        if (typeof options.onchange === "function") options.onchange.call(that, options.value);
+    }
+    function updateVertical()
+    {
+        var min = 0;
+        var max = e.clientHeight - size;
+        d.style.height = size + "px";
+        var value = aUtils.convertRangedValue(options.value, options.min, options.max, min, max);
+        value = Math.round(value);
+        d.style.top = value + "px";
+        if (typeof options.onchange === "function") options.onchange.call(that, options.value);
+    }
+    function onMouseDown(event)
+    {
+        aUtils.addEvent(document, "mousemove", onMouseMove);
+        aUtils.addEvent(document, "mouseup", onMouseUp);
+        progressRect = e.getBoundingClientRect();
+        dragRect = d.getBoundingClientRect();
+
+        if (isHorizontal)
+        {
+            var dragLeftBorderWidth = Math.floor((progressRect.width - e.clientWidth) / 2);
+            dragOffset = (event.clientX - dragRect.left) + dragLeftBorderWidth;
+        }
+        else
+        {
+            var dragTopBorderHeight = Math.floor((progressRect.height - e.clientHeight) / 2);
+            dragOffset = (event.clientY - dragRect.top) + dragTopBorderHeight;
+        }
+
+        onMouseMove(event);
+        that.addClass("move");
+
+        if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+        else event.returnValue = false; // Вариант Internet Explorer:
+    }
+    function onMouseUp(event)
+    {
+        aUtils.removeEvent(document, "mousemove", onMouseMove);
+        aUtils.removeEvent(document, "mouseup", onMouseUp);
+        that.removeClass("move");
+        if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+        else event.returnValue = false; // Вариант Internet Explorer:
+    }
+    function onMoveHorisontal(event)
+    {
+        var min = 0;
+        var max = e.clientWidth - size;
+        var pos = event.clientX - progressRect.left - dragOffset;
+        pos = aUtils.trimByRange(pos, min, max);
+        that.value(aUtils.convertRangedValue(pos, min, max, options.min, options.max));
+    }
+    function onMoveVertical(event)
+    {
+        var min = 0;
+        var max = e.clientHeight - size;
+        var pos = event.clientY - progressRect.top - dragOffset;
+        pos = aUtils.trimByRange(pos, min, max);
+        that.value(aUtils.convertRangedValue(pos, min, max, options.min, options.max));
+    }
+    function onDragStart()
+    {
+        return false;
+    }
+    this.value = function(value)
+    {
+        if (value === undefined) return options.value;
+        if (options.round) value = options.round(value);
+        value = aUtils.trimByRange(value, options.min, options.max);
+        if (options.value === value) return;
+        options.value = value;
+        update();
+    };
+    this.round = function(fn)
+    {
+        if (fn === undefined) return options.round;
+        if (fn === null)
+        {
+            options.round = null;
+            return;
+        }
+        if (typeof fn !== "function") throw new Error("set round not a function");
+        options.round = fn;
+    };
+    //Сборка
+    isHorizontal = options.orientation !== "vertical";
+    var drag = new aUI.Element({ class : "drag" }).appendTo(this);
+    if (isHorizontal)
+    {
+        this.addClass("horisontal");
+        update = updateHorizontal;
+        onMouseMove = onMoveHorisontal;
+    }
+    else
+    {
+        this.addClass("vertical");
+        update = updateVertical;
+        onMouseMove = onMoveVertical;
+    }
+    var e = this.getElement();
+    var d = drag.getElement();
+    e.style.position = "relative";
+    d.style.position = "absolute";
+    d.style.width = "100%";
+    d.style.height = "100%";
+    d.ondragstart = onDragStart;
+    d.onmousedown = onMouseDown;
+    this.round(options.round);
+    this.value(options.value);
+
+    update();
+};
+aUI.proto(aUI.Scroll, aUI.Element);
+//---------------------------------------------------------------------------
 aUI.XY = function XY(options)
 {
     //Опции
@@ -1383,20 +1534,22 @@ aUI.XY = function XY(options)
 
     function onMouseDown(event)
     {
-        document.addEventListener("mousemove", onMove);
-        onMove(event);
+        aUtils.addEvent(document, "mousemove", onMouseMove);
+        aUtils.addEvent(document, "mouseup", onMouseUp);
+        onMouseMove(event);
     }
     function onMouseUp(event)
     {
-        document.removeEventListener("mousemove", onMove);
+        aUtils.removeEvent(document, "mousemove", onMouseMove);
+        aUtils.removeEvent(document, "mouseup", onMouseUp);
     }
-    function onMove(event)
+    function onMouseMove(event)
     {
         var rect = e.getBoundingClientRect();
         var borderWidth = Math.floor((rect.width - e.clientHeight) / 2);
         var borderHeight = Math.floor((rect.height - e.clientHeight) / 2);
-        var left = event.x - rect.left - borderWidth;
-        var top = event.y - rect.top - borderHeight;
+        var left = event.clientX - rect.left - borderWidth;
+        var top = event.clientY - rect.top - borderHeight;
         moveTo(left, top);
     }
     function onDragStart()
@@ -1460,9 +1613,6 @@ aUI.XY = function XY(options)
     e.addEventListener("mousedown", onMouseDown);
 //    m.addEventListener("mousedown", onMouseDown);
     //e.addEventListener("dragstart", onDragStart);
-    document.addEventListener("mouseup", onMouseUp);
-
-
 //    var observer = new MutationObserver(function(mutations) 
 //    {
 //        mutations.forEach(function(mutationRecord) 
@@ -1472,10 +1622,52 @@ aUI.XY = function XY(options)
 //        });
 //    });
 //    observer.observe(m, { attributes : true, attributeFilter : [ 'style' ] });
-
     update();
     m.style.left = "-7px";
     m.style.top = "-7px";
 };
 aUI.proto(aUI.XY, aUI.Element);
+//---------------------------------------------------------------------------
+aUI.Popup = function Popup(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        class : "popup"
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+    var that = this;
+    var isClicked = false;
+    //Функции
+    function onWheel(event)
+    {
+        aUtils.removeEvent(document, "wheel", onWheel);
+        hide();
+    }
+    function onMouseDown(event)
+    {
+        //var rect = that.getElement().getBoundingClientRect();
+        //if (aUtils.inRect(event.clientX, event.clientY, rect)) return;
+//        alert("out");
+        if (!isClicked) hide();
+        isClicked = false;
+    }
+    function show()
+    {
+        aUtils.addEvent(document, "mousedown", onMouseDown);
+        aUtils.addEvent(document, "wheel", onWheel);
+    }
+    function hide()
+    {
+        aUtils.removeEvent(document, "mousedown", onMouseDown);
+        alert("hide");
+    }
+    show();//???
+    that.getElement().onmousedown = function()
+    {
+        isClicked = true;
+    };
+};
+aUI.proto(aUI.Popup, aUI.Element);
 //---------------------------------------------------------------------------
