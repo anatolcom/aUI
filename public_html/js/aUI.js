@@ -25,6 +25,16 @@ aUI.construct = function(constructor, args)
     return new (Function.prototype.bind.apply(constructor, array));
 };
 //-------------------------------------------------------------------------------------------------------------------
+aUI.getElement = function(element)
+{
+    if (element === null) throw new Error("null is not element");
+//    if (element instanceof aUI.Element) element = element.getElement();
+    if (element instanceof aUI.Element) return element.getElement();
+    if (element instanceof HTMLElement) return element;
+    console.log("getElement", element);
+    throw new Error("is not HTMLElement");
+};
+//-------------------------------------------------------------------------------------------------------------------
 aUI.validator = { };
 //-------------------------------------------------------------------------------------------------------------------
 /**
@@ -188,10 +198,11 @@ aUI.Element = function Element(options)
      */
     this.appendTo = function(parent)
     {
-        if (parent === null) throw new Error("can not apply appendTo for null");
-        if (parent instanceof aUI.Element) parent = parent.getElement();
-        if (!parent instanceof HTMLElement) throw new Error("can not apply appendTo for non HTMLElement");
-        if (typeof parent.appendChild !== "function") throw new Error("can not apply appendTo for this parent");
+//        if (parent === null) throw new Error("can not apply appendTo for null");
+//        if (parent instanceof aUI.Element) parent = parent.getElement();
+//        if (!parent instanceof HTMLElement) throw new Error("can not apply appendTo for non HTMLElement");
+        parent = aUI.getElement(parent);
+        if (typeof parent.appendChild !== "function") throw new Error("parent not contain appendChild function");
         parent.appendChild(that.getElement());
         return that;
     };
@@ -1657,12 +1668,14 @@ aUI.Popup = function Popup(options)
     //Опции
     options = aUI.extend(
     {
-        class : "popup"
+        class : "popup",
+        onclose : null
     }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
     var isClicked = false;
+    var ovner = null;
     //Функции
     function onWheel(event)
     {
@@ -1671,26 +1684,57 @@ aUI.Popup = function Popup(options)
     }
     function onMouseDown(event)
     {
-        //var rect = that.getElement().getBoundingClientRect();
-        //if (aUtils.inRect(event.clientX, event.clientY, rect)) return;
-//        alert("out");
         if (!isClicked) hide();
         isClicked = false;
     }
     function show()
     {
+        updatePosition();
         aUtils.addEvent(document, "mousedown", onMouseDown);
         aUtils.addEvent(document, "wheel", onWheel);
+        that.getElement().style.display = "";
     }
     function hide()
     {
         aUtils.removeEvent(document, "mousedown", onMouseDown);
-        alert("hide");
+        that.remove();
     }
-//    show();//???
-    that.getElement().onmousedown = function()
+    function updatePosition()
+    {
+        if (!ovner) return;
+        var rect = ovner.getBoundingClientRect();
+        that.getElement().style.top = rect.bottom + "px";
+        that.getElement().style.left = rect.left + "px";
+    }
+
+    //Сборка
+    this.getElement().onmousedown = function(event)
     {
         isClicked = true;
+    };
+    this.getElement().onclick = function(event)
+    {
+        event.preventDefault();
+    };
+//    var body = document.getElementsByTagName("body").item(0);
+//    this.appendTo(body);
+    this.appendTo(document.body);
+    this.getElement().style.display = "none";
+    this.getElement().style.position = "fixed";
+    this.getElement().style.zIndex = "100";
+    that.getElement().style.top = "0px";
+    that.getElement().style.left = "0px";
+    this.appendTo = function(parent)
+    {
+        ovner = aUI.getElement(parent);
+        show();
+        return that;
+    };
+    this.onClose = function(fn)
+    {
+        if (fn === undefined) return options.onclose;
+        if (typeof fn !== "function") throw new Error("fn for onClose not a function");
+        options.onclose = fn;
     };
 };
 aUI.proto(aUI.Popup, aUI.Element);
