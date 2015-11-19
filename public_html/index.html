@@ -120,28 +120,28 @@ and open the template in the editor.
    var inputItem = slist.add({ text : "Input" });
    var calendarItem = slist.add({ text : "Calendar" });
 
-   var fieldLinks = new aUI.Field({ caption:"Ссылки" }).appendTo(section1);
+   var fieldLinks = new aUI.Field({ caption : "Ссылки" }).appendTo(section1);
    var link = new aUI.Link({ text : "Link", href : "#selected=1" }).appendTo(fieldLinks.value);
    link.attr("data-title", "Ссылка");
 
-   var fieldButtons = new aUI.Field({ caption:"Кнопки" }).appendTo(section1);
+   var fieldButtons = new aUI.Field({ caption : "Кнопки" }).appendTo(section1);
    var btn1 = new aUI.Button({ text : "button" }).appendTo(fieldButtons.value);
 
    var btn2 = new aUI.Button({ text : "selectable" }).appendTo(fieldButtons.value);
-   btn2.onClick(btn2.toggleSelect);
 
-   var fieldInputs = new aUI.Field({ caption:"Поля ввода" }).appendTo(section1);
+   var fieldInputs = new aUI.Field({ caption : "Поля ввода" }).appendTo(section1);
    var edit = new aUI.Edit({ placeholder : "Edit", examples : [ "01.01.2014", "01.01.2015" ] }).appendTo(fieldInputs.value);
    edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
    edit.maxLength(10);
    //edit.attr("data-title", "Редактируемое поле с примерами");
-   btn1.onClick([btn2.toggleSelect, edit.focus]);
 
    var select = new aUI.Select({ items : [ "...", "edit", "memo", "select" ], disabled : 0, value : 0 }).appendTo(fieldInputs.value);
 
    var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(fieldInputs.value);
    memo.validator(new aUI.validator.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
 
+   btn1.onClick([ btn2.toggleSelect, edit.focus ]);
+   btn2.onClick(btn2.toggleSelect, memo.text, "!!!", memo.focus);
 
    function changeDate()
    {
@@ -163,7 +163,10 @@ and open the template in the editor.
        var calendarPopup = new aUI.Calendar();
        calendarPopup.addClass("medium");
        calendarPopup.appendTo(popup);
-       calendarPopup.onClickDay(function(){ calendar3.value(this.value()); popup.remove(); });
+       calendarPopup.onClickDay(function() {
+     calendar3.value(this.value());
+     popup.remove();
+    });
        popup.onRemove(btnPopup.unselect);
    });
 

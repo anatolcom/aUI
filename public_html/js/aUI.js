@@ -103,17 +103,22 @@ aUI.extensions.clickable = function(owner)
     //Функции
     owner.onClick = function(fn)
     {
-        if (fn === undefined) return onclick;
-        if (fn === null)
+        ///console.log(arguments);
+        if (arguments.length === 0) return onclick;
+//        if (fn === undefined) return onclick;
+        if ((arguments.length === 1) && (arguments[0] === null))
+//        if (fn === null)
         {
             onclick = null;
             return;
         }
-        if (typeof fn === "function")
+        if ((arguments.length === 1) && (typeof arguments[0] === "function"))
+//        if (typeof fn === "function")
         {
             onclick = fn;
             return;
         }
+        
         if (fn instanceof Array)
         {
             var isArrayFunction = true;
@@ -124,6 +129,7 @@ aUI.extensions.clickable = function(owner)
                 {
                     for (var index in fn) fn[index].apply(owner, arguments);
                 };
+                return;
             }
         }
         throw new Error("type of onclick fn \"" + typeof fn + "\" is not a function");
@@ -916,6 +922,10 @@ aUI.Memo = function Memo(options)
     {
         if (value === undefined) that.getElement().maxLength;
         that.getElement().maxLength = value;
+    };
+    this.focus = function()
+    {
+        that.getElement().focus();
     };
     //Сборка
     if (options.required) this.required(options.required);
