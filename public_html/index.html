@@ -120,18 +120,26 @@ and open the template in the editor.
    var inputItem = slist.add({ text : "Input" });
    var calendarItem = slist.add({ text : "Calendar" });
 
-   var btn1 = new aUI.Button({ text : "button" }).appendTo(section1);
+   var fieldLinks = new aUI.Field({ caption:"Ссылки" }).appendTo(section1);
+   var link = new aUI.Link({ text : "Link", href : "#selected=1" }).appendTo(fieldLinks.value);
+   link.attr("data-title", "Ссылка");
 
-   var btn2 = new aUI.Button({ text : "selectable" }).appendTo(section1);
+   var fieldButtons = new aUI.Field({ caption:"Кнопки" }).appendTo(section1);
+   var btn1 = new aUI.Button({ text : "button" }).appendTo(fieldButtons.value);
+
+   var btn2 = new aUI.Button({ text : "selectable" }).appendTo(fieldButtons.value);
    btn2.onClick(btn2.toggleSelect);
 
-   var edit = new aUI.Edit({ placeholder : "Edit", examples : [ "01.01.2014", "01.01.2015" ] }).appendTo(section1);
+   var fieldInputs = new aUI.Field({ caption:"Поля ввода" }).appendTo(section1);
+   var edit = new aUI.Edit({ placeholder : "Edit", examples : [ "01.01.2014", "01.01.2015" ] }).appendTo(fieldInputs.value);
    edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
    edit.maxLength(10);
+   //edit.attr("data-title", "Редактируемое поле с примерами");
+   btn1.onClick([btn2.toggleSelect, edit.focus]);
 
-   var select = new aUI.Select({ items : [ "...", "edit", "memo", "select" ], disabled : 0, value : 0 }).appendTo(section1);
+   var select = new aUI.Select({ items : [ "...", "edit", "memo", "select" ], disabled : 0, value : 0 }).appendTo(fieldInputs.value);
 
-   var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(section1);
+   var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(fieldInputs.value);
    memo.validator(new aUI.validator.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
 
 
@@ -139,25 +147,24 @@ and open the template in the editor.
    {
        edit.value(aUtils.dateToStr(this.value(), "dd.MM.yyyy"));
    }
-   var calendar1 = new aUI.Calendar({ onchange : changeDate });
-   calendar1.appendTo(section2);
-   var calendar2 = new aUI.Calendar({ onchange : changeDate });
-   calendar2.addClass("medium");
-   calendar2.appendTo(section2);
-   var calendar3 = new aUI.Calendar({ onchange : changeDate });
-   calendar3.addClass("large");
-   calendar3.appendTo(section2);
+   var calendar1 = new aUI.Calendar({ onclickday : changeDate }).appendTo(section2);
+   var calendar2 = new aUI.Calendar({ addclass : "medium", onclickday : changeDate }).appendTo(section2);
+   var calendar3 = new aUI.Calendar({ addclass : "large", onchange : changeDate }).appendTo(section2);
 
    var btnPopup = new aUI.Button({ class : "button", text : "Calendar" }).appendTo(section2);
    btnPopup.onClick(function(event) {
-       //console.log(event);
+       if (btnPopup.selected())
+       {
+           btnPopup.unselect();
+           return;
+       }
+       btnPopup.select();
        var popup = new aUI.Popup().appendTo(btnPopup);
-       console.log(popup);
-
-       var calendarPopup = new aUI.Calendar({ onchange : changeDate });
+       var calendarPopup = new aUI.Calendar();
        calendarPopup.addClass("medium");
        calendarPopup.appendTo(popup);
-
+       calendarPopup.onClickDay(function(){ calendar3.value(this.value()); popup.remove(); });
+       popup.onRemove(btnPopup.unselect);
    });
 
 
@@ -181,6 +188,7 @@ and open the template in the editor.
    var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(section3);
    scroll2.value(70);
 
+   var movable = new aUI.Movable().appendTo(section3);
 
 
   </script>

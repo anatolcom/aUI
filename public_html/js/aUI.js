@@ -28,9 +28,9 @@ aUI.construct = function(constructor, args)
 aUI.getElement = function(element)
 {
     if (element === null) throw new Error("null is not element");
-//    if (element instanceof aUI.Element) element = element.getElement();
-    if (element instanceof aUI.Element) return element.getElement();
     if (element instanceof HTMLElement) return element;
+    if (element instanceof aUI.Element) return element.getElement();
+    if (element[0] instanceof HTMLElement) return element[0];
     console.log("getElement", element);
     throw new Error("is not HTMLElement");
 };
@@ -104,8 +104,29 @@ aUI.extensions.clickable = function(owner)
     owner.onClick = function(fn)
     {
         if (fn === undefined) return onclick;
-        if (typeof fn !== "function") throw new Error("type of onclick fn \"" + typeof fn + "\" is not a function");
-        onclick = fn;
+        if (fn === null)
+        {
+            onclick = null;
+            return;
+        }
+        if (typeof fn === "function")
+        {
+            onclick = fn;
+            return;
+        }
+        if (fn instanceof Array)
+        {
+            var isArrayFunction = true;
+            for (var index in fn) if (typeof fn[index] !== "function") isArrayFunction = false;
+            if (isArrayFunction)
+            {
+                onclick = function()
+                {
+                    for (var index in fn) fn[index].apply(owner, arguments);
+                };
+            }
+        }
+        throw new Error("type of onclick fn \"" + typeof fn + "\" is not a function");
     };
     //Сборка
     owner.getElement().onclick = function()
@@ -180,8 +201,9 @@ aUI.Element = function Element(options)
         element : "div",
         id : null,
         class : null,
-        text : null,
-        html : null
+        addclass : null,
+        text : null
+//        html : null
     }, options);
     //Переменные
     var that = this;
@@ -248,11 +270,11 @@ aUI.Element = function Element(options)
         if (text === undefined) return that.getElement().textContent;
         that.getElement().textContent = text;
     };
-    this.html = function(html)
-    {
-        if (html === undefined) return that.getElement().innerHtml;
-        that.getElement().innerHtml = html;
-    };
+//    this.html = function(html)
+//    {
+//        if (html === undefined) return that.getElement().innerHtml;
+//        that.getElement().innerHtml = html;
+//    };
     this.attr = function(name, value)
     {
         if (value === undefined) return that.getElement().getAttribute(name);
@@ -292,11 +314,31 @@ aUI.Element = function Element(options)
     element.aui = this;
     if (options.id) this.id(options.id);
     if (options.class) this.class(options.class);
+    if (options.addclass) this.addClass(options.addclass);
     if (options.text || options.text === 0 || options.text === false) this.text(options.text);
     //if (options.html || options.html === 0 || options.html === false) this.html(options.html);
     if (options.width || options.width === 0) this.width(options.width);
     if (options.height || options.height === 0) this.height(options.height);
 };
+//-------------------------------------------------------------------------------------------------------------------
+aUI.Link = function Link(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        element : "a",
+        href : "javascript:",
+        onclick : null
+    }, options);
+    aUI.Element.call(this, options);
+    aUI.extensions.clickable(this);
+    //Переменные
+    //Функции
+    //Сборка
+    if (options.href) this.attr("href", options.href);
+    if (options.onclick) this.onClick(options.onclick);
+};
+aUI.proto(aUI.Link, aUI.Element);
 //-------------------------------------------------------------------------------------------------------------------
 /*
  * <b>Кнопка.<b><br/>
@@ -926,6 +968,9 @@ aUI.Calendar = function Calendar(options)
     options = aUI.extend(
     {
         class : "calendar",
+        onclickday : null,
+        onclickmonth : null,
+        onclickyear : null,
         onchange : null,
         date : new Date()
     }, options);
@@ -934,23 +979,30 @@ aUI.Calendar = function Calendar(options)
     var that = this;
     var mode = "days";
     //Функции
-    this.value = function(date)
+    function update()
     {
-        if (date === undefined) return options.date;
-        options.date = date;
         if (mode === "days") showDays(options.date);
         if (mode === "months") showMonths(options.date);
         if (mode === "years") showYears(options.date);
+    }
+    this.value = function(date)
+    {
+        if (date === undefined) return options.date;
+        if (!date instanceof Date) throw new Error("value is not instance of Date");
+        if (options.date === date) return;
+        options.date = date;
+        update();
+        if (options.onchange) options.onchange.call(that);
     };
     function clickMonthsMode()
     {
         mode = "months";
-        that.value(options.date);
+        update();
     }
     function clickYearsMode()
     {
         mode = "years";
-        that.value(options.date);
+        update();
     }
     function clickPrev()
     {
@@ -963,7 +1015,8 @@ aUI.Calendar = function Calendar(options)
     function clickDay()
     {
         that.value(this.data);
-        if (options.onchange) options.onchange.call(that);
+//        
+        if (options.onclickday) options.onclickday.call(that);
     }
     function clickMonth()
     {
@@ -975,6 +1028,18 @@ aUI.Calendar = function Calendar(options)
         mode = "months";
         that.value(this.data);
     }
+    this.onClickDay = function(fn)
+    {
+        options.onclickday = fn;
+    };
+    this.onClickMonth = function(fn)
+    {
+        options.onclickmonth = fn;
+    };
+    this.onClickYear = function(fn)
+    {
+        options.onclickyear = fn;
+    };
     this.onChange = function(fn)
     {
         options.onchange = fn;
@@ -1074,7 +1139,9 @@ aUI.Calendar = function Calendar(options)
         table.appendTo(that);
     }
     //Сборка
-    this.value(options.date);
+    if (!options.date instanceof Date) throw new Error("value is not instance of Date");
+    update();
+//    this.value(options.date);
 };
 aUI.proto(aUI.Calendar, aUI.Element);
 aUI.Calendar.prototype.getDayTableData = function(date)
@@ -1669,73 +1736,147 @@ aUI.Popup = function Popup(options)
     options = aUI.extend(
     {
         class : "popup",
-        onclose : null
+        onremove : null
     }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
     var isClicked = false;
     var ovner = null;
+    var appendTo = this.appendTo;
+    var remove = this.remove;
+    var e = this.getElement();
     //Функции
-    function onWheel(event)
+    function onDocumentWheelOrResize(event)
     {
-        aUtils.removeEvent(document, "wheel", onWheel);
-        hide();
+        that.remove();
     }
-    function onMouseDown(event)
+    function onDocumentMouseDown(event)
     {
-        if (!isClicked) hide();
+        if (!isClicked) that.remove();
         isClicked = false;
     }
     function show()
     {
         updatePosition();
-        aUtils.addEvent(document, "mousedown", onMouseDown);
-        aUtils.addEvent(document, "wheel", onWheel);
-        that.getElement().style.display = "";
-    }
-    function hide()
-    {
-        aUtils.removeEvent(document, "mousedown", onMouseDown);
-        that.remove();
+        aUtils.addEvent(document, "mousedown", onDocumentMouseDown);
+        aUtils.addEvent(document, "wheel", onDocumentWheelOrResize);
+        aUtils.addEvent(document, "resize", onDocumentWheelOrResize);
+        e.style.display = "";
     }
     function updatePosition()
     {
         if (!ovner) return;
-        var rect = ovner.getBoundingClientRect();
-        that.getElement().style.top = rect.bottom + "px";
-        that.getElement().style.left = rect.left + "px";
+        var rectOvner = ovner.getBoundingClientRect();
+        var rectBody = document.body.getBoundingClientRect();
+        e.style.top = (rectOvner.bottom - rectBody.top) + "px";
+        e.style.left = (rectOvner.left - rectBody.left) + "px";
     }
-
-    //Сборка
-    this.getElement().onmousedown = function(event)
-    {
-        isClicked = true;
-    };
-    this.getElement().onclick = function(event)
-    {
-        event.preventDefault();
-    };
-//    var body = document.getElementsByTagName("body").item(0);
-//    this.appendTo(body);
-    this.appendTo(document.body);
-    this.getElement().style.display = "none";
-    this.getElement().style.position = "fixed";
-    this.getElement().style.zIndex = "100";
-    that.getElement().style.top = "0px";
-    that.getElement().style.left = "0px";
     this.appendTo = function(parent)
     {
         ovner = aUI.getElement(parent);
         show();
         return that;
     };
-    this.onClose = function(fn)
+    this.remove = function()
     {
-        if (fn === undefined) return options.onclose;
-        if (typeof fn !== "function") throw new Error("fn for onClose not a function");
-        options.onclose = fn;
+        if (options.onremove) if (options.onremove() === false) return;
+        aUtils.removeEvent(document, "mousedown", onDocumentMouseDown);
+        aUtils.removeEvent(document, "wheel", onDocumentWheelOrResize);
+        aUtils.removeEvent(document, "resize", onDocumentWheelOrResize);
+        remove();
     };
+    function onMouseDown(event)
+    {
+        isClicked = true;
+    }
+    function onClick(event)
+    {
+        event.preventDefault();
+    }
+    this.onRemove = function(fn)
+    {
+        if (fn === undefined) return options.onremove;
+        if (typeof fn !== "function") throw new Error("fn for onClose not a function");
+        options.onremove = fn;
+    };
+    //Сборка
+    e.onmousedown = onMouseDown;
+    e.onclick = onClick;
+    e.style.display = "none";
+    e.style.position = "absolute";
+    e.style.zIndex = "100";
+    e.style.top = "0px";
+    e.style.left = "0px";
+//    var body = document.getElementsByTagName("body").item(0);
+//    this.appendTo(body);
+    appendTo(document.body);
 };
 aUI.proto(aUI.Popup, aUI.Element);
+//---------------------------------------------------------------------------
+aUI.Movable = function Movable(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        class : "movable",
+        onmove : null
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+    var that = this;
+    var e = this.getElement();
+    var rect;
+    var dragOffsetX = 0;
+    var dragOffsetY = 0;
+    //Функции
+    function onMouseDown(event)
+    {
+        aUtils.addEvent(document, "mousemove", onMouseMove);
+        aUtils.addEvent(document, "mouseup", onMouseUp);
+        that.addClass("move");
+        rect = e.getBoundingClientRect();
+
+//        console.log(rect);
+//        console.log(event);
+
+        dragOffsetX = event.clientX - rect.left;
+        dragOffsetY = event.clientY - rect.top;
+
+        //console.log(dragOffsetX, dragOffsetY);
+
+        onMouseMove(event);
+
+        if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+        else event.returnValue = false; // Вариант Internet Explorer:
+    }
+    function onMouseUp(event)
+    {
+        aUtils.removeEvent(document, "mousemove", onMouseMove);
+        aUtils.removeEvent(document, "mouseup", onMouseUp);
+        that.removeClass("move");
+        if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+        else event.returnValue = false; // Вариант Internet Explorer:
+    }
+    function onMouseMove(event)
+    {
+        var posX = (event.clientX - rect.left) - dragOffsetX;
+        var posY = (event.clientY - rect.top) - dragOffsetY;
+        console.log(posX, posY);
+    }
+    function onDragStart()
+    {
+        return false;
+    }
+    //Сборка
+    e.ondragstart = onDragStart;
+    e.onmousedown = onMouseDown;
+//    e.style.display = "none";
+    e.style.position = "absolute";
+    e.style.zIndex = "100";
+//    e.style.top = "0px";
+//    e.style.left = "0px";
+
+};
+aUI.proto(aUI.Movable, aUI.Element);
 //---------------------------------------------------------------------------

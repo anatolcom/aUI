@@ -388,11 +388,22 @@ textarea.invalid
 /* Field
 -----------------------------------------------------------------------------------------------*/
 
+.field
+{
+ display: block;
+ vertical-align: middle;
+}
 .field > .caption,
 .field > .value
 {
  display: inline-block;
  vertical-align: middle;
+}
+.field > .value > *
+{
+ display: inline-block;
+ vertical-align: middle;
+ margin-right: 10px;
 }
 .field > .caption
 {
@@ -520,6 +531,8 @@ textarea.invalid
  background-color: #FFF;
  box-shadow: 0px 0px 1px rgba(0,0,0,0.1), 0px 2px 3px rgba(0,0,0,0.1);
  /* z-index: 1000; */
+ -webkit-transition: height 1.0s ease-in-out;
+ transition: height 1.0s ease-in-out;
 }
 
 
@@ -537,19 +550,84 @@ textarea.invalid
 }
 .slist > ul.menu > li
 {
- display: inline-block;      
- padding: 10px 20px;      
- cursor: default;      
- -webkit-touch-callout: none;      
- -webkit-user-select: none;      
- -khtml-user-select: none;      
- -moz-user-select: none;      
- -ms-user-select: none;      
+ -webkit-animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;
+ animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;
+ display: inline-block;
+ padding: 10px 20px;
+ cursor: default;
+ -webkit-touch-callout: none;
+ -webkit-user-select: none;
+ -khtml-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
  user-select: none;
+ /*-webkit-animation-duration: 1s;*/
+ /* animation-duration: 1s; */
+ /* transition-property: background-color; */
+ /* animation: 2s ease 0s normal none 1 running mymove; */
+ /* animation: 1s ease 2s normal none 1; */
+ 
+}
+@-webkit-keyframes anim-bg-to-transparent 
+{
+ from 
+ {
+  background-color: rgba(0, 0, 0, 0.1);
+ // background-color: inherit;
+ }
+ to 
+ {
+  background-color: transparent;
+ }
+}
+@keyframes anim-bg-to-transparent 
+{
+ from 
+ {
+  background-color: rgba(0, 0, 0, 0.1);
+  //background-color: inherit;
+ }
+ to 
+ {
+  background-color: transparent;
+ }
+}
+.slist > ul.menu > li:hover:not(.selected)
+{
+  /*background-color: rgba(0, 0, 0, 0.1);*/
+  border-bottom: rgba(0, 0, 0, 0.1) solid 1px;
+  padding-bottom: 9px;
 }
 .slist > ul.menu > li.selected
 {
- background-color: rgba(0, 0, 0, 0.1);}
+  background-color: rgba(0, 0, 0, 0.1);
+  -webkit-animation: 0.3s ease 0s normal none 1 running anim-bg-from-transparent;
+  animation: 0.3s ease 0s normal none 1 running anim-bg-from-transparent;
+}
+@-webkit-keyframes anim-bg-from-transparent 
+{
+ from 
+ {
+  background-color: transparent;
+ }
+ to 
+ {
+  /*background-color: rgba(0, 0, 0, 0.1);*/
+ }
+}
+@keyframes mymove 
+{
+ from 
+ {
+  background-color: anim-bg-from-transparent;
+ }
+ to 
+ {
+  /*background-color: rgba(0, 0, 0, 0.1);*/
+ }
+}
+
+
 .slist > .scrollarea
 {
 }
@@ -570,4 +648,64 @@ textarea.invalid
 .slist > .scrollarea > ul > li > .content
 {
  padding: 20px;
+}
+
+
+
+.movable
+{
+ border: #363696 solid 1px;
+ width: 20px;
+ height: 20px;
+}
+
+
+
+/* Hint
+-----------------------------------------------------------------------------------------------*/
+[data-title]:hover::before 
+{
+ content: attr(data-title); /* ?�?�?????????? ?�?�?????� */
+ position: absolute; /* ???�?????�???�?????� ?????�???�?????????�?????�?????� */
+ /*opacity: 0.9;*/
+ z-index: 100; /* ???�???�?�?�?�?�?�?? ???????????�?�???? ???????�?�?� ???�???????� ???�?�???�???�???? */
+ /*background: #FFFFFF;   ?????�?????�???�?�?�?�???�?? ?�???�?� ?�?????� */
+ background: rgba(255,255,255,0.9);  /* ?????�?????�???�?�?�?�???�?? ?�???�?� ?�?????� */
+ font-family: Arial, sans-serif; /* ?�?�?�?????�???�?� ???�???�?�?� */
+ font-size: 12px;  /*?�?�?�???�?� ?�?�?????�?� ???????????�?�???? */
+ font-weight: normal;
+ margin-left: 0px; /* ???�???�???? */
+ margin-top: 30px; /* ???�???�???? */
+ padding: 1px 5px; /* ?????�?? */
+ color: #114499;
+ /*clip:rect(0px,200px,200px,0px);*/
+ /*max-width: 200px;*/
+ /*word-wrap: normal;*/
+ border: 1px solid #D0D0D0; /*???�?�?�???�?�?�?� ?�?�?????? */
+ /*border: 1px dotted #114499;  ???�?�?�???�?�?�?� ?�?�?????? */
+ border-radius: 4px;
+ animation: title_anim 1s 1;
+ -moz-animation: title_anim 1s 1;
+ -webkit-animation: title_anim 1s 1;
+ animation-timing-function:ease-in-out;
+ -moz-animation-timing-function:ease-in-out;
+ -webkit-animation-timing-function:ease-out;
+}
+@keyframes title_anim 
+{
+ 0% {opacity: 0; margin-top: 20px;}
+ 70% {opacity: 0; margin-top: 20px;}
+ 100% {opacity: 1; margin-top: 30px;}
+}
+@-moz-keyframes title_anim 
+{
+ 0% {opacity: 0; margin-top: 20px;}
+ 70% {opacity: 0; margin-top: 20px;}
+ 100% {opacity: 1; margin-top: 30px;}
+}
+@-webkit-keyframes title_anim 
+{
+ 0% {opacity: 0; margin-top: 20px;}
+ 70% {opacity: 0; margin-top: 20px;}
+ 100% {opacity: 1; margin-top: 30px;}
 }
