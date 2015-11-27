@@ -56,6 +56,39 @@ var aUtils = new (function()
         object.removeEventListener(eventName, on, false);
     };
 //------------------------------------------------------------------------------------------------------------------- 
+    this.NumRange = function NumRange(value, min, max)
+    {
+        var that = this;
+        var data = { value : aUtils.trimByRange(value, min, max), min : min, max : max };
+        var onchange = null;
+        this.value = function(value)
+        {
+            if (value === undefined) return data.value;
+            var temp = aUtils.trimByRange(value, data.min, data.max);
+            if (data.value === temp) return;
+            data.value = temp;
+            if (onchange) onchange.call(that, data.value);
+        };
+        this.min = function(min)
+        {
+            if (min === undefined) return data.min;
+            data.min = min;
+            data.value = aUtils.trimByRange(data.value, data.min, data.max);
+        };
+        this.max = function(max)
+        {
+            if (max === undefined) return data.max;
+            data.max = max;
+            data.value = aUtils.trimByRange(data.value, data.min, data.max);
+        };
+        this.onChange = function(fn)
+        {
+            if (fn === undefined) return onchange;
+            if (typeof fn !== "function") throw new Error("fn for onChange not a function");
+            onchange = fn;
+        };
+    };
+//-------------------------------------------------------------------------------------------------------------------
     /**
      * Подрезка значения value по диапазону от min до max включительно.<br/>
      * @param {Number} value значение

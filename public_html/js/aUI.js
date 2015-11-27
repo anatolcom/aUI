@@ -96,9 +96,58 @@ aUI.extensions.selectable = function(owner)
     };
 };
 //-------------------------------------------------------------------------------------------------------------------
+aUI.extensions.resizable = function(owner)
+{
+    //События
+    var onresize = null;
+    //Переменные
+    var element = aUI.getElement(owner);
+    //Функции
+    owner.width = function(value)
+    {
+        if (value === undefined) return element.offsetWidth;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.width = value;
+        if (onresize) onresize.call(owner);
+    };
+    owner.height = function(value)
+    {
+        if (value === undefined) return element.offsetHeight;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.height = value;
+        if (onresize) onresize.call(owner);
+    };
+    owner.clientWidth = function(value)
+    {
+        if (value === undefined) return element.clientWidth;
+//        if (value === null) value = "";
+//        if (typeof value !== "number") value += "px";
+//        that.getElement().style.width = value;
+    };
+    owner.clientHeight = function(value)
+    {
+        if (value === undefined) return element.clientHeight;
+//        if (value === null) value = "";
+//        if (typeof value === "number") value += "px";
+//        that.getElement().style.height = value;
+    };
+    owner.onResize = function(fn)
+    {
+        if (fn === undefined) return onresize;
+        if (typeof fn !== "function") throw new Error("fn for onResize not a function");
+        onresize = fn;
+    };
+    aUtils.addEvent(element, "resize", function(event) {
+        if (onresize) onresize.call(owner, event);
+    });
+};
+//-------------------------------------------------------------------------------------------------------------------
 aUI.extensions.clickable = function(owner)
 {
     //Переменные
+    var fnList = [ ];
     var onclick = null;
     //Функции
     owner.onClick = function(fn)
@@ -115,24 +164,35 @@ aUI.extensions.clickable = function(owner)
         if ((arguments.length === 1) && (typeof arguments[0] === "function"))
 //        if (typeof fn === "function")
         {
-            onclick = fn;
+            onclick = arguments[0];
             return;
         }
-        
-        if (fn instanceof Array)
+        if (typeof arguments[0] !== "function") throw new Error("type of onclick arguments[0] \"" + typeof arguments[0] + "\" is not a function");
+        for (var index in arguments)
         {
-            var isArrayFunction = true;
-            for (var index in fn) if (typeof fn[index] !== "function") isArrayFunction = false;
-            if (isArrayFunction)
-            {
-                onclick = function()
-                {
-                    for (var index in fn) fn[index].apply(owner, arguments);
-                };
-                return;
-            }
+            if (typeof arguments[index] === "function") fnList.push({ fn : arguments[index], args : [ ] });
+            else fnList[fnList.length - 1].args.push(arguments[index]);
         }
-        throw new Error("type of onclick fn \"" + typeof fn + "\" is not a function");
+        onclick = function()
+        {
+            console.log(fnList);
+            for (var index in fnList) fnList[index].fn.apply(owner, fnList[index].args);
+        };
+
+//        if (fn instanceof Array)
+//        {
+//            var isArrayFunction = true;
+//            for (var index in fn) if (typeof fn[index] !== "function") isArrayFunction = false;
+//            if (isArrayFunction)
+//            {
+//                onclick = function()
+//                {
+//                    for (var index in fn) fn[index].apply(owner, arguments);
+//                };
+//                return;
+//            }
+//        }
+//        throw new Error("type of onclick fn \"" + typeof fn + "\" is not a function");
     };
     //Сборка
     owner.getElement().onclick = function()
@@ -179,8 +239,101 @@ aUI.extensions.validable = function(owner)
         return owner.hasClass("invalid");
     };
     //Сборка
-    owner.getElement().onfocus = onvalidate;
-    owner.getElement().onkeyup = onvalidate;
+    var element = aUI.getElement(owner);
+    element.onfocus = onvalidate;
+    element.onkeyup = onvalidate;
+};
+//-------------------------------------------------------------------------------------------------------------------
+aUI.extensions.movable = function(owner)
+{
+    var element = aUI.getElement(owner);
+    //События
+    var onmovestart = null;
+    var onmoveend = null;
+    var onmove = null;
+    //Переменные
+    var keepedClientX = 0;
+    var keepedClientY = 0;
+    var isRefreshOffsetOnMove = true;
+    //Функции
+    function onMouseDown(event)
+    {
+        aUtils.addEvent(document, "mousemove", onMouseMove);
+        aUtils.addEvent(document, "mouseup", onMouseUp);
+        keepedClientX = event.clientX;
+        keepedClientY = event.clientY;
+        if (onmovestart) onmovestart(event);
+        if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+        else event.returnValue = false; // Вариант Internet Explorer:
+    }
+    function onMouseUp(event)
+    {
+        aUtils.removeEvent(document, "mousemove", onMouseMove);
+        aUtils.removeEvent(document, "mouseup", onMouseUp);
+        if (onmoveend) onmoveend(event);
+        if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+        else event.returnValue = false; // Вариант Internet Explorer:
+    }
+    function onMouseMove(event)
+    {
+        var dX = event.clientX - keepedClientX;
+        var dY = event.clientY - keepedClientY;
+        if (isRefreshOffsetOnMove)
+        {
+            keepedClientX = event.clientX;
+            keepedClientY = event.clientY;
+        }
+        if (onmove) onmove(event, dX, dY);
+    }
+    function onDragStart()
+    {
+        return false;
+    }
+    owner.onMoveStart = function(fn)
+    {
+        if (fn === undefined) return onmovestart;
+        if (fn !== null && typeof fn !== "function") throw new Error("fn for onMoveStart not a function");
+        onmovestart = fn;
+    };
+    owner.onMove = function(fn)
+    {
+        if (fn === undefined) return onmove;
+        if (fn !== null && typeof fn !== "function") throw new Error("fn for onMove not a function");
+        onmove = fn;
+    };
+    owner.onMoveEnd = function(fn)
+    {
+        if (fn === undefined) return onmoveend;
+        if (fn !== null && typeof fn !== "function") throw new Error("fn for onMoveEnd not a function");
+        onmoveend = fn;
+    };
+    owner.refreshOffsetOnMove = function(value)
+    {
+        if (value === undefined) return isRefreshOffsetOnMove;
+        isRefreshOffsetOnMove = !!value;
+    };
+
+//    this.left = function(value)
+//    {
+//        if (value === undefined) return that.getElement().style.left;
+//        if (value === null) value = "";
+//        if (typeof value === "number") value += "px";
+//        that.getElement().style.left = value;
+//    };
+//    this.top = function(value)
+//    {
+//        if (value === undefined) return that.getElement().style.top;
+//        if (value === null) value = "";
+//        if (typeof value === "number") value += "px";
+//        that.getElement().style.top = value;
+//    };
+    //Сборка
+    element.ondragstart = onDragStart;
+    element.onmousedown = onMouseDown;
+//    element.style.position = "absolute";
+//    element.style.zIndex = "100";
+//    e.style.top = "0px";
+//    e.style.left = "0px";
 };
 //-------------------------------------------------------------------------------------------------------------------
 //aUI.extensions.dragable = function(owner)
@@ -301,19 +454,29 @@ aUI.Element = function Element(options)
     {
         that.hidden(!that.hidden());
     };
-    this.width = function(value)
+    this.left = function(value)
     {
-        if (value === undefined) return that.getElement().style.width;
+        if (value === undefined)
+        {
+            var computedStyle = window.getComputedStyle(that.getElement());
+            var marginLeft = parseInt(computedStyle.marginLeft, 10);
+            return that.getElement().offsetLeft - marginLeft;
+        }
         if (value === null) value = "";
         if (typeof value === "number") value += "px";
-        that.getElement().style.width = value;
+        that.getElement().style.left = value;
     };
-    this.height = function(value)
+    this.top = function(value)
     {
-        if (value === undefined) return that.getElement().style.height;
+        if (value === undefined)
+        {
+            var computedStyle = window.getComputedStyle(that.getElement());
+            var marginTop = parseInt(computedStyle.marginTop, 10);
+            return that.getElement().offsetTop - marginTop;
+        }
         if (value === null) value = "";
         if (typeof value === "number") value += "px";
-        that.getElement().style.height = value;
+        that.getElement().style.top = value;
     };
     //Сборка
     var element = document.createElement(options.element);
@@ -323,6 +486,7 @@ aUI.Element = function Element(options)
     if (options.addclass) this.addClass(options.addclass);
     if (options.text || options.text === 0 || options.text === false) this.text(options.text);
     //if (options.html || options.html === 0 || options.html === false) this.html(options.html);
+    aUI.extensions.resizable(this);
     if (options.width || options.width === 0) this.width(options.width);
     if (options.height || options.height === 0) this.height(options.height);
 };
@@ -580,74 +744,75 @@ aUI.ScrollArea = function ScrollArea(options)
         vertical : "auto"
     }, options);
     aUI.Element.call(this, options);
-    this.getElement().style.overflow = "auto";
     //Переменные
+    var that = this;
     //Функции
-    //Сборка
+    this.onScroll = function(fn)
+    {
+        that.getElement().onscroll = fn;
+    };
+//    this.onResize = function(fn)
+//    {
+//        that.getElement().onresize = fn;
+//    };
+    this.horizontalScrollBar = function(type)
+    {
+        var x = that.getElement().style.overflowX;
+        switch (type)
+        {
+            case "auto":
+                x = "auto";
+                break;
+            case "scroll":
+                x = "scroll";
+                break;
+            case "hidden":
+                x = "hidden";
+                break;
+            case "show":
+                x = "scroll";
+                break;
+            case "hide":
+                x = "hidden";
+                break;
+            default:
+                throw new Error("Unknow horizontal type " + type);
+        }
+        that.getElement().style.overflowX = x;
+    };
+    this.verticalScrollBar = function(type)
+    {
+        var y = that.getElement().style.overflowY;
+        switch (type)
+        {
+            case "auto":
+                y = "auto";
+                break;
+            case "scroll":
+                y = "scroll";
+                break;
+            case "hidden":
+                y = "hidden";
+                break;
+            case "show":
+                y = "scroll";
+                break;
+            case "hide":
+                y = "hidden";
+                break;
+            default:
+                throw new Error("Unknow vertical type " + type);
+        }
+        that.getElement().style.overflowY = y;
+    };
+//Сборка
+    this.getElement().style.overflow = "auto";
     this.horizontalScrollBar(options.horizontal);
     this.verticalScrollBar(options.vertical);
     this.height(options.height);
     this.width(options.width);
 };
 aUI.proto(aUI.ScrollArea, aUI.Element);
-aUI.ScrollArea.prototype.onScroll = function(fn)
-{
-    this.getElement().onscroll = fn;
-};
-aUI.ScrollArea.prototype.onResize = function(fn)
-{
-    this.getElement().onresize = fn;
-};
-aUI.ScrollArea.prototype.horizontalScrollBar = function(type)
-{
-    var x = this.getElement().style.overflowX;
-    switch (type)
-    {
-        case "auto":
-            x = "auto";
-            break;
-        case "scroll":
-            x = "scroll";
-            break;
-        case "hidden":
-            x = "hidden";
-            break;
-        case "show":
-            x = "scroll";
-            break;
-        case "hide":
-            x = "hidden";
-            break;
-        default:
-            throw new Error("Unknow horizontal type " + type);
-    }
-    this.getElement().style.overflowX = x;
-};
-aUI.ScrollArea.prototype.verticalScrollBar = function(type)
-{
-    var y = this.getElement().style.overflowY;
-    switch (type)
-    {
-        case "auto":
-            y = "auto";
-            break;
-        case "scroll":
-            y = "scroll";
-            break;
-        case "hidden":
-            y = "hidden";
-            break;
-        case "show":
-            y = "scroll";
-            break;
-        case "hide":
-            y = "hidden";
-            break;
-        default:
-            throw new Error("Unknow vertical type " + type);
-    }
-    this.getElement().style.overflowY = y;
-};
 //---------------------------------------------------------------------------
 /**
  * <b>Список в области прокрутки.</b><br/>
@@ -1593,6 +1758,124 @@ aUI.Scroll = function Scroll(options)
 };
 aUI.proto(aUI.Scroll, aUI.Element);
 //---------------------------------------------------------------------------
+aUI.Slider = function Slider(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        class : "scroll",
+        orientation : "horizontal",
+        value : 0,
+        min : 0,
+        max : 99,
+        round : null,
+        onchange : null
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+    var that = this;
+    var value = new aUtils.NumRange(options.value, options.min, options.max);
+    var pos = new aUtils.NumRange(0, 0, 0);
+    value.onChange(changeValue);
+    pos.onChange(changePos);
+    var lastPos = null;
+    //Функции
+    function onResize(event)
+    {
+        if (isHorizontal) pos.max(that.clientWidth() - drag.width());
+        else pos.max(that.clientHeight() - drag.height());
+        
+        //console.log("W", that.clientWidth(), "w", drag.width());
+    }
+    function onMoveStart(event)
+    {
+        if (isHorizontal) lastPos = drag.left();
+        else lastPos = drag.top();
+        that.addClass("move");
+    }
+    function onMoveEnd(event)
+    {
+        that.removeClass("move");
+    }
+    function onMoveHorisontal(event, dX, dY)
+    {
+        that.value(aUtils.convertRangedValue(lastPos + dX, pos.min(), pos.max(), value.min(), value.max()));
+    }
+    function onMoveVertical(event, dX, dY)
+    {
+        that.value(aUtils.convertRangedValue(lastPos + dY, pos.min(), pos.max(), value.min(), value.max()));
+    }
+    function  changeValue(val)
+    {
+        onResize();//??? onResize for update pos.max
+        pos.value(aUtils.convertRangedValue(value.value(), value.min(), value.max(), pos.min(), pos.max()));
+        if (options.onchange) options.onchange.call(that, val);
+    }
+    function  changePos(val)
+    {
+        if (isHorizontal) drag.left(val);
+        else drag.top(val);
+    }
+    this.value = function(val)
+    {
+        //round val
+        value.value(Math.ceil(val));
+    };
+    this.onChange = function(fn)
+    {
+        if (fn === undefined) return options.onchange;
+        if (typeof fn !== "function") throw new Error("fn for onChange not a function");
+        options.onchange = fn;
+    };
+    //Сборка
+    this.getElement().style.position = "relative";
+    this.onResize(onResize);
+//    aUtils.addEvent(this.getElement(), "resize", onResize);
+    var drag = new aUI.Movable({ class : "drag" }).appendTo(this);
+    drag.refreshOffsetOnMove(false);
+    drag.onMoveStart(onMoveStart);
+    drag.onMoveEnd(onMoveEnd);
+    drag.onResize(onResize);
+//    aUtils.addEvent(drag.getElement(), "resize", onResize);
+    isHorizontal = options.orientation !== "vertical";
+    if (isHorizontal)
+    {
+        this.addClass("horisontal");
+        drag.onMove(onMoveHorisontal);
+        drag.width("30px");
+        drag.height("100%");
+    }
+    else
+    {
+        this.addClass("vertical");
+        drag.onMove(onMoveVertical);
+        drag.width("100%");
+        drag.height("30px");
+    }
+};
+aUI.proto(aUI.Slider, aUI.Element);
+//---------------------------------------------------------------------------
+aUI.Range = function Range(options)
+{
+    //Опции
+    options = aUI.extend(
+    {
+        class : "range"
+    }, options);
+    aUI.Element.call(this, options);
+    //Переменные
+    var that = this;
+    //    var e = this.getElement();
+    //Функции
+
+
+    //Сборка
+    var dragMin = new aUI.Movable({ class : "drag min" }).appendTo(this);
+    var dragMax = new aUI.Movable({ class : "drag max" }).appendTo(this);
+
+};
+aUI.proto(aUI.Range, aUI.Element);
+//---------------------------------------------------------------------------
 aUI.XY = function XY(options)
 {
     //Опции
@@ -1751,7 +2034,7 @@ aUI.Popup = function Popup(options)
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
-    var isClicked = false;
+    var isClicked = true;//false;
     var ovner = null;
     var appendTo = this.appendTo;
     var remove = this.remove;
@@ -1761,15 +2044,22 @@ aUI.Popup = function Popup(options)
     {
         that.remove();
     }
-    function onDocumentMouseDown(event)
+//    function onDocumentMouseDown(event)
+//    {
+//        if (!isClicked) that.remove();
+//        isClicked = false;
+//    }
+    function onDocumentClick(event)
     {
+//        console.log("doc clk");
         if (!isClicked) that.remove();
         isClicked = false;
     }
     function show()
     {
         updatePosition();
-        aUtils.addEvent(document, "mousedown", onDocumentMouseDown);
+//        aUtils.addEvent(document, "mousedown", onDocumentMouseDown);
+        aUtils.addEvent(document, "click", onDocumentClick);
         aUtils.addEvent(document, "wheel", onDocumentWheelOrResize);
         aUtils.addEvent(document, "resize", onDocumentWheelOrResize);
         e.style.display = "";
@@ -1791,27 +2081,30 @@ aUI.Popup = function Popup(options)
     this.remove = function()
     {
         if (options.onremove) if (options.onremove() === false) return;
-        aUtils.removeEvent(document, "mousedown", onDocumentMouseDown);
+//        aUtils.removeEvent(document, "mousedown", onDocumentMouseDown);
+        aUtils.removeEvent(document, "click", onDocumentClick);
         aUtils.removeEvent(document, "wheel", onDocumentWheelOrResize);
         aUtils.removeEvent(document, "resize", onDocumentWheelOrResize);
         remove();
     };
-    function onMouseDown(event)
-    {
-        isClicked = true;
-    }
+//    function onMouseDown(event)
+//    {
+//        isClicked = true;
+//    }
     function onClick(event)
     {
+//        console.log("clk");
+        isClicked = true;
         event.preventDefault();
     }
     this.onRemove = function(fn)
     {
         if (fn === undefined) return options.onremove;
-        if (typeof fn !== "function") throw new Error("fn for onClose not a function");
+        if (typeof fn !== "function") throw new Error("fn for onRemove not a function");
         options.onremove = fn;
     };
     //Сборка
-    e.onmousedown = onMouseDown;
+//    e.onmousedown = onMouseDown;
     e.onclick = onClick;
     e.style.display = "none";
     e.style.position = "absolute";
@@ -1829,64 +2122,24 @@ aUI.Movable = function Movable(options)
     //Опции
     options = aUI.extend(
     {
-        class : "movable",
-        onmove : null
+        onmove : undefined,
+        onmovestart : undefined,
+        onmoveend : undefined
     }, options);
     aUI.Element.call(this, options);
+    aUI.extensions.movable(this);
     //Переменные
     var that = this;
-    var e = this.getElement();
-    var rect;
-    var dragOffsetX = 0;
-    var dragOffsetY = 0;
     //Функции
-    function onMouseDown(event)
-    {
-        aUtils.addEvent(document, "mousemove", onMouseMove);
-        aUtils.addEvent(document, "mouseup", onMouseUp);
-        that.addClass("move");
-        rect = e.getBoundingClientRect();
 
-//        console.log(rect);
-//        console.log(event);
-
-        dragOffsetX = event.clientX - rect.left;
-        dragOffsetY = event.clientY - rect.top;
-
-        //console.log(dragOffsetX, dragOffsetY);
-
-        onMouseMove(event);
-
-        if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-        else event.returnValue = false; // Вариант Internet Explorer:
-    }
-    function onMouseUp(event)
-    {
-        aUtils.removeEvent(document, "mousemove", onMouseMove);
-        aUtils.removeEvent(document, "mouseup", onMouseUp);
-        that.removeClass("move");
-        if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-        else event.returnValue = false; // Вариант Internet Explorer:
-    }
-    function onMouseMove(event)
-    {
-        var posX = (event.clientX - rect.left) - dragOffsetX;
-        var posY = (event.clientY - rect.top) - dragOffsetY;
-        console.log(posX, posY);
-    }
-    function onDragStart()
-    {
-        return false;
-    }
     //Сборка
-    e.ondragstart = onDragStart;
-    e.onmousedown = onMouseDown;
-//    e.style.display = "none";
-    e.style.position = "absolute";
-    e.style.zIndex = "100";
+    this.getElement().style.position = "absolute";
+    this.getElement().style.zIndex = "100";
 //    e.style.top = "0px";
 //    e.style.left = "0px";
-
+    this.onMove(options.onmove);
+    this.onMoveStart(options.onmovestart);
+    this.onMoveEnd(options.onmoveend);
 };
 aUI.proto(aUI.Movable, aUI.Element);
 //---------------------------------------------------------------------------

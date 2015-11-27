@@ -140,8 +140,8 @@ and open the template in the editor.
    var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(fieldInputs.value);
    memo.validator(new aUI.validator.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
 
-   btn1.onClick([ btn2.toggleSelect, edit.focus ]);
-   btn2.onClick(btn2.toggleSelect, memo.text, "!!!", memo.focus);
+   btn1.onClick(btn2.toggleSelect, edit.focus);
+   btn2.onClick(btn2.toggleSelect, memo.value, "!!!", memo.focus);
 
    function changeDate()
    {
@@ -160,13 +160,19 @@ and open the template in the editor.
        }
        btnPopup.select();
        var popup = new aUI.Popup().appendTo(btnPopup);
+
        var calendarPopup = new aUI.Calendar();
        calendarPopup.addClass("medium");
        calendarPopup.appendTo(popup);
        calendarPopup.onClickDay(function() {
-     calendar3.value(this.value());
-     popup.remove();
-    });
+           calendar3.value(this.value());
+           popup.remove();
+       });
+
+//       popup.onRemove(function() {
+//           if (btnPopup.selected()) return false;
+//           btnPopup.unselect();
+//       });
        popup.onRemove(btnPopup.unselect);
    });
 
@@ -188,11 +194,16 @@ and open the template in the editor.
 
    var scroll1 = new aUI.Scroll({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
    scroll1.value(70);
+   var slider1 = new aUI.Slider({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
+   slider1.value(70);
    var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(section3);
    scroll2.value(70);
 
-   var movable = new aUI.Movable().appendTo(section3);
-
+   var movable = new aUI.Movable({ class : "movable", text:"Move My!" }).appendTo(section3);
+   movable.onMove(function(event, dX, dY) {
+       movable.left(movable.left() + dX);
+       movable.top(movable.top() + dY);
+   });
 
   </script>
   <!--  <datalist id="options">
