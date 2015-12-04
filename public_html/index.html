@@ -179,12 +179,8 @@ and open the template in the editor.
 
    var xy1 = new aUI.XY().appendTo(section3);
    var xy2 = new aUI.XY().appendTo(section3);
-   xy2.roundX(function(value) {
-       return Math.round(value);
-   });
-   xy2.roundY(function(value) {
-       return Math.round(value);
-   });
+   xy2.roundX(Math.round);
+   xy2.roundY(Math.round);
 
    var progressGroup = new aUI.Element({ class : "group" }).appendTo(section3);
    var progress1 = new aUI.Progress({ width : 200 }).appendTo(progressGroup);
@@ -196,8 +192,18 @@ and open the template in the editor.
    scroll1.value(70);
    var slider1 = new aUI.Slider({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
    slider1.value(70);
+   
+   var range1 = new aUI.Range({ width : 200 }).appendTo(progressGroup);
+   range1.valueMin(10);
+   range1.valueMax(60);
+   
    var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(section3);
    scroll2.value(70);
+
+   var range2 = new aUI.Range({ height : 200, orientation : "vertical" }).appendTo(section3);
+   range2.valueMin(20);
+   range2.valueMax(40);
+
 
    var movable = new aUI.Movable({ class : "movable", text:"Move My!" }).appendTo(section3);
    movable.onMove(function(event, dX, dY) {

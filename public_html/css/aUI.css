@@ -442,8 +442,7 @@ textarea.invalid
 .scroll
 {
  border: rgba(128, 128, 128, 0.2) solid 1px;
- border-radius: 3px;
- /* overflow: hidden; */
+ /* border-radius: 3px; */
  box-sizing: border-box;
  /* margin: 10px; */
  /* padding: 3px; */
@@ -462,13 +461,13 @@ textarea.invalid
 {
  border: #FFF solid 2px;
  background-color: #888;
- border-radius: 3px;
+ /* border-radius: 3px; */
  box-sizing: border-box;
 }
 .scroll:hover,
 .scroll.move
 {
- background-color: #FFF;
+ /* background-color: #FFF; */
  border-color: #C3C3C3;
 }
 .scroll:hover > .drag,
@@ -476,6 +475,93 @@ textarea.invalid
 {
  border-width: 1px;
 }
+
+/* Range
+-----------------------------------------------------------------------------------------------*/
+.range
+{
+ border: rgba(128, 128, 128, 0.2) solid 1px;
+ /* border-radius: 3px; */
+ box-sizing: border-box;
+}
+.range.horisontal
+{
+ height: 8px;
+ width: 100px;
+ padding: 0px 5px 0px 5px;
+}
+.range.vertical
+{
+ height: 100px;
+ width: 8px;
+ padding: 5px 0px 5px 0px;
+}
+.range:hover,
+.range.move
+{
+ background-color: #FFF;
+ border-color: #C3C3C3;
+}
+
+.range.horisontal > .drag
+{
+ border: #888 solid 1px;
+ border-radius: 3px;
+ background-color: #FFF;
+ height: 16px;
+ width: 10px;
+ padding-top: 0px;
+ margin-top: -6px;
+ /* box-sizing: border-box; */
+}
+.range.vertical > .drag
+{
+ border: #888 solid 1px;
+ border-radius: 3px;
+ /* background-color: #FFF; */
+ height: 10px;
+ width: 16px;
+ padding-top: 0px;
+ margin-left: -6px;
+ /* box-sizing: border-box; */
+}
+.range.horisontal > .drag.min
+{
+ margin-left: -6px;
+}
+.range.horisontal > .drag.max
+{
+ margin-left: 6px;
+}
+.range.horisontal > .line
+{
+ background-color: #DDD;
+ width: 100%;
+ height: 100%;
+ margin: 0px 1px;
+}
+.range.vertical > .drag.min
+{
+ margin-top: -6px;
+}
+.range.vertical > .drag.max
+{
+ margin-bottom: 6px;
+}
+.range.vertical > .line
+{
+ background-color: #DDD;
+ width: 100%;
+ height: 100%;
+ margin: 1px 0px;
+}
+.range:hover > .drag,
+.range.move > .drag
+{
+ /*border-width: 0px;*/
+ border-color: #888;
+}
+
 
 
 /* XY

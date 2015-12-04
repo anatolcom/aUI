@@ -122,16 +122,10 @@ aUI.extensions.resizable = function(owner)
     owner.clientWidth = function(value)
     {
         if (value === undefined) return element.clientWidth;
-//        if (value === null) value = "";
-//        if (typeof value !== "number") value += "px";
-//        that.getElement().style.width = value;
     };
     owner.clientHeight = function(value)
     {
         if (value === undefined) return element.clientHeight;
-//        if (value === null) value = "";
-//        if (typeof value === "number") value += "px";
-//        that.getElement().style.height = value;
     };
     owner.onResize = function(fn)
     {
@@ -139,9 +133,11 @@ aUI.extensions.resizable = function(owner)
         if (typeof fn !== "function") throw new Error("fn for onResize not a function");
         onresize = fn;
     };
-    aUtils.addEvent(element, "resize", function(event) {
+    owner.resize = function()
+    {
         if (onresize) onresize.call(owner, event);
-    });
+    };
+    aUtils.addEvent(element, "resize", owner.resize);
 };
 //-------------------------------------------------------------------------------------------------------------------
 aUI.extensions.clickable = function(owner)
@@ -194,11 +190,12 @@ aUI.extensions.clickable = function(owner)
 //        }
 //        throw new Error("type of onclick fn \"" + typeof fn + "\" is not a function");
     };
-    //Сборка
-    owner.getElement().onclick = function()
+    owner.click = function()
     {
         if (onclick) onclick.apply(owner, arguments);
     };
+    //Сборка
+    owner.getElement().onclick = owner.click;
 };
 //-------------------------------------------------------------------------------------------------------------------
 aUI.extensions.validable = function(owner)
@@ -312,21 +309,6 @@ aUI.extensions.movable = function(owner)
         if (value === undefined) return isRefreshOffsetOnMove;
         isRefreshOffsetOnMove = !!value;
     };
-
-//    this.left = function(value)
-//    {
-//        if (value === undefined) return that.getElement().style.left;
-//        if (value === null) value = "";
-//        if (typeof value === "number") value += "px";
-//        that.getElement().style.left = value;
-//    };
-//    this.top = function(value)
-//    {
-//        if (value === undefined) return that.getElement().style.top;
-//        if (value === null) value = "";
-//        if (typeof value === "number") value += "px";
-//        that.getElement().style.top = value;
-//    };
     //Сборка
     element.ondragstart = onDragStart;
     element.onmousedown = onMouseDown;
@@ -366,6 +348,8 @@ aUI.Element = function Element(options)
     }, options);
     //Переменные
     var that = this;
+    //События
+    var onresize = null;    
     //Функции
     this.getElement = function()
     {
@@ -385,6 +369,7 @@ aUI.Element = function Element(options)
         parent = aUI.getElement(parent);
         if (typeof parent.appendChild !== "function") throw new Error("parent not contain appendChild function");
         parent.appendChild(that.getElement());
+        that.resize();
         return that;
     };
     this.clear = function()
@@ -466,6 +451,18 @@ aUI.Element = function Element(options)
         if (typeof value === "number") value += "px";
         that.getElement().style.left = value;
     };
+    this.right = function(value)
+    {
+        if (value === undefined)
+        {
+            var computedStyle = window.getComputedStyle(that.getElement());
+            var marginRight = parseInt(computedStyle.marginRight, 10);
+            return that.getElement().offsetRight - marginRight;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        that.getElement().style.right = value;
+    };
     this.top = function(value)
     {
         if (value === undefined)
@@ -478,6 +475,54 @@ aUI.Element = function Element(options)
         if (typeof value === "number") value += "px";
         that.getElement().style.top = value;
     };
+    this.bottom = function(value)
+    {
+        if (value === undefined)
+        {
+            var computedStyle = window.getComputedStyle(that.getElement());
+            var marginBottom = parseInt(computedStyle.marginBottom, 10);
+            return that.getElement().offsetBottom - marginBottom;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        that.getElement().style.bottom = value;
+    };
+    
+    this.width = function(value)
+    {
+        if (value === undefined) return element.offsetWidth;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.width = value;
+        if (onresize) onresize.call(that);
+    };
+    this.height = function(value)
+    {
+        if (value === undefined) return element.offsetHeight;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.height = value;
+        if (onresize) onresize.call(that);
+    };
+    this.clientWidth = function(value)
+    {
+        if (value === undefined) return element.clientWidth;
+    };
+    this.clientHeight = function(value)
+    {
+        if (value === undefined) return element.clientHeight;
+    };
+    this.onResize = function(fn)
+    {
+        if (fn === undefined) return onresize;
+        if (typeof fn !== "function") throw new Error("fn for onResize not a function");
+        onresize = fn;
+    };
+    this.resize = function()
+    {
+        if (onresize) onresize.call(that);
+    };
+    
     //Сборка
     var element = document.createElement(options.element);
     element.aui = this;
@@ -486,9 +531,10 @@ aUI.Element = function Element(options)
     if (options.addclass) this.addClass(options.addclass);
     if (options.text || options.text === 0 || options.text === false) this.text(options.text);
     //if (options.html || options.html === 0 || options.html === false) this.html(options.html);
-    aUI.extensions.resizable(this);
+    //aUI.extensions.resizable(this);
     if (options.width || options.width === 0) this.width(options.width);
     if (options.height || options.height === 0) this.height(options.height);
+    aUtils.addEvent(element, "resize", this.resize);
 };
 //-------------------------------------------------------------------------------------------------------------------
 aUI.Link = function Link(options)
@@ -1784,7 +1830,7 @@ aUI.Slider = function Slider(options)
     {
         if (isHorizontal) pos.max(that.clientWidth() - drag.width());
         else pos.max(that.clientHeight() - drag.height());
-        
+
         //console.log("W", that.clientWidth(), "w", drag.width());
     }
     function onMoveStart(event)
@@ -1797,13 +1843,12 @@ aUI.Slider = function Slider(options)
     {
         that.removeClass("move");
     }
-    function onMoveHorisontal(event, dX, dY)
+    function onMove(event, dX, dY)
     {
-        that.value(aUtils.convertRangedValue(lastPos + dX, pos.min(), pos.max(), value.min(), value.max()));
-    }
-    function onMoveVertical(event, dX, dY)
-    {
-        that.value(aUtils.convertRangedValue(lastPos + dY, pos.min(), pos.max(), value.min(), value.max()));
+        var p = lastPos;
+        if (isHorizontal) p += dX;
+        else p += dY;
+        that.value(aUtils.convertRangedValue(p, pos.min(), pos.max(), value.min(), value.max()));
     }
     function  changeValue(val)
     {
@@ -1831,24 +1876,27 @@ aUI.Slider = function Slider(options)
     this.getElement().style.position = "relative";
     this.onResize(onResize);
 //    aUtils.addEvent(this.getElement(), "resize", onResize);
-    var drag = new aUI.Movable({ class : "drag" }).appendTo(this);
+//    var drag = new aUI.Movable({ class : "drag" }).appendTo(this);
+    var drag = new aUI.Element({ class : "drag" }).appendTo(this);
+    aUI.extensions.movable(drag);
+    drag.getElement().style.position = "absolute";
+    drag.getElement().style.zIndex = "100";
+
     drag.refreshOffsetOnMove(false);
+    drag.onMove(onMove);
     drag.onMoveStart(onMoveStart);
     drag.onMoveEnd(onMoveEnd);
     drag.onResize(onResize);
-//    aUtils.addEvent(drag.getElement(), "resize", onResize);
     isHorizontal = options.orientation !== "vertical";
     if (isHorizontal)
     {
         this.addClass("horisontal");
-        drag.onMove(onMoveHorisontal);
         drag.width("30px");
         drag.height("100%");
     }
     else
     {
         this.addClass("vertical");
-        drag.onMove(onMoveVertical);
         drag.width("100%");
         drag.height("30px");
     }
@@ -1860,19 +1908,163 @@ aUI.Range = function Range(options)
     //Опции
     options = aUI.extend(
     {
+        orientation : "horizontal",
+        valueMin : 0,
+        valueMax : 0,
+        min : 0,
+        max : 99,
         class : "range"
     }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
-    //    var e = this.getElement();
-    //Функции
+    var valueMin = new aUtils.NumRange(options.valueMin, options.min, options.max);
+    var valueMax = new aUtils.NumRange(options.valueMax, options.min, options.max);
+    valueMin.onChange(changeValueMin);
+    valueMax.onChange(changeValueMax);
+    var posMin = new aUtils.NumRange(0, 0, 0);
+    var posMax = new aUtils.NumRange(0, 0, 0);
+    posMin.onChange(changePosMin);
+    posMax.onChange(changePosMax);
+    var lastPosMin = null;
+    var lastPosMax = null;
 
+    //Функции
+    function onResize(event)
+    {
+        var computedStyle = window.getComputedStyle(that.getElement());
+        if (isHorizontal)
+        {
+            var paddingLeft = parseInt(computedStyle.paddingLeft, 10);
+            var paddingRight = parseInt(computedStyle.paddingRight, 10);
+            posMin.min(paddingLeft);
+            posMin.max(that.clientWidth() - paddingRight - dragMin.width());
+            posMax.min(paddingLeft);
+            posMax.max(that.clientWidth() - paddingRight - dragMax.width());
+        }
+        else
+        {
+            var paddingTop = parseInt(computedStyle.paddingTop, 10);
+            var paddingBottom = parseInt(computedStyle.paddingBottom, 10);
+            posMin.min(paddingTop);
+            posMin.max(that.clientHeight() - paddingBottom - dragMin.height());
+            posMax.min(paddingTop);
+            posMax.max(that.clientHeight() - paddingBottom - dragMax.height());
+        }
+    }
+    function onMoveStartMin(event)
+    {
+        onResize();
+        if (isHorizontal) lastPosMin = dragMin.left();
+        else lastPosMin = dragMin.top();
+        that.addClass("move");
+    }
+    function onMoveStartMax(event)
+    {
+        onResize();
+        if (isHorizontal) lastPosMax = dragMax.left();
+        else lastPosMax = dragMax.top();
+        that.addClass("move");
+    }
+    function onMoveEnd(event)
+    {
+        that.removeClass("move");
+    }
+    function onMoveMin(event, dX, dY)
+    {
+        var p = lastPosMin;
+        if (isHorizontal) p += dX;
+        else p += dY;
+        valueMin.value(aUtils.convertRangedValue(p, posMin.min(), posMin.max(), valueMin.min(), valueMin.max()));
+    }
+    function onMoveMax(event, dX, dY)
+    {
+        var p = lastPosMax;
+        if (isHorizontal) p += dX;
+        else p += dY;
+        valueMax.value(aUtils.convertRangedValue(p, posMax.min(), posMax.max(), valueMax.min(), valueMax.max()));
+    }
+    function  changeValueMin(val)
+    {
+        if (valueMin.value() > valueMax.value()) valueMax.value(valueMin.value());
+        posMin.value(aUtils.convertRangedValue(valueMin.value(), valueMin.min(), valueMin.max(), posMin.min(), posMin.max()));
+        //if (options.onchange) options.onchange.call(that, val);
+    }
+    function  changeValueMax(val)
+    {
+        if (valueMax.value() < valueMin.value()) valueMin.value(valueMax.value());
+        posMax.value(aUtils.convertRangedValue(valueMax.value(), valueMax.min(), valueMax.max(), posMax.min(), posMax.max()));
+        //if (options.onchange) options.onchange.call(that, val);
+    }
+    function  changePosMin(val)
+    {
+        if (isHorizontal) dragMin.left(val);
+        else dragMin.top(val);
+        updateLine();
+    }
+    function  changePosMax(val)
+    {
+        if (isHorizontal) dragMax.left(val);
+        else dragMax.top(val);
+        updateLine();
+    }
+    function updateLine()
+    {
+        if (isHorizontal)
+        {
+            line.left(posMin.min() + posMin.value());
+            line.width(posMax.value() - posMin.value());
+        }
+        else
+        {
+            line.top(posMin.min() + posMin.value());
+            line.height(posMax.value() - posMin.value());
+        }
+    }
+    this.valueMin = function(val)
+    {
+        onResize();//??? onResize for update pos.max
+//        valueMin.value(Math.ceil(val));
+        valueMin.value(val);
+    };
+    this.valueMax = function(val)
+    {
+        onResize();//??? onResize for update pos.max
+//        valueMax.value(Math.ceil(val));
+        valueMax.value(val);
+    };
 
     //Сборка
-    var dragMin = new aUI.Movable({ class : "drag min" }).appendTo(this);
-    var dragMax = new aUI.Movable({ class : "drag max" }).appendTo(this);
+    this.getElement().style.position = "relative";
+    this.onResize(onResize);
 
+    var line = new aUI.Element({ class : "line" }).appendTo(this);
+    line.getElement().style.position = "absolute";
+
+//    var dragMin = new aUI.Element({ class : "drag min" }).appendTo(this);
+//    aUI.extensions.movable(dragMin);
+    var dragMin = new aUI.Movable({ class : "drag min" }).appendTo(this);
+    dragMin.getElement().style.position = "absolute";
+    dragMin.refreshOffsetOnMove(false);
+    dragMin.onMove(onMoveMin);
+    dragMin.onMoveStart(onMoveStartMin);
+    dragMin.onMoveEnd(onMoveEnd);
+    dragMin.onResize(onResize);
+
+//    var dragMax = new aUI.Element({ class : "drag max" }).appendTo(this);
+//    aUI.extensions.movable(dragMax);
+    var dragMax = new aUI.Movable({ class : "drag max" }).appendTo(this);
+    dragMax.getElement().style.position = "absolute";
+    dragMax.refreshOffsetOnMove(false);
+    dragMax.onMove(onMoveMax);
+    dragMax.onMoveStart(onMoveStartMax);
+    dragMax.onMoveEnd(onMoveEnd);
+    dragMax.onResize(onResize);
+
+    isHorizontal = options.orientation !== "vertical";
+    if (isHorizontal) this.addClass("horisontal");
+    else this.addClass("vertical");
+    updateLine();
 };
 aUI.proto(aUI.Range, aUI.Element);
 //---------------------------------------------------------------------------
@@ -2134,7 +2326,7 @@ aUI.Movable = function Movable(options)
 
     //Сборка
     this.getElement().style.position = "absolute";
-    this.getElement().style.zIndex = "100";
+//    this.getElement().style.zIndex = "100";
 //    e.style.top = "0px";
 //    e.style.left = "0px";
     this.onMove(options.onmove);
