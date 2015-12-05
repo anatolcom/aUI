@@ -251,6 +251,8 @@ aUI.extensions.movable = function(owner)
     //Переменные
     var keepedClientX = 0;
     var keepedClientY = 0;
+    var lockX = false;
+    var lockY = false;
     var isRefreshOffsetOnMove = true;
     //Функции
     function onMouseDown(event)
@@ -259,7 +261,7 @@ aUI.extensions.movable = function(owner)
         aUtils.addEvent(document, "mouseup", onMouseUp);
         keepedClientX = event.clientX;
         keepedClientY = event.clientY;
-        if (onmovestart) onmovestart(event);
+        if (onmovestart) onmovestart.call(owner, event);
         if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
         else event.returnValue = false; // Вариант Internet Explorer:
     }
@@ -267,20 +269,22 @@ aUI.extensions.movable = function(owner)
     {
         aUtils.removeEvent(document, "mousemove", onMouseMove);
         aUtils.removeEvent(document, "mouseup", onMouseUp);
-        if (onmoveend) onmoveend(event);
+        if (onmoveend) onmoveend.call(owner, event);
         if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
         else event.returnValue = false; // Вариант Internet Explorer:
     }
     function onMouseMove(event)
     {
-        var dX = event.clientX - keepedClientX;
-        var dY = event.clientY - keepedClientY;
+        var dX = 0;
+        if (!lockX) dX = event.clientX - keepedClientX;
+        var dY = 0;
+        if (!lockY) dY = event.clientY - keepedClientY;
         if (isRefreshOffsetOnMove)
         {
             keepedClientX = event.clientX;
             keepedClientY = event.clientY;
         }
-        if (onmove) onmove(event, dX, dY);
+        if (onmove) onmove.call(owner, event, dX, dY);
     }
     function onDragStart()
     {
@@ -312,10 +316,6 @@ aUI.extensions.movable = function(owner)
     //Сборка
     element.ondragstart = onDragStart;
     element.onmousedown = onMouseDown;
-//    element.style.position = "absolute";
-//    element.style.zIndex = "100";
-//    e.style.top = "0px";
-//    e.style.left = "0px";
 };
 //-------------------------------------------------------------------------------------------------------------------
 //aUI.extensions.dragable = function(owner)
@@ -349,7 +349,7 @@ aUI.Element = function Element(options)
     //Переменные
     var that = this;
     //События
-    var onresize = null;    
+    var onresize = null;
     //Функции
     this.getElement = function()
     {
@@ -487,7 +487,7 @@ aUI.Element = function Element(options)
         if (typeof value === "number") value += "px";
         that.getElement().style.bottom = value;
     };
-    
+
     this.width = function(value)
     {
         if (value === undefined) return element.offsetWidth;
@@ -522,7 +522,7 @@ aUI.Element = function Element(options)
     {
         if (onresize) onresize.call(that);
     };
-    
+
     //Сборка
     var element = document.createElement(options.element);
     element.aui = this;
@@ -1820,8 +1820,8 @@ aUI.Slider = function Slider(options)
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
-    var value = new aUtils.NumRange(options.value, options.min, options.max);
-    var pos = new aUtils.NumRange(0, 0, 0);
+    var value = new aUtils.NumInRange(options.value, options.min, options.max);
+    var pos = new aUtils.NumInRange(0, 0, 0);
     value.onChange(changeValue);
     pos.onChange(changePos);
     var lastPos = null;
@@ -1852,7 +1852,6 @@ aUI.Slider = function Slider(options)
     }
     function  changeValue(val)
     {
-        onResize();//??? onResize for update pos.max
         pos.value(aUtils.convertRangedValue(value.value(), value.min(), value.max(), pos.min(), pos.max()));
         if (options.onchange) options.onchange.call(that, val);
     }
@@ -1887,7 +1886,7 @@ aUI.Slider = function Slider(options)
     drag.onMoveStart(onMoveStart);
     drag.onMoveEnd(onMoveEnd);
     drag.onResize(onResize);
-    isHorizontal = options.orientation !== "vertical";
+    var isHorizontal = options.orientation !== "vertical";
     if (isHorizontal)
     {
         this.addClass("horisontal");
@@ -1913,21 +1912,22 @@ aUI.Range = function Range(options)
         valueMax : 0,
         min : 0,
         max : 99,
-        class : "range"
+        class : "range",
+        round : null,
+        onchange : null
     }, options);
     aUI.Element.call(this, options);
     //Переменные
     var that = this;
-    var valueMin = new aUtils.NumRange(options.valueMin, options.min, options.max);
-    var valueMax = new aUtils.NumRange(options.valueMax, options.min, options.max);
+    var valueMin = new aUtils.NumInRange(options.valueMin, options.min, options.max);
+    var valueMax = new aUtils.NumInRange(options.valueMax, options.min, options.max);
     valueMin.onChange(changeValueMin);
     valueMax.onChange(changeValueMax);
-    var posMin = new aUtils.NumRange(0, 0, 0);
-    var posMax = new aUtils.NumRange(0, 0, 0);
+    var posMin = new aUtils.NumInRange(0, 0, 0);
+    var posMax = new aUtils.NumInRange(0, 0, 0);
     posMin.onChange(changePosMin);
     posMax.onChange(changePosMax);
-    var lastPosMin = null;
-    var lastPosMax = null;
+    var lastPos = null;
 
     //Функции
     function onResize(event)
@@ -1952,18 +1952,11 @@ aUI.Range = function Range(options)
             posMax.max(that.clientHeight() - paddingBottom - dragMax.height());
         }
     }
-    function onMoveStartMin(event)
+    function onMoveStart(event)
     {
-        onResize();
-        if (isHorizontal) lastPosMin = dragMin.left();
-        else lastPosMin = dragMin.top();
-        that.addClass("move");
-    }
-    function onMoveStartMax(event)
-    {
-        onResize();
-        if (isHorizontal) lastPosMax = dragMax.left();
-        else lastPosMax = dragMax.top();
+        //onResize();
+        if (isHorizontal) lastPos = this.left();
+        else lastPos = this.top();
         that.addClass("move");
     }
     function onMoveEnd(event)
@@ -1972,29 +1965,29 @@ aUI.Range = function Range(options)
     }
     function onMoveMin(event, dX, dY)
     {
-        var p = lastPosMin;
+        var p = lastPos;
         if (isHorizontal) p += dX;
         else p += dY;
-        valueMin.value(aUtils.convertRangedValue(p, posMin.min(), posMin.max(), valueMin.min(), valueMin.max()));
+        that.valueMin(aUtils.convertRangedValue(p, posMin.min(), posMin.max(), valueMin.min(), valueMin.max()));
     }
     function onMoveMax(event, dX, dY)
     {
-        var p = lastPosMax;
+        var p = lastPos;
         if (isHorizontal) p += dX;
         else p += dY;
-        valueMax.value(aUtils.convertRangedValue(p, posMax.min(), posMax.max(), valueMax.min(), valueMax.max()));
+        that.valueMax(aUtils.convertRangedValue(p, posMax.min(), posMax.max(), valueMax.min(), valueMax.max()));
     }
     function  changeValueMin(val)
     {
         if (valueMin.value() > valueMax.value()) valueMax.value(valueMin.value());
         posMin.value(aUtils.convertRangedValue(valueMin.value(), valueMin.min(), valueMin.max(), posMin.min(), posMin.max()));
-        //if (options.onchange) options.onchange.call(that, val);
+        if (options.onchange) options.onchange.call(that);
     }
     function  changeValueMax(val)
     {
         if (valueMax.value() < valueMin.value()) valueMin.value(valueMax.value());
         posMax.value(aUtils.convertRangedValue(valueMax.value(), valueMax.min(), valueMax.max(), posMax.min(), posMax.max()));
-        //if (options.onchange) options.onchange.call(that, val);
+        if (options.onchange) options.onchange.call(that);
     }
     function  changePosMin(val)
     {
@@ -2023,17 +2016,18 @@ aUI.Range = function Range(options)
     }
     this.valueMin = function(val)
     {
-        onResize();//??? onResize for update pos.max
-//        valueMin.value(Math.ceil(val));
         valueMin.value(val);
     };
     this.valueMax = function(val)
     {
-        onResize();//??? onResize for update pos.max
-//        valueMax.value(Math.ceil(val));
         valueMax.value(val);
     };
-
+    this.onChange = function(fn)
+    {
+        if (fn === undefined) return options.onchange;
+        if (typeof fn !== "function") throw new Error("fn for onChange not a function");
+        options.onchange = fn;
+    };
     //Сборка
     this.getElement().style.position = "relative";
     this.onResize(onResize);
@@ -2047,7 +2041,7 @@ aUI.Range = function Range(options)
     dragMin.getElement().style.position = "absolute";
     dragMin.refreshOffsetOnMove(false);
     dragMin.onMove(onMoveMin);
-    dragMin.onMoveStart(onMoveStartMin);
+    dragMin.onMoveStart(onMoveStart);
     dragMin.onMoveEnd(onMoveEnd);
     dragMin.onResize(onResize);
 
@@ -2057,11 +2051,11 @@ aUI.Range = function Range(options)
     dragMax.getElement().style.position = "absolute";
     dragMax.refreshOffsetOnMove(false);
     dragMax.onMove(onMoveMax);
-    dragMax.onMoveStart(onMoveStartMax);
+    dragMax.onMoveStart(onMoveStart);
     dragMax.onMoveEnd(onMoveEnd);
     dragMax.onResize(onResize);
 
-    isHorizontal = options.orientation !== "vertical";
+    var isHorizontal = options.orientation !== "vertical";
     if (isHorizontal) this.addClass("horisontal");
     else this.addClass("vertical");
     updateLine();

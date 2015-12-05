@@ -56,10 +56,10 @@ var aUtils = new (function()
         object.removeEventListener(eventName, on, false);
     };
 //------------------------------------------------------------------------------------------------------------------- 
-    this.NumRange = function NumRange(value, min, max)
+    this.NumInRange = function NumInRange(value, min, max)
     {
         var that = this;
-        var data = { value : aUtils.trimByRange(value, min, max), min : min, max : max };
+        var data = { value : 0, min : min, max : max };
         var onchange = null;
         this.value = function(value)
         {
@@ -87,6 +87,7 @@ var aUtils = new (function()
             if (typeof fn !== "function") throw new Error("fn for onChange not a function");
             onchange = fn;
         };
+        data.value = aUtils.trimByRange(value, min, max);
     };
 //-------------------------------------------------------------------------------------------------------------------
     /**
