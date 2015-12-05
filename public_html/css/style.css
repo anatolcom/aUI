@@ -143,104 +143,6 @@ menu.circle > *:active
 
 
 
-.sectionMenu
-{
-
- background-color: #FFF;
-
- margin-bottom: 1px;
-}
-.sectionMenu > *
-{
- display: inline-block;
- padding: 10px 20px;
- cursor: default;
- -webkit-touch-callout: none;
- -webkit-user-select: none;
- -khtml-user-select: none;
- -moz-user-select: none;
- -ms-user-select: none;
- user-select: none;
-}
-.sectionMenu > *:hover
-{
- background-color: rgba(0, 0, 0, 0.05);
- border-color: #00008B;
-}
-.sectionMenu > *.selected
-{
- background-color: rgba(0, 0, 0, 0.1);
-}
-.sectionMenu > *:active
-{
- background-color: rgba(0, 0, 0, 0.02);
-}
-.sectionMenu > *.selected:hover
-{
- background-color: rgba(0, 0, 0, 0.15);
-}
-.sectionMenu > *.selected:active
-{
- background-color: rgba(0, 0, 0, 0.08);
-}
-
-
-.sections
-{
- display: block;
-}
-.sections > .section
-{
- position: relative;
- /* padding-right: 40px;*/
- /* display: inline-block; */
- /* border-bottom: 3px solid #363696; *///
- border: 1px solid #363696;
- /*padding: 10px 20px;*/
- /*cursor: pointer;*/
-}
-.sections > .section > .close
-{
- position: absolute;
- right: 8px;
- top: 8px;
- height: 20px;
- width: 20px;
- text-align: center;
- border-radius: 20px;
- /* border: 1px solid #CECECE; */
- box-shadow: 0px 0px 5px rgba(0,0,0,0.1), 0px 1px 3px rgba(0,0,0,0.1);
-}
-.sections > .section > .caption
-{
- font-size: 1.3em;
- padding: 20px 20px 0px 20px;
-}
-.sections > .section > .content
-{
- padding: 20px;
-}
-.sections > .section > .content > *
-{
- display: inline-block;
- margin-right: 10px;
- vertical-align: top;
-}
-.scrollarea
-{
- max-height: 300px;
- /* margin: 5px; */
- /* box-shadow: 0px 0px 5px rgba(0,0,0,0.2), 0px 1px 3px rgba(0,0,0,0.2); */
-}
-.scrollarea > .sections > .section
-{
- min-height: 299px;
- margin-bottom: 1px;
- background-color: #FFF;
- /* padding: 20px 20px; */
-}
-
-
 .resultBlock
 {
  padding: 10px 0px;
@@ -262,4 +164,45 @@ menu.circle > *:active
 .group > *
 {
  margin-bottom: 10px;
+}
+
+.field.links > *
+{
+ /* vertical-align: top; */
+}
+.field.links > .value > *
+{
+ display: block;
+}
+
+
+.slist > .scrollarea > ul > li > .content > *
+{
+ display: inline-block;
+ margin-right: 20px;
+ vertical-align: top;
+}
+
+
+
+.dockMovable
+{
+ position: relative;
+ width: 200px;
+ height: 200px;
+ border: #C3C3C3 solid 1px;
+ box-sizing: border-box;
+}
+.movable
+{
+ border: #363696 solid 1px;
+ border-radius: 3px;
+ /* width: 20px; */
+ /* height: 20px; */
+ padding: 10px;
+ box-sizing: border-box;
+ margin: 10px;
+ cursor: default;
+ background-color: rgba(255, 255, 255, 0.5);
+ width: 75px;
 }

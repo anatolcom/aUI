@@ -61,13 +61,13 @@ and open the template in the editor.
 
 
   </section>
-  <a href="http://learn.javascript.ru/keyboard-events">keyboard-events</a>
-  <a href="https://learn.javascript.ru/ajax-xmlhttprequest">ajax-xmlhttprequest</a>
-  <a href="http://stackoverflow.com/questions/8742249/how-to-set-css3-transition-using-javascript">how-to-set-css3-transition-using-javascript</a>
-  event
-  <a href="http://www.w3schools.com/jsref/dom_obj_event.asp">dom_obj_event</a>
-  <a href="http://javascript.ru/tutorial/events/intro#poryadok-srabatyvaniya-sobytiy">poryadok-srabatyvaniya-sobytiy</a>
-  <a href="http://javascript.ru/tutorial/events/comparison#dobavlenie-cherez-on-imya-sobytiya">dobavlenie-cherez-on-imya-sobytiya</a>
+  <!--  <a href="http://learn.javascript.ru/keyboard-events">keyboard-events</a>
+    <a href="https://learn.javascript.ru/ajax-xmlhttprequest">ajax-xmlhttprequest</a>
+    <a href="http://stackoverflow.com/questions/8742249/how-to-set-css3-transition-using-javascript">how-to-set-css3-transition-using-javascript</a>
+    event
+    <a href="http://www.w3schools.com/jsref/dom_obj_event.asp">dom_obj_event</a>
+    <a href="http://javascript.ru/tutorial/events/intro#poryadok-srabatyvaniya-sobytiy">poryadok-srabatyvaniya-sobytiy</a>
+    <a href="http://javascript.ru/tutorial/events/comparison#dobavlenie-cherez-on-imya-sobytiya">dobavlenie-cherez-on-imya-sobytiya</a>-->
   <!--  <div>
      <input list="options">
     </div>-->
@@ -87,49 +87,45 @@ and open the template in the editor.
    }
    function selectSection(index)
    {
-       if (sectionList.topIndex() === Number(index)) return;
-       sectionList.topIndex(index);
+       slist.select(index);
    }
 
-   function sectionMenuClick()
-   {
-       aURL.set("selected", this.index());
-   }
+//   function sectionMenuClick()
+//   {
+//       aURL.set("selected", this.index());
+//   }
    function changeTopSection()
    {
-       sectionMenu.selectSingle(this.index());
-       aURL.set("selected", this.index());
+//       sectionMenu.selectSingle(this.index());
+       aURL.set("selected", this.selected());
    }
-
-   var sectionMenu = new aUI.List({ class : "sectionMenu" }).appendTo(parent);//caption:"Button"
-
-   var sectionList = new aUI.ScrollList({ class : "scrollarea", vertical : "show", listOptions : { class : "sections" } });
-   sectionList.appendTo(parent);
-   sectionList.onChangeTop(changeTopSection);
-   var sections = sectionList.list();
-
-   var section1 = addSection("Input");
-   var section2 = addSection("Calendar");
-   var section3 = addSection("Mouse");
-
-   selectSection(aURL.get("selected"));
 
 
    var slist = new aUI.SList({ }).appendTo(parent);
-   var buttonItem = slist.add({ text : "Button" });
-   var inputItem = slist.add({ text : "Input" });
-   var calendarItem = slist.add({ text : "Calendar" });
+   xxx = slist;
+   var buttonItem = slist.add({ text : "Button" }).content();
+   var inputItem = slist.add({ text : "Input" }).content();
+   var calendarItem = slist.add({ text : "Calendar" }).content();
+   var mouseItem = slist.add({ text : "Mouse" }).content();
+   var linksItem = slist.add({ text : "Links" }).content();
+   slist.select(aURL.get("selected"));
+   slist.onChangeSelected(changeTopSection);
 
-   var fieldLinks = new aUI.Field({ caption : "Ссылки" }).appendTo(section1);
-   var link = new aUI.Link({ text : "Link", href : "#selected=1" }).appendTo(fieldLinks.value);
-   link.attr("data-title", "Ссылка");
+   var fieldLinks = new aUI.Field({ caption : "Полезные ссылки" }).appendTo(linksItem);
+   fieldLinks.addClass("links");
+   new aUI.Link({ text : "keyboard-events", href : "http://learn.javascript.ru/keyboard-events" }).appendTo(fieldLinks.value);
+   new aUI.Link({ text : "ajax-xmlhttprequest", href : "https://learn.javascript.ru/ajax-xmlhttprequest" }).appendTo(fieldLinks.value);
+   new aUI.Link({ text : "how-to-set-css3-transition-using-javascript", href : "http://stackoverflow.com/questions/8742249/how-to-set-css3-transition-using-javascript" }).appendTo(fieldLinks.value);
+   new aUI.Link({ text : "dom_obj_event", href : "http://www.w3schools.com/jsref/dom_obj_event.asp" }).appendTo(fieldLinks.value);
+   new aUI.Link({ text : "poryadok-srabatyvaniya-sobytiy", href : "http://javascript.ru/tutorial/events/intro#poryadok-srabatyvaniya-sobytiy" }).appendTo(fieldLinks.value);
+   new aUI.Link({ text : "dobavlenie-cherez-on-imya-sobytiya", href : "http://javascript.ru/tutorial/events/comparison#dobavlenie-cherez-on-imya-sobytiya" }).appendTo(fieldLinks.value);
 
-   var fieldButtons = new aUI.Field({ caption : "Кнопки" }).appendTo(section1);
+   var fieldButtons = new aUI.Field({ caption : "Кнопки" }).appendTo(buttonItem);
    var btn1 = new aUI.Button({ text : "button" }).appendTo(fieldButtons.value);
 
    var btn2 = new aUI.Button({ text : "selectable" }).appendTo(fieldButtons.value);
 
-   var fieldInputs = new aUI.Field({ caption : "Поля ввода" }).appendTo(section1);
+   var fieldInputs = new aUI.Field({ caption : "Поля ввода" }).appendTo(inputItem);
    var edit = new aUI.Edit({ placeholder : "Edit", examples : [ "01.01.2014", "01.01.2015" ] }).appendTo(fieldInputs.value);
    edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
    edit.maxLength(10);
@@ -147,11 +143,11 @@ and open the template in the editor.
    {
        edit.value(aUtils.dateToStr(this.value(), "dd.MM.yyyy"));
    }
-   var calendar1 = new aUI.Calendar({ onclickday : changeDate }).appendTo(section2);
-   var calendar2 = new aUI.Calendar({ addclass : "medium", onclickday : changeDate }).appendTo(section2);
-   var calendar3 = new aUI.Calendar({ addclass : "large", onchange : changeDate }).appendTo(section2);
+   var calendar1 = new aUI.Calendar({ onclickday : changeDate }).appendTo(calendarItem);
+   var calendar2 = new aUI.Calendar({ addclass : "medium", onclickday : changeDate }).appendTo(calendarItem);
+   var calendar3 = new aUI.Calendar({ addclass : "large", onchange : changeDate }).appendTo(calendarItem);
 
-   var btnPopup = new aUI.Button({ class : "button", text : "Calendar" }).appendTo(section2);
+   var btnPopup = new aUI.Button({ class : "button", text : "Calendar" }).appendTo(calendarItem);
    btnPopup.onClick(function(event) {
        if (btnPopup.selected())
        {
@@ -168,44 +164,40 @@ and open the template in the editor.
            calendar3.value(this.value());
            popup.remove();
        });
-
-//       popup.onRemove(function() {
-//           if (btnPopup.selected()) return false;
-//           btnPopup.unselect();
-//       });
        popup.onRemove(btnPopup.unselect);
    });
 
 
-   var xy1 = new aUI.XY().appendTo(section3);
-   var xy2 = new aUI.XY().appendTo(section3);
+   var xy1 = new aUI.XY().appendTo(mouseItem);
+   var xy2 = new aUI.XY().appendTo(mouseItem);
    xy2.roundX(Math.round);
    xy2.roundY(Math.round);
 
-   var progressGroup = new aUI.Element({ class : "group" }).appendTo(section3);
+   var progressGroup = new aUI.Element({ class : "group" }).appendTo(mouseItem);
    var progress1 = new aUI.Progress({ width : 200 }).appendTo(progressGroup);
 //   progress1.value(30);
-   var progress2 = new aUI.Progress({ height : 200, orientation : "vertical" }).appendTo(section3);
+   var progress2 = new aUI.Progress({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
 //   progress2.value(70);
 
    var scroll1 = new aUI.Scroll({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
    scroll1.value(70);
    var slider1 = new aUI.Slider({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
    slider1.value(70);
-   
-   var range1 = new aUI.Range({ width : 200 }).appendTo(progressGroup);
-   range1.valueMin(10);
+
+   var range1 = new aUI.Range({ width : 200, blocked : true }).appendTo(progressGroup);
    range1.valueMax(60);
-   
-   var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(section3);
+   range1.valueMin(10);
+
+   var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(mouseItem);
    scroll2.value(70);
 
-   var range2 = new aUI.Range({ height : 200, orientation : "vertical" }).appendTo(section3);
-   range2.valueMin(20);
+   var range2 = new aUI.Range({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
    range2.valueMax(40);
+   range2.valueMin(20);
 
+   var dockMovable = new aUI.Element({ class : "dockMovable" }).appendTo(mouseItem);
 
-   var movable = new aUI.Movable({ class : "movable", text:"Move My!" }).appendTo(section3);
+   var movable = new aUI.Movable({ class : "movable", text : "Move My!" }).appendTo(dockMovable);
    movable.onMove(function(event, dX, dY) {
        movable.left(movable.left() + dX);
        movable.top(movable.top() + dY);

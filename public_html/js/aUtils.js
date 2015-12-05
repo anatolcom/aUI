@@ -56,6 +56,12 @@ var aUtils = new (function()
         object.removeEventListener(eventName, on, false);
     };
 //------------------------------------------------------------------------------------------------------------------- 
+//    this.Range = function Range(min, max)
+//    {
+//        this.min = min;
+//        this.max = max;
+//    };
+//------------------------------------------------------------------------------------------------------------------- 
     this.NumInRange = function NumInRange(value, min, max)
     {
         var that = this;
@@ -118,6 +124,22 @@ var aUtils = new (function()
         return true;
 //        return (min <= value) && (value <= max);
     };
+//-------------------------------------------------------------------------------------------------------------------
+/*    this.Rect = function Rect()
+    {
+        this.left = 0;
+        this.right = 0;
+        this.top = 0;
+        this.bottom = 0;
+        this.width = function()
+        {
+          return right - left;              
+        };
+        this.height = function()
+        {
+          return bottom - top;              
+        };
+    };*/
 //-------------------------------------------------------------------------------------------------------------------
     /**
      * Находится ли точка x,y в пределах области rect включительно.<br/>

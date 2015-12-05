@@ -213,6 +213,7 @@ textarea.invalid
  -moz-user-select: none;
  -ms-user-select: none;
  user-select: none;
+ position: relative;
 }
 .calendar > table.days > tr > th,
 .calendar > table.days > tr > td
@@ -396,19 +397,19 @@ textarea.invalid
 .field > .caption,
 .field > .value
 {
- display: inline-block;
- vertical-align: middle;
+ /* display: inline-block; */
+ /* vertical-align: middle; */
 }
 .field > .value > *
 {
  display: inline-block;
- vertical-align: middle;
+ vertical-align: top;
  margin-right: 10px;
 }
 .field > .caption
 {
  font-weight: bold;
- margin-right: 10px;
+ margin-bottom: 3px;
 }
 
 /* Progress
@@ -723,13 +724,14 @@ textarea.invalid
 
 .slist > .scrollarea
 {
+ max-height: 400px;
 }
 .slist > .scrollarea > ul
 {
 }
 .slist > .scrollarea > ul > li
 {
- min-height: 299px;
+ /* min-height: 199px; */
  margin-bottom: 1px;
  background-color: #FFF;
 }
@@ -745,18 +747,8 @@ textarea.invalid
 
 
 
-.movable
-{
- border: #363696 solid 1px;
- border-radius: 3px;
- /* width: 20px; */
- /* height: 20px; */
- padding: 10px;
- box-sizing: border-box;
- margin: 10px;
- cursor: default;
- background-color: rgba(255, 255, 255, 0.5);
-}
+
+
 
 
 
