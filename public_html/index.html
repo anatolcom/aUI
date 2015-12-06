@@ -184,14 +184,16 @@ and open the template in the editor.
    var slider1 = new aUI.Slider({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
    slider1.value(70);
 
-   var range1 = new aUI.Range({ width : 200, blocked : true }).appendTo(progressGroup);
-   range1.valueMax(60);
-   range1.valueMin(10);
+   var range1 = new aUI.Range({ max : 10, width : 200, blocked : true }).appendTo(progressGroup);
+   range1.round(Math.round);
+   range1.valueMax(6);
+   range1.valueMin(1);
 
    var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(mouseItem);
    scroll2.value(70);
 
    var range2 = new aUI.Range({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
+   range2.round(0.1);
    range2.valueMax(40);
    range2.valueMin(20);
 

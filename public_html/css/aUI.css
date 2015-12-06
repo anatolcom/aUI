@@ -497,13 +497,6 @@ textarea.invalid
  width: 8px;
  padding: 5px 0px;
 }
-.range:hover,
-.range.move
-{
- background-color: #FFF;
- border-color: #C3C3C3;
-}
-
 .range > .drag
 {
  border: #C3C3C3 solid 1px;
@@ -542,6 +535,48 @@ textarea.invalid
 {
  margin-top: 6px;
 }
+.range > .drag > .value
+{
+ display: none;
+ /* margin-top: -19px; */
+ position: absolute;
+ z-index: 12;
+ background-color: #FFF;
+ border: #C3C3C3 solid 1px;
+ border-radius: 3px;
+ line-height: 1em;
+ padding: 1px 4px 0px;
+ /* left: 0px; */
+ /* right: 0px; */
+}
+.range.horisontal > .drag.min > .value
+{
+
+right: 0px;
+
+top: -17px;
+}
+.range.horisontal > .drag.max > .value
+{
+
+left: 0px;
+
+top: -17px;
+}
+.range.vertical > .drag.min > .value
+{
+
+left: 18px;
+
+top: -5px;
+}
+.range.vertical > .drag.max > .value
+{
+
+left: 18px;
+
+top: 0px;
+}
 .range > .line
 {
  background-color: #DDD;
@@ -556,16 +591,28 @@ textarea.invalid
  width: 100%;
  margin: 1px 0px;
 }
-.range:hover > .drag,
-.range.move > .drag
+.range:hover,
+.range.move
 {
- border-color: #888;
- /*box-shadow: 0px 0px 1px rgba(0,0,0,0.3), 0px 1px 2px rgba(0,0,0,0.3);*/
+ background-color: #FFF;
+ border-color: #C3C3C3;
 }
 .range:hover > .line,
 .range.move > .line
 {
  /*background-color: #363696;*/
+}
+.range:hover > .drag,
+.range.move > .drag
+{
+ border-color: #888;
+}
+.range:hover > .drag > .value,
+.range.move > .drag > .value
+{
+ -webkit-transition: display 1.0s ease-in-out;
+ transition: display 1.0s ease-in-out;
+ display: block;
 }
 
 

@@ -1580,9 +1580,9 @@ aUI.SList = function SList(options)
         item.caption().text(params.text);
         return item;
     };
-    this.select  = function (index)
+    this.select = function(index)
     {
-        console.log("select", index);
+//        console.log("select", index);
         if (scrollList.topIndex() === Number(index)) return;
 //        scrollList.list().getElement().transform .css("transition", "transform 0.6s ease-in-out");
         scrollList.topIndex(index);
@@ -1599,7 +1599,7 @@ aUI.SList = function SList(options)
         if (typeof fn !== "function") throw new Error("fn for onChangeSelected not a function");
         options.onchangeselected = fn;
     };
-    
+
     function menuClick()
     {
         that.select(this.index());
@@ -1610,11 +1610,11 @@ aUI.SList = function SList(options)
         menu.selectSingle(index);
         if (options.onchangeselected) options.onchangeselected.call(that, index);
     }
-    this.selected = function ()
+    this.selected = function()
     {
-      return scrollList.topIndex();
+        return scrollList.topIndex();
     };
-    
+
     //Сборка
     var menu = new aUI.List({ class : "menu" }).appendTo(this);
     var scrollList = new aUI.ScrollList({ class : "scrollarea", listOptions : { itemConstructor : aUI.SItem } }).appendTo(this);
@@ -1829,6 +1829,7 @@ aUI.Scroll = function Scroll(options)
     update();
 };
 aUI.proto(aUI.Scroll, aUI.Element);
+
 //---------------------------------------------------------------------------
 aUI.Slider = function Slider(options)
 {
@@ -1905,7 +1906,7 @@ aUI.Slider = function Slider(options)
     var drag = new aUI.Element({ class : "drag" }).appendTo(this);
     aUI.extensions.movable(drag);
     drag.getElement().style.position = "absolute";
-    drag.getElement().style.zIndex = "100";
+//    drag.getElement().style.zIndex = "100";
 
     drag.refreshOffsetOnMove(false);
     drag.onMove(onMove);
@@ -1955,6 +1956,8 @@ aUI.Range = function Range(options)
     posMin.onChange(changePosMin);
     posMax.onChange(changePosMax);
     var lastPos = null;
+    var roundDigits = 0;
+    var fractionDigits = null;
 
     //Функции
     function onResize(event)
@@ -1975,28 +1978,6 @@ aUI.Range = function Range(options)
             posMax.max(rect.bottom - dragMax.height());
         }
     }
-//    function onResize(event)
-//    {
-//        var computedStyle = window.getComputedStyle(that.getElement());
-//        if (isHorizontal)
-//        {
-//            var paddingLeft = parseInt(computedStyle.paddingLeft, 10);
-//            var paddingRight = parseInt(computedStyle.paddingRight, 10);
-//            posMin.min(paddingLeft);
-//            posMin.max(that.clientWidth() - paddingRight - dragMin.width());
-//            posMax.min(paddingLeft);
-//            posMax.max(that.clientWidth() - paddingRight - dragMax.width());
-//        }
-//        else
-//        {
-//            var paddingTop = parseInt(computedStyle.paddingTop, 10);
-//            var paddingBottom = parseInt(computedStyle.paddingBottom, 10);
-//            posMin.min(paddingTop);
-//            posMin.max(that.clientHeight() - paddingBottom - dragMin.height());
-//            posMax.min(paddingTop);
-//            posMax.max(that.clientHeight() - paddingBottom - dragMax.height());
-//        }
-//    }
     function onMoveStart(event)
     {
         //onResize();
@@ -2024,22 +2005,26 @@ aUI.Range = function Range(options)
     }
     function  changeValueMin(val)
     {
-        if (options.blocked) 
+        if (options.blocked)
         {
             if (valueMax.value() < valueMin.value()) valueMin.value(valueMax.value());
         }
         else if (valueMin.value() > valueMax.value()) valueMax.value(valueMin.value());
         posMin.value(aUtils.convertRangedValue(valueMin.value(), valueMin.min(), valueMin.max(), posMin.min(), posMin.max()));
+        if (fractionDigits === null) dragMinValue.text(valueMin.value());
+        else dragMinValue.text(valueMin.value().toFixed(fractionDigits));
         if (options.onchange) options.onchange.call(that);
     }
     function  changeValueMax(val)
     {
-        if (options.blocked) 
+        if (options.blocked)
         {
             if (valueMin.value() > valueMax.value()) valueMax.value(valueMin.value());
         }
         else if (valueMax.value() < valueMin.value()) valueMin.value(valueMax.value());
         posMax.value(aUtils.convertRangedValue(valueMax.value(), valueMax.min(), valueMax.max(), posMax.min(), posMax.max()));
+        if (fractionDigits === null) dragMaxValue.text(valueMax.value());
+        else dragMaxValue.text(valueMax.value().toFixed(fractionDigits));
         if (options.onchange) options.onchange.call(that);
     }
     function  changePosMin(val)
@@ -2069,11 +2054,34 @@ aUI.Range = function Range(options)
     }
     this.valueMin = function(val)
     {
+        if (options.round) val = options.round(val);
         valueMin.value(val);
     };
     this.valueMax = function(val)
     {
+        if (options.round) val = options.round(val);
         valueMax.value(val);
+    };
+    this.round = function(fn)
+    {
+        if (fn === undefined) return options.round;
+        if (fn === null)
+        {
+            options.round = null;
+            return;
+        }
+        if (typeof fn === "number")
+        {
+            if (fn === 0) roundDigits = 0;
+            else roundDigits = 1 / fn;
+            
+            fractionDigits = Math.round(roundDigits / 10);
+            console.log(fractionDigits);
+            options.round = roundValue;
+            return;
+        }
+        if (typeof fn !== "function") throw new Error("fn for onChange not a function");
+        options.round = fn;
     };
     this.onChange = function(fn)
     {
@@ -2081,6 +2089,13 @@ aUI.Range = function Range(options)
         if (typeof fn !== "function") throw new Error("fn for onChange not a function");
         options.onchange = fn;
     };
+    roundValue = function(value)
+    {
+        if (roundDigits === 0) return Math.round(value);
+        return Math.round(value * roundDigits) / roundDigits;
+    };
+
+
     //Сборка
     this.getElement().style.position = "relative";
     this.onResize(onResize);
@@ -2098,6 +2113,8 @@ aUI.Range = function Range(options)
     dragMin.onMoveEnd(onMoveEnd);
     dragMin.onResize(onResize);
 
+    var dragMinValue = new aUI.Element({ class : "value" }).appendTo(dragMin);
+
     var dragMax = new aUI.Element({ class : "drag max" }).appendTo(this);
     aUI.extensions.movable(dragMax);
 //    var dragMax = new aUI.Movable({ class : "drag max" }).appendTo(this);
@@ -2107,6 +2124,8 @@ aUI.Range = function Range(options)
     dragMax.onMoveStart(onMoveStart);
     dragMax.onMoveEnd(onMoveEnd);
     dragMax.onResize(onResize);
+
+    var dragMaxValue = new aUI.Element({ class : "value" }).appendTo(dragMax);
 
     var isHorizontal = options.orientation !== "vertical";
     if (isHorizontal) this.addClass("horisontal");
