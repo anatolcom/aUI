@@ -125,21 +125,21 @@ var aUtils = new (function()
 //        return (min <= value) && (value <= max);
     };
 //-------------------------------------------------------------------------------------------------------------------
-/*    this.Rect = function Rect()
-    {
-        this.left = 0;
-        this.right = 0;
-        this.top = 0;
-        this.bottom = 0;
-        this.width = function()
-        {
-          return right - left;              
-        };
-        this.height = function()
-        {
-          return bottom - top;              
-        };
-    };*/
+    /*    this.Rect = function Rect()
+     {
+     this.left = 0;
+     this.right = 0;
+     this.top = 0;
+     this.bottom = 0;
+     this.width = function()
+     {
+     return right - left;              
+     };
+     this.height = function()
+     {
+     return bottom - top;              
+     };
+     };*/
 //-------------------------------------------------------------------------------------------------------------------
     /**
      * Находится ли точка x,y в пределах области rect включительно.<br/>
@@ -281,7 +281,7 @@ var aUtils = new (function()
             date.hours = fill(value, trimFormat, "HH", 2);
             date.minutes = fill(value, trimFormat, "mm", 2);
             date.seconds = fill(value, trimFormat, "ss", 2);
-            //date.milliseconds = fill(value, trimFormat, "SSS", 3);
+            date.milliseconds = fill(value, trimFormat, "SSS", 3);
             return new Date(date.year, date.month, date.day, date.hours, date.minutes, date.seconds, date.milliseconds);
         }
         catch (err)
@@ -409,4 +409,88 @@ var aUtils = new (function()
         var array = [ "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" ];
         return array[index];
     };
+//---------------------------------------------------------------------------
+    this.saveBlobAsFile = function(blob, filename)
+    {
+        // для IE
+        if (window.navigator.msSaveBlob)
+        {
+            window.navigator.msSaveBlob(blob, filename);
+            return;
+        }
+        //для Нормальных браузеров
+        var url = window.URL.createObjectURL(blob);
+        var errorText = null;
+        var a = document.createElement("a");
+        if (typeof a.download === "string")
+        {
+            try
+            {
+                a.href = url;
+                a.download = filename;
+                a.style.display = "none";
+                document.body.appendChild(a);
+                a.click();
+            }
+            catch (err)
+            {
+                errorText = "Возникли проблемы при скачивании...";
+            }
+        }
+        else
+        {
+            console.error("download name not set");
+            window.location.href = url;
+        }
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        if (errorText) throw new Error(errorText);
+    };
+//---------------------------------------------------------------------------
+    this.toUriParams = function(params)
+    {
+        if (!params) return "";
+        return  Object.keys(params).map(function(key)
+        {
+            var value = params[key];
+            if (typeof value === "object") value = JSON.stringify(value);
+            return encodeURIComponent(key) + "=" + encodeURIComponent(value);
+        }).join('&');
+    };
+//---------------------------------------------------------------------------
+    this.download = function(url, params, onload)//, onSuccess, onFailure
+    {
+        function extractFileName(value, alter)
+        {
+            if (value === null) return alter;
+            var expression = new RegExp("filename[^;=\\n]*=(['\"]?(.*)['\"]|[^;\\n]*)", "");
+            var match = value.match(expression);
+            if (!match) return alter;
+            if (match[2] !== undefined) return match[2];
+            if (match[1] !== undefined) return match[1];
+            return alter;
+        }
+        var alterFileName = "download.dat";
+        var p = aUtils.toUriParams(params);
+        if (p !== "") url += "?" + p;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.responseType = "blob";
+        xhr.onload = function(event)
+        {
+            try
+            {
+                var contentDisposition = this.getResponseHeader("Content-Disposition");
+                aUtils.saveBlobAsFile(this.response, extractFileName(contentDisposition, alterFileName));
+                if (typeof onload === "function") onload();
+            }
+            catch (err)
+            {
+                if (typeof onload === "function") onload(err.message);
+            }
+        };
+        xhr.send();
+    };
+//---------------------------------------------------------------------------
+
 })();
