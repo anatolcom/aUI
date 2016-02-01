@@ -1,0 +1,62 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 01.02.2016, 18:15:01
+    Author     : anatol
+*/
+/*$main-color : #C3C3C3;*/
+/* Input, Select, Textarea
+-----------------------------------------------------------------------------------------------*/
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 1em;
+  box-sizing: border-box;
+  border: #C3C3C3 solid 1px;
+  border-radius: 2px; }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: rgba(0, 127, 255, 0.7) auto 5px;
+    outline-offset: -2px; }
+  input.invalid,
+  select.invalid,
+  textarea.invalid {
+    outline: red auto 5px;
+    outline-offset: -2px; }
+
+/* Input, Select small
+-----------------------------------------------------------------------------------------------*/
+input.small,
+textarea.small {
+  padding: 2px 5px; }
+
+select.small {
+  padding: 1px 3px; }
+
+/* Input, Select medium
+-----------------------------------------------------------------------------------------------*/
+input,
+textarea,
+input.medium,
+textarea.medium {
+  padding: 6px 10px; }
+
+select,
+select.medium {
+  padding: 5px 8px; }
+
+/* Input, Select large
+-----------------------------------------------------------------------------------------------*/
+input.large,
+textarea.large {
+  padding: 11px 20px; }
+
+select.large {
+  padding: 10px 18px; }
+
+/*# sourceMappingURL=input.css.map */

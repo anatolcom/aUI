@@ -10,7 +10,7 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <link rel="shortcut icon" href="aUI.ico">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <link rel="stylesheet" href="css/aUI.css" type="text/css" media="screen, projection"/>
+        <!--<link rel="stylesheet" href="css/test.css" type="text/css" media="screen, projection"/>-->
         <link rel="stylesheet" href="css/style.css" type="text/css" media="screen, projection"/>
         <script type="text/javascript" src="js/aUtils.js"></script>  
         <script type="text/javascript" src="js/aURL.js"></script>  
@@ -125,7 +125,7 @@ and open the template in the editor.
             {
                 edit.value(aUtils.dateToStr(this.value(), "dd.MM.yyyy"));
             }
-            var calendar1 = new aUI.Calendar({ onclickday : changeDate }).appendTo(calendarItem);
+            var calendar1 = new aUI.Calendar({ addclass : "small", onclickday : changeDate }).appendTo(calendarItem);
             var calendar2 = new aUI.Calendar({ addclass : "medium", onclickday : changeDate }).appendTo(calendarItem);
             var calendar3 = new aUI.Calendar({ addclass : "large", onchange : changeDate }).appendTo(calendarItem);
 
@@ -141,7 +141,6 @@ and open the template in the editor.
 
                 var calendarPopup = new aUI.Calendar();
                 calendarPopup.value(calendar3.value());
-                calendarPopup.addClass("medium");
                 calendarPopup.appendTo(popup);
                 calendarPopup.onClickDay(function() {
                     calendar3.value(this.value());

@@ -1,0 +1,93 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 01.02.2016, 16:24:14
+    Author     : anatol
+*/
+
+@charset "utf-8";
+@import "_constants.scss";
+
+/* Button
+-----------------------------------------------------------------------------------------------*/
+.button
+{
+    @include clickable;
+    border-radius: $borderRadius;
+    font-size: 1em;
+    text-align: center;
+    text-decoration: blink;
+    font-weight: bold;
+    box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 2px rgba(0,0,0,0.2);
+    color: #363696;
+    &:hover
+        {
+        border-color: #C3C3C3;
+        color: #00008B;
+        box-shadow: 0px 0px 1px rgba(0,0,0,0.3), 0px 1px 2px rgba(0,0,0,0.3);
+    }
+    &:active
+        {
+        box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2);
+    }
+    &.selected
+    {
+        box-shadow: 0px 0px 1px rgba(0,0,0,0.2) inset, 0px 1px 2px rgba(0,0,0,0.2) inset;
+        background-color: rgba(255,255,255,0.5);
+        :hover
+            {
+            box-shadow: 0px 0px 2px rgba(0,0,0,0.2) inset, 0px 1px 2px rgba(0,0,0,0.2) inset;
+        }
+        :active
+            {
+            box-shadow: 0px 0px 3px rgba(0,0,0,0.2) inset, 0px 1px 3px rgba(0,0,0,0.2) inset;
+        }
+    }
+    &.success
+    {
+        background-color: #0AA75F;
+        color: #FFF;
+        &.selected
+        {
+            background-color: rgb(68, 202, 140);
+        }
+    }
+    &.warning
+    {
+        background-color: #D22F2F;
+        color: #FFF;
+        &.selected
+        {
+            background-color: rgb(228, 104, 104);
+        }
+    }
+}
+/* Button small
+-----------------------------------------------------------------------------------------------*/
+.button.small
+{
+    padding: 0px 10px;
+}
+/* Button medium
+-----------------------------------------------------------------------------------------------*/
+.button,
+.button.medium
+{
+    padding: 5px 10px;
+}
+/* Button large
+-----------------------------------------------------------------------------------------------*/
+.button.large
+{
+    padding: 10px 20px;
+}
+/* Buttons
+-----------------------------------------------------------------------------------------------*/
+.buttons > .button
+{
+    display: inline-block;  
+    margin: 5px 0px 5px 5px;
+}

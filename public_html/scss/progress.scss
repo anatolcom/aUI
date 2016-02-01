@@ -1,0 +1,36 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 01.02.2016, 16:44:16
+    Author     : anatol
+*/
+
+@charset "utf-8";
+@import "_constants.scss";
+
+/* Progress
+-----------------------------------------------------------------------------------------------*/
+
+.progress
+{
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: rgba(128, 128, 128, 0.2);
+    &.horisontal
+    {
+        height: 4px;
+        width: 100px;
+    }
+    &.vertical
+    {
+        height: 100px;
+        width: 4px;
+    }
+    > .value
+    {
+        background-color: #888;
+    }
+}

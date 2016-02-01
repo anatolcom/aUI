@@ -1,0 +1,45 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 01.02.2016, 16:46:47
+    Author     : anatol
+*/
+
+@charset "utf-8";
+@import "_constants.scss";
+
+/* Scroll
+-----------------------------------------------------------------------------------------------*/
+.scroll
+{
+    border: rgba(128, 128, 128, 0.2) solid 1px;
+    box-sizing: border-box;
+    &.horisontal
+    {
+        height: 8px;
+        width: 100px;
+    }
+    &.vertical
+    {
+        height: 100px;
+        width: 8px;
+    }
+    > .drag
+    {
+        border: #FFF solid 2px;
+        background-color: #888;
+        box-sizing: border-box;
+    }
+    &:hover,
+        &.move
+        {
+        border-color: #C3C3C3;
+        > .drag
+        {
+            border-width: 1px;
+        }
+    }
+}
