@@ -37,12 +37,14 @@
 .calendar > .level.days:hover,
 .calendar > .level.months:hover,
 .calendar > table > tr > td:hover {
+  /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4), 0px 1px 1px rgba(0,0,0,0.4);*/
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4), 0px 1px 1px rgba(0, 0, 0, 0.4); }
 .calendar > .prev:active,
 .calendar > .next:active,
 .calendar > .level.days:active,
 .calendar > .level.months:active,
 .calendar > table > tr > td:active {
+  /*box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2);*/
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.2); }
 .calendar > table > tr > td.selected {
   font-weight: bolder;
@@ -65,7 +67,7 @@
   .calendar.small > .next,
   .calendar.small > .level,
   .calendar.small > .year {
-    padding: 2px 0px; }
+    padding: 1px 0px; }
   .calendar.small > .level {
     width: 100px; }
   .calendar.small > .prev,

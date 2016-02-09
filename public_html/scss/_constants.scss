@@ -13,4 +13,27 @@ $borderRadius : 2px;
     -ms-user-select: none;
     user-select: none;
 }
-
+@mixin clickableUp
+{
+    box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2);
+}
+@mixin clickableUpHover
+{
+    box-shadow: 0px 0px 1px rgba(0,0,0,0.4), 0px 1px 1px rgba(0,0,0,0.4);
+}
+@mixin clickableUpActive
+{
+    box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2);
+}
+@mixin clickableDown
+{
+    box-shadow: 0px 0px 1px rgba(0,0,0,0.2) inset, 0px 1px 1px rgba(0,0,0,0.2) inset;
+}
+@mixin clickableDownHover
+{
+    box-shadow: 0px 0px 1px rgba(0,0,0,0.4) inset, 0px 1px 1px rgba(0,0,0,0.4) inset;
+}
+@mixin clickableDownActive
+{
+    box-shadow: 0px 0px 1px rgba(0,0,0,0.2) inset, 0px 1px 1px rgba(0,0,0,0.2) inset;
+}

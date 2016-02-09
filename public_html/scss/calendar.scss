@@ -42,7 +42,8 @@
         > .level.months:hover,
         > table > tr > td:hover
         {
-        box-shadow: 0px 0px 1px rgba(0,0,0,0.4), 0px 1px 1px rgba(0,0,0,0.4);
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4), 0px 1px 1px rgba(0,0,0,0.4);*/
+        @include clickableUpHover;
     }
     > .prev:active,
         > .next:active,
@@ -50,7 +51,8 @@
         > .level.months:active,
         > table > tr > td:active
         {
-        box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2);
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2);*/
+        @include clickableUpActive;
     }
     > table
     {
@@ -78,22 +80,16 @@
         }
     }
 }
-/* Calendar small
------------------------------------------------------------------------------------------------*/
-.calendar.small
+
+@mixin calendarSize($width, $padding, $dayDH, $monthDH, $yearDH)
 {
-    $width : 140px;
-    $p : 2px;
     $dayWidth : $width / 7;
     $dayHeight : $dayWidth;
-    $dayDH : -1px;
     $monthWidth : $width / 4;
     $monthHeight : $monthWidth;
-    $monthDH : -8px;
     $yearWidth : $width / 4;
     $yearHeight : $yearWidth;
-    $yearDH : -8px;
-
+ 
     width: $width; 
 
     > .prev,
@@ -101,7 +97,7 @@
     > .level,
     > .year
     {
-        padding: $p 0px;
+        padding: $padding;
     }
     > .level
     {
@@ -157,163 +153,24 @@
     }
 }
 
+/* Calendar small
+-----------------------------------------------------------------------------------------------*/
+.calendar.small
+{
+    @include calendarSize(140px, 1px 0px, -1px, -8px, -8px);
+}
 
 /* Calendar medium
 -----------------------------------------------------------------------------------------------*/
 .calendar,
 .calendar.medium
 {
-    $width : 168px;
-    $p : 3px;
-    $dayWidth : $width / 7;
-    $dayHeight : $dayWidth;
-    $dayDH : -3px;
-    $monthWidth : $width / 4;
-    $monthHeight : $monthWidth;
-    $monthDH : -12px;
-    $yearWidth : $width / 4;
-    $yearHeight : $yearWidth;
-    $yearDH : -12px;
-
-    width: $width; 
-
-    > .prev,
-    > .next,
-    > .level,
-    > .year
-    {
-        padding: $p 0px;
-    }
-    > .level
-    {
-        width: $width - $dayWidth * 2;
-    }
-    > .prev,
-    > .next
-    {
-        width: $dayWidth;
-    }
-    > table
-    {
-        &.days
-        {
-            > tr > th
-            {
-                width: $dayWidth;
-                height: $dayHeight;
-            }
-            > tr > td
-            {
-                width: $dayWidth;
-                height: $dayHeight;
-                &.current:before
-                    {
-                    width: $dayWidth;
-                    height: $dayHeight;
-                    margin-top: $dayDH;
-                }
-            }
-        }
-        &.months
-        {
-            margin-top: $dayHeight;
-            > tr > td
-            {
-                width: $monthWidth;
-                height: $monthHeight;
-                &.current:before
-                    {
-                    width: $monthWidth;
-                    height: $monthHeight;
-                    margin-top: $monthDH;
-                }
-            }
-        }
-        &.years > tr > td.current:before
-            {
-            width: $yearWidth;
-            height: $yearHeight;
-            margin-top: $yearDH;
-        }
-    }
+    @include calendarSize(168px, 3px 0px, -3px, -12px, -12px);
 }
 
 /* Calendar large
 -----------------------------------------------------------------------------------------------*/
-
 .calendar.large
 {
-    $width : 196px;
-    $p : 5px;
-    $dayWidth : $width / 7;
-    $dayHeight : $dayWidth;
-    $dayDH : -5px;
-    $monthWidth : $width / 4;
-    $monthHeight : $monthWidth;
-    $monthDH : -15px;
-    $yearWidth : $width / 4;
-    $yearHeight : $yearWidth;
-    $yearDH : -15px;
-
-    width: $width; 
-
-    > .prev,
-    > .next,
-    > .level,
-    > .year
-    {
-        padding: $p 0px;
-    }
-    > .level
-    {
-        width: $width - $dayWidth * 2;
-    }
-    > .prev,
-    > .next
-    {
-        width: $dayWidth;
-    }
-    > table
-    {
-        &.days
-        {
-            > tr > th
-            {
-                width: $dayWidth;
-                height: $dayHeight;
-            }
-            > tr > td
-            {
-                width: $dayWidth;
-                height: $dayHeight;
-                &.current:before
-                    {
-                    width: $dayWidth;
-                    height: $dayHeight;
-                    margin-top: $dayDH;
-                }
-            }
-        }
-        &.months
-        {
-            margin-top: $dayHeight;
-            > tr > td
-            {
-                width: $monthWidth;
-                height: $monthHeight;
-                &.current:before
-                    {
-                    width: $monthWidth;
-                    height: $monthHeight;
-                    margin-top: $monthDH;
-                }
-            }
-        }
-        &.years > tr > td.current:before
-            {
-            width: $yearWidth;
-            height: $yearHeight;
-            margin-top: $yearDH;
-        }
-    }
+    @include calendarSize(196px, 5px 0px, -5px, -15px, -15px);
 }
