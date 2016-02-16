@@ -9,14 +9,12 @@ and open the template in the editor.
 */
 
 @charset "utf-8";
-@import "button.css"; 
-@import "input.css"; 
-@import "progress.css"; 
-@import "scroll.css"; 
-@import "range.css"; 
-@import "calendar.css"; 
-
-
+@import "button.scss"; 
+@import "input.scss"; 
+@import "progress.scss"; 
+@import "scroll.scss"; 
+@import "range.scss"; 
+@import "calendar.scss"; 
 
 /* Field
 -----------------------------------------------------------------------------------------------*/
@@ -25,30 +23,24 @@ and open the template in the editor.
 {
     display: block;
     vertical-align: middle;
+    > .caption,
+    > .value
+    {
+        /* display: inline-block; */
+        /* vertical-align: middle; */
+    }
+    > .value > *
+    {
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 10px;
+    }
+    > .caption
+    {
+        font-weight: bold;
+        margin-bottom: 3px;
+    }    
 }
-.field > .caption,
-.field > .value
-{
-    /* display: inline-block; */
-    /* vertical-align: middle; */
-}
-.field > .value > *
-{
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 10px;
-}
-.field > .caption
-{
-    font-weight: bold;
-    margin-bottom: 3px;
-}
-
-
-
-
-
-
 
 /* XY
 -----------------------------------------------------------------------------------------------*/
@@ -58,42 +50,43 @@ and open the template in the editor.
     /* border: #BBB solid 1px; */
     /* border-radius: 3px; */
     /* padding: 10px; */
+    > .area
+    {
+        border: rgba(127, 127, 127, 0.1) solid 1px;
+        cursor: default;
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+        > .x
+        {
+            border-right: #BBB solid 1px;
+        }
+        > .y
+        {
+            border-bottom: #BBB solid 1px;
+        }
+        > .move
+        {
+            cursor: default;
+            /*width: 15px;*/
+            /*height: 15px;*/
+            border: #BBB solid 1px;
+            border-radius: 2px;
+            /* background-color: rgba(0, 0, 0, 0.1); */
+            :hover
+                {
+                /* background-color: rgba(0, 0, 0, 0.15); */
+                /* box-shadow: 0px 0px 1px rgba(0,0,0,0.4), 0px 1px 1px rgba(0,0,0,0.4); */
+            }
+            :active
+                {
+                /* background-color: rgba(0, 0, 0, 0.08); */
+                /* box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2); */
+            }  
+        }
+    }
 }
-.xy > .area
-{
-    border: rgba(127, 127, 127, 0.1) solid 1px;
-    cursor: default;
-    width: 200px;
-    height: 200px;
-    overflow: hidden;
-}
-.xy > .area > .x
-{
-    border-right: #BBB solid 1px;
-}
-.xy > .area > .y
-{
-    border-bottom: #BBB solid 1px;
-}
-.xy > .area > .move
-{
-    cursor: default;
-    /*width: 15px;*/
-    /*height: 15px;*/
-    border: #BBB solid 1px;
-    border-radius: 2px;
-    /* background-color: rgba(0, 0, 0, 0.1); */
-}
-.xy > .area > .move:hover
-{
-    /* background-color: rgba(0, 0, 0, 0.15); */
-    /* box-shadow: 0px 0px 1px rgba(0,0,0,0.4), 0px 1px 1px rgba(0,0,0,0.4); */
-}
-.xy > .area > .move:active
-{
-    /* background-color: rgba(0, 0, 0, 0.08); */
-    /* box-shadow: 0px 0px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.2); */
-}
+
 /* Popup
 -----------------------------------------------------------------------------------------------*/
 
@@ -115,36 +108,72 @@ and open the template in the editor.
 
 .slist
 {
+    > ul.menu
+    {
+        background-color: #FFF;
+        /* background-color: rgb(89, 89, 148); */
+        /* background-color: rgba(24, 24, 122, 0.6); */
+        /* color: #FFF; */
+        margin-bottom: 1px;
+        > li
+        {
+            -webkit-animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;
+            animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: default;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            /*-webkit-animation-duration: 1s;*/
+            /* animation-duration: 1s; */
+            /* transition-property: background-color; */
+            /* animation: 2s ease 0s normal none 1 running mymove; */
+            /* animation: 1s ease 2s normal none 1; */
+            :hover:not(.selected)
+                {
+                /*background-color: rgba(0, 0, 0, 0.1);*/
+                border-bottom: rgba(0, 0, 0, 0.1) solid 1px;
+                padding-bottom: 9px;
+            }
+            .selected
+            {
+                background-color: rgba(0, 0, 0, 0.1);
+                /* background-color: rgba(255,255,255, 0.2); */
+                -webkit-animation: 0.3s ease 0s normal none 1 running anim-bg-from-transparent;
+                animation: 0.3s ease 0s normal none 1 running anim-bg-from-transparent;
+            }
+        }
+    }
+    > .scrollarea
+    {
+        max-height: 400px;
+        > ul
+        {
+            > li
+            {
+                /* min-height: 199px; */
+                margin-bottom: 1px;
+                background-color: #FFF;
+                /* background-color: #444; */
+                /* color: #FFF; */
+                > .caption
+                {
+                    font-size: 1.3em;
+                    padding: 20px 20px 0px 20px;
+                }
+                > .content
+                {
+                    padding: 20px;
+                }
+            }
+        }
+    }
+}
 
-}
-.slist > ul.menu
-{
-    background-color: #FFF;
-    /* background-color: rgb(89, 89, 148); */
-    /* background-color: rgba(24, 24, 122, 0.6); */
-    /* color: #FFF; */
-    margin-bottom: 1px;
-}
-.slist > ul.menu > li
-{
-    -webkit-animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;
-    animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;
-    display: inline-block;
-    padding: 10px 20px;
-    cursor: default;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    /*-webkit-animation-duration: 1s;*/
-    /* animation-duration: 1s; */
-    /* transition-property: background-color; */
-    /* animation: 2s ease 0s normal none 1 running mymove; */
-    /* animation: 1s ease 2s normal none 1; */
-
-}
 @-webkit-keyframes anim-bg-to-transparent 
 {
     from 
@@ -169,19 +198,7 @@ and open the template in the editor.
         background-color: transparent;
     }
 }
-.slist > ul.menu > li:hover:not(.selected)
-{
-    /*background-color: rgba(0, 0, 0, 0.1);*/
-    border-bottom: rgba(0, 0, 0, 0.1) solid 1px;
-    padding-bottom: 9px;
-}
-.slist > ul.menu > li.selected
-{
-    background-color: rgba(0, 0, 0, 0.1);
-    /* background-color: rgba(255,255,255, 0.2); */
-    -webkit-animation: 0.3s ease 0s normal none 1 running anim-bg-from-transparent;
-    animation: 0.3s ease 0s normal none 1 running anim-bg-from-transparent;
-}
+
 @-webkit-keyframes anim-bg-from-transparent 
 {
     from 
@@ -206,30 +223,7 @@ and open the template in the editor.
 }
 
 
-.slist > .scrollarea
-{
-    max-height: 400px;
-}
-.slist > .scrollarea > ul
-{
-}
-.slist > .scrollarea > ul > li
-{
-    /* min-height: 199px; */
-    margin-bottom: 1px;
-    background-color: #FFF;
-    /* background-color: #444; */
-    /* color: #FFF; */
-}
-.slist > .scrollarea > ul > li > .caption
-{
-    font-size: 1.3em;
-    padding: 20px 20px 0px 20px;
-}
-.slist > .scrollarea > ul > li > .content
-{
-    padding: 20px;
-}
+
 
 
 
@@ -295,8 +289,8 @@ and open the template in the editor.
     box-sizing: border-box;
     color: #363696;
     font-size: 0.8em;
-}
-.scale > .val
-{
-    margin-top: 2px;
+    > .val
+    {
+        margin-top: 2px;
+    }
 }
