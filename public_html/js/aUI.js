@@ -27,7 +27,9 @@ aUI.construct = function(constructor, args)
 //-------------------------------------------------------------------------------------------------------------------
 aUI.getElement = function(element)
 {
+    if (element === undefined) throw new Error("undefined is not element");
     if (element === null) throw new Error("null is not element");
+    if (typeof element !== "object") throw new Error("no object is not element");
     if (element instanceof HTMLElement) return element;
     if (element instanceof aUI.Element) return element.getElement();
     if (element[0] instanceof HTMLElement) return element[0];
