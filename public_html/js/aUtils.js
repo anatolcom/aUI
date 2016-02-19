@@ -466,8 +466,8 @@ var aUtils = new (function()
             var expression = new RegExp("filename[^;=\\n]*=(['\"]?(.*)['\"]|[^;\\n]*)", "");
             var match = value.match(expression);
             if (!match) return alter;
-            if (match[2] !== undefined) return match[2];
-            if (match[1] !== undefined) return match[1];
+            if (match[2] !== undefined) return decodeURIComponent(match[2]);
+            if (match[1] !== undefined) return decodeURIComponent(match[1]);
             return alter;
         }
         var alterFileName = "download.dat";

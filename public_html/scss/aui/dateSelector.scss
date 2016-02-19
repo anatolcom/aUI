@@ -1,0 +1,37 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 18.02.2016, 10:47:12
+    Author     : anatol
+*/
+
+.dateSelector
+{
+    position: relative;
+    > imput
+    {
+        display: inline-block;
+    }
+    > .button
+    {
+        display: inline-block;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        margin: 3px;
+        padding: 2px 7px;
+    }
+    > .buttonXXX
+    {
+        display: inline-block;
+        position: absolute;
+        height: 1em;
+        top: 0px;
+        right: 0px;
+        margin: 3px;
+        padding: 5px 10px;
+    }
+}
