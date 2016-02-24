@@ -12,55 +12,18 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <!--<link rel="stylesheet" href="css/test.css" type="text/css" media="screen, projection"/>-->
         <link rel="stylesheet" href="css/style.css" type="text/css" media="screen, projection"/>
-        <script type="text/javascript" src="js/aUtils.js"></script>  
-        <script type="text/javascript" src="js/aURL.js"></script>  
-        <script type="text/javascript" src="js/aUI.js"></script> 
-        <script src="js/DragManager.js"></script>
-        <script>
-            var aURL = new AURL();
-            function changeSections()
-            {
-                if (typeof fillSectionList === "function") fillSectionList(this.value);
-            }
-            function changeSelected()
-            {
-                if (typeof selectSection === "function") selectSection(this.value);
-            }
-            aURL.setListener("changeSections", "sections", changeSections);
-            aURL.setListener("changeSelected", "selected", changeSelected);
-            aURL.init();
-            function paramUp(name)
-            {
-                //console.log(name, aURL.get(name));
-                var value = aURL.getNumber(name);
-                if (value === undefined) value = 0;
-                else value++;
-                aURL.set(name, value);
-            }
-            function paramDown(name)
-            {
-                var value = aURL.getNumber(name);
-                if (value === undefined) return;
-                if (--value < 0) aURL.remove(name);
-                else aURL.set(name, value);
-            }
-        </script>
+        <script data-main="js/app" src="js/libs/require.js"></script>
     </head>
     <body>
         <header>
             <h1>aUI</h1>
         </header>
         <nav>
-            <menu class="absolute">
-                <a href="javascript:paramUp('sections');">add</a><a href="javascript:paramDown('sections');">del</a>
-            </menu>
             <menu class="fixed circle">
                 <a href="javascript:paramUp('test');">add</a><a href="javascript:paramDown('test');">del</a>
             </menu>
         </nav>
         <section>
-
-
         </section>
         <!--  <a href="http://learn.javascript.ru/keyboard-events">keyboard-events</a>
           <a href="https://learn.javascript.ru/ajax-xmlhttprequest">ajax-xmlhttprequest</a>
@@ -74,166 +37,6 @@ and open the template in the editor.
           </div>-->
 
         <footer>anatol.com</footer>  
-        <script>
-//            var body = document.getElementsByTagName("body").item(0);
-//            var body = document.querySelector("body");
-            var body = document.body;
-//            var parent = document.getElementsByTagName("section").item(0);
-            var parent = document.querySelector("section");
-
-            function selectSection(index)
-            {
-                slist.select(index);
-            }
-            function changeTopSection()
-            {
-                aURL.set("selected", this.selected());
-            }
-
-
-            var slist = new aUI.SList({ }).appendTo(parent);
-            xxx = slist;
-            var buttonItem = slist.add({ text : "Button" }).content();
-            var inputItem = slist.add({ text : "Input" }).content();
-            var dragItem = slist.add({ text : "Drag" }).content();
-            var calendarItem = slist.add({ text : "Calendar" }).content();
-            var mouseItem = slist.add({ text : "Mouse" }).content();
-            var linksItem = slist.add({ text : "Links" }).content();
-            slist.select(aURL.get("selected"));
-            slist.onChangeSelected(changeTopSection);
-
-            var fieldButtons = new aUI.Field({ caption : "Кнопки" }).appendTo(buttonItem);
-            var btn1 = new aUI.Button({ text : "button" }).appendTo(fieldButtons.value);
-
-            var btn2 = new aUI.Button({ text : "selectable" }).appendTo(fieldButtons.value);
-
-            var fieldInputs = new aUI.Field({ caption : "Поля ввода" }).appendTo(inputItem);
-            var edit = new aUI.Edit({ placeholder : "Edit", examples : [ "01.01.2014", "01.01.2015" ] }).appendTo(fieldInputs.value);
-            edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
-            edit.maxLength(10);
-            //edit.attr("data-title", "Редактируемое поле с примерами");
-
-            var select = new aUI.Select({ items : [ "...", "edit", "memo", "select" ], disabled : 0, value : 0 }).appendTo(fieldInputs.value);
-
-            var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(fieldInputs.value);
-            memo.validator(new aUI.validator.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
-
-            btn1.onClick(btn2.toggleSelect, edit.focus);
-            btn2.onClick(btn2.toggleSelect, memo.value, "!!!", memo.focus);
-
-            function changeDate()
-            {
-                edit.value(aUtils.dateToStr(this.value(), "dd.MM.yyyy"));
-            }
-            var calendar1 = new aUI.Calendar({ addclass : "small", onclickday : changeDate }).appendTo(calendarItem);
-            var calendar2 = new aUI.Calendar({ addclass : "medium", onclickday : changeDate }).appendTo(calendarItem);
-            var calendar3 = new aUI.Calendar({ addclass : "large", onchange : changeDate }).appendTo(calendarItem);
-
-            var btnPopup = new aUI.Button({ class : "button", text : "Calendar" }).appendTo(calendarItem);
-            btnPopup.onClick(function(event) {
-                if (btnPopup.selected())
-                {
-                    btnPopup.unselect();
-                    return;
-                }
-                btnPopup.select();
-                var popup = new aUI.Popup().appendTo(btnPopup);
-
-                var calendarPopup = new aUI.Calendar();
-                calendarPopup.value(calendar3.value());
-                calendarPopup.appendTo(popup);
-                calendarPopup.onClickDay(function() {
-                    calendar3.value(this.value());
-                    popup.remove();
-                });
-                popup.onRemove(btnPopup.unselect);
-            });
-            
-            var dtaeSelector = new aUI.DateSelector({}).appendTo(calendarItem);
-
-
-            var xy1 = new aUI.XY().appendTo(mouseItem);
-            var xy2 = new aUI.XY().appendTo(mouseItem);
-            xy2.roundX(Math.round);
-            xy2.roundY(Math.round);
-
-            var progressGroup = new aUI.Element({ class : "group" }).appendTo(mouseItem);
-            var progress1 = new aUI.Progress({ width : 200 }).appendTo(progressGroup);
-            //   progress1.value(30);
-            var progress2 = new aUI.Progress({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
-            //   progress2.value(70);
-
-            var scroll1 = new aUI.Scroll({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
-            scroll1.value(70);
-            var slider1 = new aUI.Slider({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
-            slider1.value(70);
-
-            var range1 = new aUI.Range({ max : 10, width : 200, blocked : true }).appendTo(progressGroup);
-            range1.round(Math.round);
-            range1.valueMax(6);
-            range1.valueMin(1);
-
-            var scale = new aUI.Scale({ height : 6, width : 200 }).appendTo(progressGroup);
-
-            var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(mouseItem);
-            scroll2.value(70);
-
-            var range2 = new aUI.Range({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
-            range2.round(0.1);
-            range2.valueMax(40);
-            range2.valueMin(20);
-
-            var dockMovable = new aUI.Element({ class : "dockMovable" }).appendTo(mouseItem);
-
-            var movable = new aUI.Movable({ class : "movable", text : "Move Me!" }).appendTo(dockMovable);
-            movable.onMove(function(event, dX, dY) {
-                movable.left(movable.left() + dX);
-                movable.top(movable.top() + dY);
-            });
-
-
-
-            var fieldLinks = new aUI.Field({ caption : "Полезные ссылки" }).appendTo(linksItem);
-            fieldLinks.addClass("links");
-            var links = [
-                { text : "keyboard-events", href : "http://learn.javascript.ru/keyboard-events" },
-                { text : "ajax-xmlhttprequest", href : "https://learn.javascript.ru/ajax-xmlhttprequest" },
-                { text : "how-to-set-css3-transition-using-javascript", href : "http://stackoverflow.com/questions/8742249/how-to-set-css3-transition-using-javascript" },
-                { text : "dom_obj_event", href : "http://www.w3schools.com/jsref/dom_obj_event.asp" },
-                { text : "poryadok-srabatyvaniya-sobytiy", href : "http://javascript.ru/tutorial/events/intro#poryadok-srabatyvaniya-sobytiy" },
-                { text : "dobavlenie-cherez-on-imya-sobytiya", href : "http://javascript.ru/tutorial/events/comparison#dobavlenie-cherez-on-imya-sobytiya" }
-            ];
-            for (var index in links) new aUI.Link(links[index]).appendTo(fieldLinks.value);
-
-
-
-
-            var dragDock1 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
-            var dragDock2 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
-            var drag1 = new aUI.Element({ class : "movable", text : "drag me" }).appendTo(dragDock1);
-            aUI.extensions.dragable(darg1);
-
-        </script>
-        <!--  <datalist id="options">
-           <option>option 1</option>
-           <option>option 2</option>
-          </datalist>-->
-
-        <script>
-            DragManager.onDragCancel = function(dragObject) {
-                dragObject.avatar.rollback();
-            };
-
-            DragManager.onDragEnd = function(dragObject, dropElem)
-            {
-                dragObject.elem.style.display = "none";
-                dropElem.classList.add('computer-smile');
-                setTimeout(function()
-                {
-                    dropElem.classList.remove('computer-smile');
-                }, 200);
-            };
-        </script>
 
         <div style="padding: 20px 20px 20px 200px;">
             <div style="height:64px">
