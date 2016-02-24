@@ -22,13 +22,12 @@ $borderRadius : 2px;
     &:hover
         {
         $s-bg : 0.2s;
-        $s-bs : 0.05s;
+        $s-bs : 0.0s;
         -webkit-transition: background-color $s-bg ease, -webkit-box-shadow $s-bs ease;
         -moz-transition: background-color $s-bg ease, -moz-box-shadow $s-bs ease;
         -o-transition: background-color $s-bg ease, box-shadow $s-bs ease;
         transition: background-color $s-bg ease, box-shadow $s-bs ease;
     }
-
 }
 @mixin clickableUp
 {

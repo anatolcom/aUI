@@ -39,10 +39,10 @@ and open the template in the editor.
   font-weight: bold;
   color: #363696; }
   .button:hover {
-    -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0.05s ease;
-    -moz-transition: background-color 0.2s ease, -moz-box-shadow 0.05s ease;
-    -o-transition: background-color 0.2s ease, box-shadow 0.05s ease;
-    transition: background-color 0.2s ease, box-shadow 0.05s ease; }
+    -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0s ease;
+    -moz-transition: background-color 0.2s ease, -moz-box-shadow 0s ease;
+    -o-transition: background-color 0.2s ease, box-shadow 0s ease;
+    transition: background-color 0.2s ease, box-shadow 0s ease; }
   .button:hover {
     border-color: #C3C3C3;
     color: #00008B;
@@ -58,7 +58,8 @@ and open the template in the editor.
       box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2) inset, 0px 1px 1px rgba(0, 0, 0, 0.2) inset; }
   .button.success {
     background-color: #0AA75F;
-    color: #FFF; }
+    color: #FFF;
+    }
     .button.success.selected {
       background-color: #44ca8c; }
   .button.warning {
@@ -307,12 +308,11 @@ and open the template in the editor.
 .calendar > table {
   border-collapse: collapse; }
   .calendar > table > tr > td {
-    /*            $s-bg : 2s;
-                -webkit-transition: background-color $s-bg ease;
-                -moz-transition: background-color $s-bg ease;
-                -o-transition: background-color $s-bg ease;
-                transition: background-color $s-bg ease;*/
-    background-color: transparent; }
+    background-color: transparent;
+    -webkit-transition: background-color 2s ease;
+    -moz-transition: background-color 2s ease;
+    -o-transition: background-color 2s ease;
+    transition: background-color 2s ease; }
     .calendar > table > tr > td.selected {
       font-weight: bolder;
       background-color: rgba(0, 0, 0, 0.1);
@@ -356,10 +356,10 @@ and open the template in the editor.
   .calendar > .next:hover,
   .calendar > table > tr > th:hover,
   .calendar > table > tr > td:hover {
-    -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0.05s ease;
-    -moz-transition: background-color 0.2s ease, -moz-box-shadow 0.05s ease;
-    -o-transition: background-color 0.2s ease, box-shadow 0.05s ease;
-    transition: background-color 0.2s ease, box-shadow 0.05s ease; }
+    -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0s ease;
+    -moz-transition: background-color 0.2s ease, -moz-box-shadow 0s ease;
+    -o-transition: background-color 0.2s ease, box-shadow 0s ease;
+    transition: background-color 0.2s ease, box-shadow 0s ease; }
 .calendar > .prev:hover,
 .calendar > .next:hover,
 .calendar > .level.days:hover,
@@ -511,6 +511,7 @@ and open the template in the editor.
     Created on : 18.02.2016, 10:47:12
     Author     : anatol
 */
+/*$main-color : #C3C3C3;*/
 .dateSelector {
   position: relative; }
   .dateSelector > imput {
@@ -520,16 +521,16 @@ and open the template in the editor.
     position: absolute;
     top: 0px;
     right: 0px;
-    margin: 3px;
-    padding: 2px 7px; }
-  .dateSelector > .buttonXXX {
-    display: inline-block;
-    position: absolute;
-    height: 1em;
-    top: 0px;
-    right: 0px;
-    margin: 3px;
-    padding: 5px 10px; }
+    margin: 1px;
+    padding: 4px 7px;
+    border-radius: 1px;
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.1); }
+    .dateSelector > .button:hover {
+      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4); }
+    .dateSelector > .button:active {
+      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2) inset, 0px 1px 1px rgba(0, 0, 0, 0.2) inset; }
+    .dateSelector > .button.selected {
+      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2) inset, 0px 1px 1px rgba(0, 0, 0, 0.2) inset; }
 
 /* Field
 -----------------------------------------------------------------------------------------------*/

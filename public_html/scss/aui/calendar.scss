@@ -24,13 +24,13 @@
         border-collapse: collapse;
         > tr > td
         {
-/*            $s-bg : 2s;
+            background-color: rgba(0, 0, 0, 0);
+            $s-bg : 2s;
             -webkit-transition: background-color $s-bg ease;
             -moz-transition: background-color $s-bg ease;
             -o-transition: background-color $s-bg ease;
-            transition: background-color $s-bg ease;*/
+            transition: background-color $s-bg ease;
 
-            background-color: rgba(0, 0, 0, 0);
             &.selected
             {
 

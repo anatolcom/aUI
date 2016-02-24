@@ -16,12 +16,11 @@
 .calendar > table {
   border-collapse: collapse; }
   .calendar > table > tr > td {
-    /*            $s-bg : 2s;
-                -webkit-transition: background-color $s-bg ease;
-                -moz-transition: background-color $s-bg ease;
-                -o-transition: background-color $s-bg ease;
-                transition: background-color $s-bg ease;*/
-    background-color: transparent; }
+    background-color: transparent;
+    -webkit-transition: background-color 2s ease;
+    -moz-transition: background-color 2s ease;
+    -o-transition: background-color 2s ease;
+    transition: background-color 2s ease; }
     .calendar > table > tr > td.selected {
       font-weight: bolder;
       background-color: rgba(0, 0, 0, 0.1);
@@ -65,10 +64,10 @@
   .calendar > .next:hover,
   .calendar > table > tr > th:hover,
   .calendar > table > tr > td:hover {
-    -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0.05s ease;
-    -moz-transition: background-color 0.2s ease, -moz-box-shadow 0.05s ease;
-    -o-transition: background-color 0.2s ease, box-shadow 0.05s ease;
-    transition: background-color 0.2s ease, box-shadow 0.05s ease; }
+    -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0s ease;
+    -moz-transition: background-color 0.2s ease, -moz-box-shadow 0s ease;
+    -o-transition: background-color 0.2s ease, box-shadow 0s ease;
+    transition: background-color 0.2s ease, box-shadow 0s ease; }
 .calendar > .prev:hover,
 .calendar > .next:hover,
 .calendar > .level.days:hover,

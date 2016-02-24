@@ -30,10 +30,10 @@ and open the template in the editor.
   font-weight: bold;
   color: #363696; }
   .button:hover {
-    -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0.05s ease;
-    -moz-transition: background-color 0.2s ease, -moz-box-shadow 0.05s ease;
-    -o-transition: background-color 0.2s ease, box-shadow 0.05s ease;
-    transition: background-color 0.2s ease, box-shadow 0.05s ease; }
+    -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0s ease;
+    -moz-transition: background-color 0.2s ease, -moz-box-shadow 0s ease;
+    -o-transition: background-color 0.2s ease, box-shadow 0s ease;
+    transition: background-color 0.2s ease, box-shadow 0s ease; }
   .button:hover {
     border-color: #C3C3C3;
     color: #00008B;
