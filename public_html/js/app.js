@@ -1,7 +1,6 @@
 require([ "aui/aURL", "aui/aUtils", "aui/aUI", "DragManager" ],
 function(aURL, aUtils, aUI) {
 
-    console.dir(aURL);
     var aurl = new aURL();
     function changeSections()
     {
@@ -35,7 +34,6 @@ function(aURL, aUtils, aUI) {
 
 
     var nav = document.querySelector("body > nav");
-    console.log(nav);
     var menuAbsolute = new aUI.Element({ element : "menu", class : "absolute" }).appendTo(nav);
     new aUI.Link({ text : "add", onclick : function() {
             paramUp('sections');
@@ -43,8 +41,6 @@ function(aURL, aUtils, aUI) {
     new aUI.Link({ text : "del", onclick : function() {
             paramDown('sections');
         } }).appendTo(menuAbsolute);
-
-
 
 
 
@@ -123,7 +119,7 @@ function(aURL, aUtils, aUI) {
         popup.onRemove(btnPopup.unselect);
     });
 
-    var dtaeSelector = new aUI.DateSelector({ }).appendTo(calendarItem);
+    new aUI.DateSelector({ }).appendTo(calendarItem);
 
 
     var xy1 = new aUI.XY().appendTo(mouseItem);
@@ -185,7 +181,7 @@ function(aURL, aUtils, aUI) {
     var dragDock1 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
     var dragDock2 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
     var drag1 = new aUI.Element({ class : "movable", text : "drag me" }).appendTo(dragDock1);
-    aUI.extensions.dragable(darg1);
+    aUI.extensions.dragable(drag1);
 
 
 

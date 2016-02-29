@@ -10,55 +10,6 @@ function() {
     var aUtils = new (function()
     {
 //------------------------------------------------------------------------------------------------------------------- 
-//if (typeof Element.prototype.addEventListener === 'undefined') 
-//{
-//    Element.prototype.addEventListener = function(e, callback) 
-//    {
-//        e = 'on' + e;
-//        return this.attachEvent(e, callback);
-//    };
-//}
-//-------------------------------------------------------------------------------------------------------------------
-        /**
-         * Добавление слушателя на событие eventName у объекта object и устанавливает функцию обратного вызова on.<br/>
-         * @param {object} object
-         * @param {string} eventName имя события, например click, mousedown и тд. (без on)
-         * @param {function} on функция обратного вызова
-         * @returns {undefined}
-         */
-        this.addEvent = function(object, eventName, on)
-        {
-//        if (obj.attachEvent) 
-//        {
-//            obj['e' + type + fn] = fn;
-//            obj[type + fn] = function() 
-//            {
-//                obj['e' + type + fn](window.event);
-//            }
-//            obj.attachEvent('on' + type, obj[type + fn]);
-//            return;
-//        } 
-            object.addEventListener(eventName, on, false);
-        };
-//------------------------------------------------------------------------------------------------------------------- 
-        /**
-         * Удаляет слушателя на событие eventName у объекта object и с функцией обратного вызова on.<br/>
-         * @param {object} object
-         * @param {string} eventName имя события, например click, mousedown и тд. (без on)
-         * @param {function} on функция обратного вызова
-         * @returns {undefined}
-         */
-        this.removeEvent = function(object, eventName, on)
-        {
-//        if (obj.detachEvent) 
-//        {
-//            obj.detachEvent('on' + type, obj[type + fn]);
-//            obj[type + fn] = null;
-//            return;
-//        } 
-            object.removeEventListener(eventName, on, false);
-        };
-//------------------------------------------------------------------------------------------------------------------- 
 //    this.Range = function Range(min, max)
 //    {
 //        this.min = min;
@@ -293,126 +244,6 @@ function() {
             }
         };
 //---------------------------------------------------------------------------
-        /**
-         * Количество дней в месяце.<br/>
-         * @param {Number} year год.
-         * @param {Number} month индекс месяца [0-11]. то, что возвращает Date.getMonth().
-         * @returns {Number}
-         */
-        this.countDayInMonth = function(year, month)
-        {
-            return (new Date(year, month + 1, 0)).getDate();
-        };
-//---------------------------------------------------------------------------
-        /**
-         * Возвращается день ближайший к указанному day в пределах месяца month относящегося к году year.
-         * то есть если значение деня больше чем может быть в казанном месяце, 
-         * то день уменьшается до максимально возможного.
-         * @param {Number} year year год.
-         * @param {Number} month индекс месяца [0-11]. то, что возвращает Date.getMonth().
-         * @param {Number} day день. то, что возвращает Date.getDate().
-         * @returns {Number}
-         */
-        this.trimDay = function(year, month, day)
-        {
-            if (day < 1) return 1;
-            while (day > aUtils.countDayInMonth(year, month)) day--;
-            return day;
-        };
-//---------------------------------------------------------------------------
-        /**
-         * Смещение дня.<br/>
-         * @param {Date} date дата
-         * @param {Number} shift величина смещения. Целое число.
-         * @returns {Date}
-         */
-        this.shiftDay = function(date, shift)
-        {
-            var day = date.getDate() + shift;
-            var month = date.getMonth();
-            var year = date.getFullYear();
-            return new Date(year, month, day);
-        };
-//---------------------------------------------------------------------------
-        /**
-         * Смещение месяца.<br/>
-         * @param {Date} date дата
-         * @param {Number} shift величина смещения. Целое число.
-         * @returns {Date}
-         */
-        this.shiftMonth = function(date, shift)
-        {
-            var day = date.getDate();
-            var month = date.getMonth() + shift;
-            var year = date.getFullYear();
-            while (month < 0)
-            {
-                month += 12;
-                year--;
-            }
-            while (month > 11)
-            {
-                month -= 12;
-                year++;
-            }
-            return new Date(year, month, aUtils.trimDay(year, month, day));
-        };
-//---------------------------------------------------------------------------
-        /**
-         * Смещение года.<br/>
-         * @param {Date} date дата
-         * @param {Number} shift величина смещения. Целое число.
-         * @returns {Date}
-         */
-        this.shiftYear = function(date, shift)
-        {
-            var day = date.getDate();
-            var month = date.getMonth();
-            var year = date.getFullYear() + shift;
-            return new Date(year, month, aUtils.trimDay(year, month, day));
-        };
-//---------------------------------------------------------------------------
-        this.getShortNameDayOfWeekRu = function(index)
-        {
-            var array = [ "вс", "пн", "вт", "ср", "чт", "пт", "сб" ];
-            return array[index];
-        };
-        this.getShortNameDayOfWeek = function(index)
-        {
-            var array = [ "su", "mo", "tu", "we", "th", "fr", "sa" ];
-            return array[index];
-        };
-        this.getFullNameDayOfWeekRu = function(index)
-        {
-            var array = [ "воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота" ];
-            return array[index];
-        };
-        this.getShortNameMonth = function(index)
-        {
-            var array = [ "su", "mo", "tu", "we", "th", "fr", "sa" ];
-            return array[index];
-        };
-        this.getNumberMonth = function(index)
-        {
-            var array = [ "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" ];
-            return array[index];
-        };
-        this.getShortNameMonth = function(index)
-        {
-            var array = [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" ];
-            return array[index];
-        };
-        this.getShortNameMonthRu = function(index)
-        {
-            var array = [ "янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек" ];
-            return array[index];
-        };
-        this.getFullNameMonthRu = function(index)
-        {
-            var array = [ "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" ];
-            return array[index];
-        };
-//---------------------------------------------------------------------------
         this.saveBlobAsFile = function(blob, filename)
         {
             // для IE
@@ -497,6 +328,6 @@ function() {
 //---------------------------------------------------------------------------
 
     })();
-    
+
     return aUtils;
 });
