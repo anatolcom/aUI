@@ -11,12 +11,23 @@ module.exports = function(grunt) {
         {
             options: 
             {
-                baseUrl: "js/aui/",
-                removeCombined: true,
-                mainConfigFile: "js/aui/aUI.js",
-                findNestedDependencies: true,
-                name: "aUI",
+                baseUrl: "public_html/js/",
+//                removeCombined: true,
+//                findNestedDependencies: true,
+                optimize: 'none', // disables minification for all files
+                name: "aui/aUI",
                 out: "build/aUI.js"
+            }
+        },
+        compile_mini: 
+        {
+            options: 
+            {
+                baseUrl: "public_html/js/",
+//                removeCombined: true,
+//                findNestedDependencies: true,
+                name: "aui/aUI",
+                out: "build/aUI_mini.js"
             }
         }
     }/*,
