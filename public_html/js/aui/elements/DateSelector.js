@@ -1,9 +1,9 @@
-define([ "aui/core", "aui/aUtils", "aui/validator",
+define([ "aui/core", "aui/utils", "aui/validators",
     "aui/elements/Button",
     "aui/elements/Edit",
     "aui/elements/Popup",
     "aui/elements/Calendar" ],
-function(core, aUtils, validator,
+function(core, utils, validators,
 Button,
 Edit,
 Popup,
@@ -17,7 +17,7 @@ Calendar)
         {
             class : "dateSelector",
             mask : "dd.MM.yyyy",
-            validator : new validator.Pattern("((0[1-9]|[12][0-9]|3[01]).(0[1-9]|1[0-2]).[0-9]{4})")
+            validator : new validators.Pattern("((0[1-9]|[12][0-9]|3[01]).(0[1-9]|1[0-2]).[0-9]{4})")
         }, options);
         core.Element.call(this, options);
 //Переменные
@@ -33,13 +33,13 @@ Calendar)
             }
             function select()
             {
-                edit.value(aUtils.dateToStr(this.value(), options.mask));
+                edit.value(utils.dateToStr(this.value(), options.mask));
                 popup.remove();
             }
             var popup = new Popup().appendTo(that);
             popup.onRemove(btn.unselect);
             var calendar = new Calendar();
-            calendar.value(aUtils.strToDate(edit.value(), options.mask));
+            calendar.value(utils.strToDate(edit.value(), options.mask));
             calendar.onClickDay(select);
             calendar.appendTo(popup);
             btn.select();
@@ -47,7 +47,7 @@ Calendar)
 //Сборка
         var edit = new Edit({ required : true }).appendTo(this);
         edit.validator(options.validator);
-        edit.value(aUtils.dateToStr(new Date(), options.mask));
+        edit.value(utils.dateToStr(new Date(), options.mask));
         var btn = new Button({ text : "...", onclick : click }).appendTo(this);
 //    var btn = new aUI.Button({ onclick : click }).appendTo(this);
 

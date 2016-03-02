@@ -1,6 +1,8 @@
-require([ "aui/aURL", "aui/aUtils", "aui/aUI", "DragManager" ],
-function(aURL, aUtils, aUI) {
+require([ "aURL", "aUI", "DragManager" ],
+function(aURL, aUI) {
 
+    console.dir(aUI);
+//    var aUtils = aUI.utils; 
     var aurl = new aURL();
     function changeSections()
     {
@@ -79,21 +81,21 @@ function(aURL, aUtils, aUI) {
 
     var fieldInputs = new aUI.Field({ caption : "Поля ввода" }).appendTo(inputItem);
     var edit = new aUI.Edit({ placeholder : "Edit", examples : [ "01.01.2014", "01.01.2015" ] }).appendTo(fieldInputs.value);
-    edit.validator(new aUI.validator.Pattern("\\d{2}.\\d{2}.\\d{4}"));
+    edit.validator(new aUI.validators.Pattern("\\d{2}.\\d{2}.\\d{4}"));
     edit.maxLength(10);
     //edit.attr("data-title", "Редактируемое поле с примерами");
 
     var select = new aUI.Select({ items : [ "...", "edit", "memo", "select" ], disabled : 0, value : 0 }).appendTo(fieldInputs.value);
 
     var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(fieldInputs.value);
-    memo.validator(new aUI.validator.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
+    memo.validator(new aUI.validators.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
 
     btn1.onClick(btn2.toggleSelect, edit.focus);
     btn2.onClick(btn2.toggleSelect, memo.value, "!!!", memo.focus);
 
     function changeDate()
     {
-        edit.value(aUtils.dateToStr(this.value(), "dd.MM.yyyy"));
+        edit.value(aUI.utils.dateToStr(this.value(), "dd.MM.yyyy"));
     }
     var calendar1 = new aUI.Calendar({ addclass : "small", onclickday : changeDate }).appendTo(calendarItem);
     var calendar2 = new aUI.Calendar({ addclass : "medium", onclickday : changeDate }).appendTo(calendarItem);

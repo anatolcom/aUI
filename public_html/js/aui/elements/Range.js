@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/aUtils", "aui/extension" ],
-function(core, aUtils, extension)
+define([ "aui/core", "aui/utils", "aui/extensions" ],
+function(core, utils, extensions)
 {
 //---------------------------------------------------------------------------
     function Range(options)
@@ -20,12 +20,12 @@ function(core, aUtils, extension)
         core.Element.call(this, options);
 //Переменные
         var that = this;
-        var valueMin = new aUtils.NumInRange(options.valueMin, options.min, options.max);
-        var valueMax = new aUtils.NumInRange(options.valueMax, options.min, options.max);
+        var valueMin = new utils.NumInRange(options.valueMin, options.min, options.max);
+        var valueMax = new utils.NumInRange(options.valueMax, options.min, options.max);
         valueMin.onChange(changeValueMin);
         valueMax.onChange(changeValueMax);
-        var posMin = new aUtils.NumInRange(0, 0, 0);
-        var posMax = new aUtils.NumInRange(0, 0, 0);
+        var posMin = new utils.NumInRange(0, 0, 0);
+        var posMax = new utils.NumInRange(0, 0, 0);
         posMin.onChange(changePosMin);
         posMax.onChange(changePosMax);
         var lastPos = null;
@@ -68,14 +68,14 @@ function(core, aUtils, extension)
             var p = lastPos;
             if (isHorizontal) p += dX;
             else p += dY;
-            that.valueMin(aUtils.convertRangedValue(p, posMin.min(), posMin.max(), valueMin.min(), valueMin.max()));
+            that.valueMin(utils.convertRangedValue(p, posMin.min(), posMin.max(), valueMin.min(), valueMin.max()));
         }
         function onMoveMax(event, dX, dY)
         {
             var p = lastPos;
             if (isHorizontal) p += dX;
             else p += dY;
-            that.valueMax(aUtils.convertRangedValue(p, posMax.min(), posMax.max(), valueMax.min(), valueMax.max()));
+            that.valueMax(utils.convertRangedValue(p, posMax.min(), posMax.max(), valueMax.min(), valueMax.max()));
         }
         function  changeValueMin(val)
         {
@@ -84,7 +84,7 @@ function(core, aUtils, extension)
                 if (valueMax.value() < valueMin.value()) valueMin.value(valueMax.value());
             }
             else if (valueMin.value() > valueMax.value()) valueMax.value(valueMin.value());
-            posMin.value(aUtils.convertRangedValue(valueMin.value(), valueMin.min(), valueMin.max(), posMin.min(), posMin.max()));
+            posMin.value(utils.convertRangedValue(valueMin.value(), valueMin.min(), valueMin.max(), posMin.min(), posMin.max()));
             if (fractionDigits === null) dragMinValue.text(valueMin.value());
             else dragMinValue.text(valueMin.value().toFixed(fractionDigits));
             if (options.onchange) options.onchange.call(that);
@@ -96,7 +96,7 @@ function(core, aUtils, extension)
                 if (valueMin.value() > valueMax.value()) valueMax.value(valueMin.value());
             }
             else if (valueMax.value() < valueMin.value()) valueMin.value(valueMax.value());
-            posMax.value(aUtils.convertRangedValue(valueMax.value(), valueMax.min(), valueMax.max(), posMax.min(), posMax.max()));
+            posMax.value(utils.convertRangedValue(valueMax.value(), valueMax.min(), valueMax.max(), posMax.min(), posMax.max()));
             if (fractionDigits === null) dragMaxValue.text(valueMax.value());
             else dragMaxValue.text(valueMax.value().toFixed(fractionDigits));
             if (options.onchange) options.onchange.call(that);
@@ -173,7 +173,7 @@ function(core, aUtils, extension)
         var line = new core.Element({ class : "line" }).appendTo(this);
         line.getElement().style.position = "absolute";
         var dragMin = new core.Element({ class : "drag min" }).appendTo(this);
-        extension.movable(dragMin);
+        extensions.movable(dragMin);
 //    var dragMin = new aUI.Movable({ class : "drag min" }).appendTo(this);
         dragMin.getElement().style.position = "absolute";
         dragMin.refreshOffsetOnMove(false);
@@ -183,7 +183,7 @@ function(core, aUtils, extension)
         dragMin.onResize(onResize);
         var dragMinValue = new core.Element({ class : "value" }).appendTo(dragMin);
         var dragMax = new core.Element({ class : "drag max" }).appendTo(this);
-        extension.movable(dragMax);
+        extensions.movable(dragMax);
 //    var dragMax = new aUI.Movable({ class : "drag max" }).appendTo(this);
         dragMax.getElement().style.position = "absolute";
         dragMax.refreshOffsetOnMove(false);

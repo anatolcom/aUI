@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/extension" ],
-function(core, extension)
+define([ "aui/core", "aui/extensions" ],
+function(core, extensions)
 {
 //---------------------------------------------------------------------------
     /**
@@ -22,7 +22,7 @@ function(core, extension)
             required : false
         }, options);
         core.Element.call(this, options);
-        extension.validable(this);
+        extensions.validable(this);
 //Переменные
         var that = this;
 //Функции

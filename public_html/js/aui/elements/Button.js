@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/extension" ],
-function(core, extension)
+define([ "aui/core", "aui/extensions" ],
+function(core, extensions)
 {
 //---------------------------------------------------------------------------
     /*
@@ -18,8 +18,8 @@ function(core, extension)
             data : null
         }, options);
         core.Element.call(this, options);
-        extension.clickable(this);
-        extension.selectable(this);
+        extensions.clickable(this);
+        extensions.selectable(this);
 //Переменные
         this.data = options.data;
 //Функции
@@ -29,6 +29,5 @@ function(core, extension)
     core.proto(Button, core.Element);
 
     return Button;
-//-------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 });
-

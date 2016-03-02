@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/extension" ],
-function(core, extension)
+define([ "aui/core", "aui/extensions" ],
+function(core, extensions)
 {
 //---------------------------------------------------------------------------
     function Link(options)
@@ -12,7 +12,7 @@ function(core, extension)
             onclick : null
         }, options);
         core.Element.call(this, options);
-        extension.clickable(this);
+        extensions.clickable(this);
 //Переменные
 //Функции
 //Сборка

@@ -2,9 +2,9 @@ define([ "aui/core" ],
 function(core)
 {
 //-------------------------------------------------------------------------------------------------------------------
-    var extension = { };
+    var extensions = { };
 //-------------------------------------------------------------------------------------------------------------------
-    extension.selectable = function(owner)
+    extensions.selectable = function(owner)
     {
 //Переменные
         var className = "selected";
@@ -32,7 +32,7 @@ function(core)
         };
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extension.resizable = function(owner)
+    extensions.resizable = function(owner)
     {
 //События
         var onresize = null;
@@ -76,7 +76,7 @@ function(core)
         core.addEvent(element, "resize", owner.resize);
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extension.clickable = function(owner)
+    extensions.clickable = function(owner)
     {
 //Переменные
         var fnList = [ ];
@@ -133,7 +133,7 @@ function(core)
         owner.getElement().onclick = owner.click;
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extension.validable = function(owner)
+    extensions.validable = function(owner)
     {
 //Переменные
         var required = false;
@@ -176,7 +176,7 @@ function(core)
         element.onkeyup = onvalidate;
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extension.movable = function(owner)
+    extensions.movable = function(owner)
     {
         var element = core.getElement(owner);
 //События
@@ -253,10 +253,10 @@ function(core)
         element.onmousedown = onMouseDown;
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extension.dragable = function(owner)
+    extensions.dragable = function(owner)
     {
 //https://learn.javascript.ru/drag-and-drop
     };
 //-------------------------------------------------------------------------------------------------------------------
-    return extension;
+    return extensions;
 });

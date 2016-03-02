@@ -1,4 +1,4 @@
-define([ "aui/core", "aui/validator", "aui/extension",
+define([ "aui/core", "aui/utils", "aui/validators", "aui/extensions",
     //str
     "aui/elements/Link",
     "aui/elements/Button",
@@ -30,7 +30,7 @@ define([ "aui/core", "aui/validator", "aui/extension",
     "aui/elements/Movable",
     "aui/elements/XY"
 ],
-function(core, validator, extension,
+function(core, utils, validators, extensions,
 //std
 Link, Button, Check, Edit, Select, Memo,
 //list
@@ -53,13 +53,14 @@ Movable, XY
     aUI.proto = core.proto;
     aUI.construct = core.construct;
     aUI.getElement = core.getElement;
-    aUI.getElement = core.getElement;
 //-------------------------------------------------------------------------------------------------------------------
     aUI.Element = core.Element;
 //-------------------------------------------------------------------------------------------------------------------
-    aUI.validator = validator;
+    aUI.utils = utils;
 //-------------------------------------------------------------------------------------------------------------------
-    aUI.extensions = extension;
+    aUI.validators = validators;
+//-------------------------------------------------------------------------------------------------------------------
+    aUI.extensions = extensions;
 //-------------------------------------------------------------------------------------------------------------------
     //std
     aUI.Link = Link;

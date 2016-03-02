@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/extension" ],
-function(core, extension)
+define([ "aui/core", "aui/extensions" ],
+function(core, extensions)
 {
 //---------------------------------------------------------------------------
     function Movable(options)
@@ -12,7 +12,7 @@ function(core, extension)
             onmoveend : undefined
         }, options);
         core.Element.call(this, options);
-        extension.movable(this);
+        extensions.movable(this);
 //Переменные
         var that = this;
 //Функции

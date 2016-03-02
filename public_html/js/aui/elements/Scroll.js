@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/aUtils" ],
-function(core, aUtils)
+define([ "aui/core", "aui/utils" ],
+function(core, utils)
 {
 //---------------------------------------------------------------------------
     function Scroll(options)
@@ -31,7 +31,7 @@ function(core, aUtils)
             var min = 0;
             var max = e.clientWidth - size;
             d.style.width = size + "px";
-            var value = aUtils.convertRangedValue(options.value, options.min, options.max, min, max);
+            var value = utils.convertRangedValue(options.value, options.min, options.max, min, max);
             value = Math.round(value);
             d.style.left = value + "px";
             if (typeof options.onchange === "function") options.onchange.call(that, options.value);
@@ -41,7 +41,7 @@ function(core, aUtils)
             var min = 0;
             var max = e.clientHeight - size;
             d.style.height = size + "px";
-            var value = aUtils.convertRangedValue(options.value, options.min, options.max, min, max);
+            var value = utils.convertRangedValue(options.value, options.min, options.max, min, max);
             value = Math.round(value);
             d.style.top = value + "px";
             if (typeof options.onchange === "function") options.onchange.call(that, options.value);
@@ -81,16 +81,16 @@ function(core, aUtils)
             var min = 0;
             var max = e.clientWidth - size;
             var pos = event.clientX - progressRect.left - dragOffset;
-            pos = aUtils.trimByRange(pos, min, max);
-            that.value(aUtils.convertRangedValue(pos, min, max, options.min, options.max));
+            pos = utils.trimByRange(pos, min, max);
+            that.value(utils.convertRangedValue(pos, min, max, options.min, options.max));
         }
         function onMoveVertical(event)
         {
             var min = 0;
             var max = e.clientHeight - size;
             var pos = event.clientY - progressRect.top - dragOffset;
-            pos = aUtils.trimByRange(pos, min, max);
-            that.value(aUtils.convertRangedValue(pos, min, max, options.min, options.max));
+            pos = utils.trimByRange(pos, min, max);
+            that.value(utils.convertRangedValue(pos, min, max, options.min, options.max));
         }
         function onDragStart()
         {
@@ -100,7 +100,7 @@ function(core, aUtils)
         {
             if (value === undefined) return options.value;
             if (options.round) value = options.round(value);
-            value = aUtils.trimByRange(value, options.min, options.max);
+            value = utils.trimByRange(value, options.min, options.max);
             if (options.value === value) return;
             options.value = value;
             update();

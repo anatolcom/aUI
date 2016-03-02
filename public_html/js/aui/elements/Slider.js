@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/aUtils", "aui/extension" ],
-function(core, aUtils, extension)
+define([ "aui/core", "aui/utils", "aui/extensions" ],
+function(core, utils, extensions)
 {
 //---------------------------------------------------------------------------
     function Slider(options)
@@ -18,8 +18,8 @@ function(core, aUtils, extension)
         core.Element.call(this, options);
 //Переменные
         var that = this;
-        var value = new aUtils.NumInRange(options.value, options.min, options.max);
-        var pos = new aUtils.NumInRange(0, 0, 0);
+        var value = new utils.NumInRange(options.value, options.min, options.max);
+        var pos = new utils.NumInRange(0, 0, 0);
         value.onChange(changeValue);
         pos.onChange(changePos);
         var lastPos = null;
@@ -45,11 +45,11 @@ function(core, aUtils, extension)
             var p = lastPos;
             if (isHorizontal) p += dX;
             else p += dY;
-            that.value(aUtils.convertRangedValue(p, pos.min(), pos.max(), value.min(), value.max()));
+            that.value(utils.convertRangedValue(p, pos.min(), pos.max(), value.min(), value.max()));
         }
         function  changeValue(val)
         {
-            pos.value(aUtils.convertRangedValue(value.value(), value.min(), value.max(), pos.min(), pos.max()));
+            pos.value(utils.convertRangedValue(value.value(), value.min(), value.max(), pos.min(), pos.max()));
             if (options.onchange) options.onchange.call(that, val);
         }
         function  changePos(val)
@@ -74,7 +74,7 @@ function(core, aUtils, extension)
 //    core.addEvent(this.getElement(), "resize", onResize);
 //    var drag = new aUI.Movable({ class : "drag" }).appendTo(this);
         var drag = new core.Element({ class : "drag" }).appendTo(this);
-        extension.movable(drag);
+        extensions.movable(drag);
         drag.getElement().style.position = "absolute";
 //    drag.getElement().style.zIndex = "100";
 

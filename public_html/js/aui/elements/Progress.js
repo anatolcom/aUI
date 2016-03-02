@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/aUtils" ],
-function(core, aUtils)
+define([ "aui/core", "aui/utils" ],
+function(core, utils)
 {
 //---------------------------------------------------------------------------
     function Progress(options)
@@ -25,14 +25,14 @@ function(core, aUtils)
             var max = 0;
             if (isHorizontal) max = e.clientWidth;
             else max = e.clientHeight;
-            var value = aUtils.convertRangedValue(options.value, options.min, options.max, min, max);
+            var value = utils.convertRangedValue(options.value, options.min, options.max, min, max);
             if (isHorizontal) p.style.width = value + "px";
             else p.style.height = value + "px";
         }
         this.value = function(value)
         {
             if (value === undefined) return options.value;
-            options.value = aUtils.trimByRange(value, options.min, options.max);
+            options.value = utils.trimByRange(value, options.min, options.max);
             update();
         };
         this.round = function(fn)

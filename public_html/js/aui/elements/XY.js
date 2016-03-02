@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/aUtils" ],
-function(core, aUtils)
+define([ "aui/core", "aui/utils" ],
+function(core, utils)
 {
 //---------------------------------------------------------------------------
     function XY(options)
@@ -36,12 +36,12 @@ function(core, aUtils)
         function valueToPos(value, min, max, len)
         {
             var pos = Math.round(((value - min) * len) / ((max - min) + 1));
-            return aUtils.trimByRange(pos, 0, len - 1);
+            return utils.trimByRange(pos, 0, len - 1);
         }
         function moveTo(left, top)
         {
-            top = aUtils.trimByRange(top, 0, e.clientHeight - 1);
-            left = aUtils.trimByRange(left, 0, e.clientWidth - 1);
+            top = utils.trimByRange(top, 0, e.clientHeight - 1);
+            left = utils.trimByRange(left, 0, e.clientWidth - 1);
             options.x = posToValue(left, options.minX, options.maxX, e.clientWidth, options.roundX);
             options.y = posToValue(top, options.minY, options.maxY, e.clientHeight, options.roundY);
             position.left = valueToPos(options.x, options.minX, options.maxX, e.clientWidth);
@@ -87,12 +87,12 @@ function(core, aUtils)
         this.x = function(value)
         {
             if (value === undefined) return options.x;
-            options.x = aUtils.trimByRange(value, options.minX, options.maxX);
+            options.x = utils.trimByRange(value, options.minX, options.maxX);
         };
         this.y = function(value)
         {
             if (value === undefined) return options.y;
-            options.y = aUtils.trimByRange(value, options.minY, options.maxY);
+            options.y = utils.trimByRange(value, options.minY, options.maxY);
         };
         this.roundX = function(fn)
         {
