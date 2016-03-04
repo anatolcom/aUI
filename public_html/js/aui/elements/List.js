@@ -1,4 +1,4 @@
-define([ "aui/core", "aui/elements/ListItem" ],
+define([ "aui/core", "./ListItem" ],
 function(core, ListItem)
 {
 //---------------------------------------------------------------------------

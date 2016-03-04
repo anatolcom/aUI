@@ -1,0 +1,14 @@
+{
+    baseUrl : "public_html/js/",
+    name : "aUI",
+    mainConfigFile : "public_html/js/aUI.js",
+    optimize : 'uglify',
+    // uglify : {
+        // toplevel : true,
+        // ascii_only : false,
+        // beautify : true,
+        // max_line_length : 1000,
+        // no_mangle : true
+    // },
+    out : "dist/js/aUI_mini.js"
+}

@@ -1,3 +1,13 @@
+/* global require */
+
+require.config({
+    paths : {
+        "aUI" : "aUI",
+//        "aUI" : "aUI_single",
+//        "aUI" : "aUI_mini",
+        "aURL" : "aURL"
+    }
+});
 require([ "aURL", "aUI", "DragManager" ],
 function(aURL, aUI) {
 

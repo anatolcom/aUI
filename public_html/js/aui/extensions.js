@@ -32,13 +32,61 @@ function(core)
         };
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extensions.resizable = function(owner)
+    extensions.sizable = function(owner)
     {
 //События
         var onresize = null;
 //Переменные
         var element = core.getElement(owner);
 //Функции
+        owner.left = function(value)
+        {
+            if (value === undefined)
+            {
+                var computedStyle = window.getComputedStyle(owner.getElement());
+                var marginLeft = parseInt(computedStyle.marginLeft, 10);
+                return owner.getElement().offsetLeft - marginLeft;
+            }
+            if (value === null) value = "";
+            if (typeof value === "number") value += "px";
+            owner.getElement().style.left = value;
+        };
+        owner.right = function(value)
+        {
+            if (value === undefined)
+            {
+                var computedStyle = window.getComputedStyle(owner.getElement());
+                var marginRight = parseInt(computedStyle.marginRight, 10);
+                return owner.getElement().offsetRight - marginRight;
+            }
+            if (value === null) value = "";
+            if (typeof value === "number") value += "px";
+            owner.getElement().style.right = value;
+        };
+        owner.top = function(value)
+        {
+            if (value === undefined)
+            {
+                var computedStyle = window.getComputedStyle(owner.getElement());
+                var marginTop = parseInt(computedStyle.marginTop, 10);
+                return owner.getElement().offsetTop - marginTop;
+            }
+            if (value === null) value = "";
+            if (typeof value === "number") value += "px";
+            owner.getElement().style.top = value;
+        };
+        owner.bottom = function(value)
+        {
+            if (value === undefined)
+            {
+                var computedStyle = window.getComputedStyle(owner.getElement());
+                var marginBottom = parseInt(computedStyle.marginBottom, 10);
+                return owner.getElement().offsetBottom - marginBottom;
+            }
+            if (value === null) value = "";
+            if (typeof value === "number") value += "px";
+            owner.getElement().style.bottom = value;
+        };
         owner.width = function(value)
         {
             if (value === undefined) return element.offsetWidth;
@@ -71,10 +119,54 @@ function(core)
         };
         owner.resize = function()
         {
-            if (onresize) onresize.call(owner, event);
+            if (onresize) onresize.call(owner);
         };
         core.addEvent(element, "resize", owner.resize);
     };
+//-------------------------------------------------------------------------------------------------------------------
+    /*    extensions.resizable = function(owner)
+     {
+     //События
+     var onresize = null;
+     //Переменные
+     var element = core.getElement(owner);
+     //Функции
+     owner.width = function(value)
+     {
+     if (value === undefined) return element.offsetWidth;
+     if (value === null) value = "";
+     if (typeof value === "number") value += "px";
+     element.style.width = value;
+     if (onresize) onresize.call(owner);
+     };
+     owner.height = function(value)
+     {
+     if (value === undefined) return element.offsetHeight;
+     if (value === null) value = "";
+     if (typeof value === "number") value += "px";
+     element.style.height = value;
+     if (onresize) onresize.call(owner);
+     };
+     owner.clientWidth = function(value)
+     {
+     if (value === undefined) return element.clientWidth;
+     };
+     owner.clientHeight = function(value)
+     {
+     if (value === undefined) return element.clientHeight;
+     };
+     owner.onResize = function(fn)
+     {
+     if (fn === undefined) return onresize;
+     if (typeof fn !== "function") throw new Error("fn for onResize not a function");
+     onresize = fn;
+     };
+     owner.resize = function()
+     {
+     if (onresize) onresize.call(owner, event);
+     };
+     core.addEvent(element, "resize", owner.resize);
+     };*/
 //-------------------------------------------------------------------------------------------------------------------
     extensions.clickable = function(owner)
     {

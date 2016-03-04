@@ -1,5 +1,5 @@
 define([ "aui/core", "aui/utils", "aui/validators", "aui/extensions",
-    //str
+    //standard
     "aui/elements/Link",
     "aui/elements/Button",
     "aui/elements/Check",
@@ -31,7 +31,7 @@ define([ "aui/core", "aui/utils", "aui/validators", "aui/extensions",
     "aui/elements/XY"
 ],
 function(core, utils, validators, extensions,
-//std
+//standard
 Link, Button, Check, Edit, Select, Memo,
 //list
 List, ListItem,
@@ -62,7 +62,7 @@ Movable, XY
 //-------------------------------------------------------------------------------------------------------------------
     aUI.extensions = extensions;
 //-------------------------------------------------------------------------------------------------------------------
-    //std
+    //standard
     aUI.Link = Link;
     aUI.Button = Button;
     aUI.Check = Check;

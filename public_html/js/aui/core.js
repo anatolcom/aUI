@@ -111,6 +111,109 @@ function()
         object.removeEventListener(eventName, on, false);
     };
 //------------------------------------------------------------------------------------------------------------------- 
+    function DomElement(options)
+    {
+        //Опции
+        options = core.extend(
+        {
+            element : "div",
+            id : null,
+            class : null,
+            addclass : null,
+            text : null
+//        html : null
+        }, options);
+//Переменные
+        var that = this;
+//Функции
+        this.getElement = function()
+        {
+            return element;
+        };
+        /**
+         * Добавление елемента как дочернего к указанному елементу.<br/>
+         * В качестве контейнера можно указывать только елементы проходящие проверку instanceof aUI.Element или instanceof HTMLElement
+         * @param {type} parent елемент, который станет контейнером для текушего элемента. 
+         * @returns {undefined}
+         */
+        this.appendTo = function(parent)
+        {
+//        if (parent === null) throw new Error("can not apply appendTo for null");
+//        if (parent instanceof aUI.Element) parent = parent.getElement();
+//        if (!parent instanceof HTMLElement) throw new Error("can not apply appendTo for non HTMLElement");
+            parent = core.getElement(parent);
+            if (typeof parent.appendChild !== "function") throw new Error("parent not contain appendChild function");
+            parent.appendChild(that.getElement());
+            that.resize();
+            return that;
+        };
+        this.clear = function()
+        {
+            var element = that.getElement();
+            while (element.childNodes[0] !== undefined) element.removeChild(element.childNodes[0]);
+        };
+        this.remove = function()
+        {
+            var element = that.getElement();
+            var parent = element.parentElement;
+            if (parent) parent.removeChild(element);
+        };
+        this.id = function(id)
+        {
+            if (id === undefined) return that.getElement().id;
+            that.getElement().id = id;
+        };
+        this.class = function(name)
+        {
+            if (name === undefined) return that.getElement().className;
+            that.getElement().className = name;
+        };
+        this.addClass = function(name)
+        {
+            that.getElement().classList.add(name);
+        };
+        this.removeClass = function(name)
+        {
+            that.getElement().classList.remove(name);
+        };
+        this.hasClass = function(name)
+        {
+            return that.getElement().classList.contains(name);
+        };
+        this.toggleClass = function(name)
+        {
+            that.getElement().classList.toggle(name);
+        };
+        this.text = function(text)
+        {
+            if (text === undefined) return that.getElement().textContent;
+            that.getElement().textContent = text;
+        };
+//    this.html = function(html)
+//    {
+//        if (html === undefined) return that.getElement().innerHtml;
+//        that.getElement().innerHtml = html;
+//    };
+        this.attr = function(name, value)
+        {
+            if (value === undefined) return that.getElement().getAttribute(name);
+            that.getElement().setAttribute(name, value);
+        };
+//    this.css = function(name, value)
+//    {
+//        if (value === undefined) return that.getElement().style.get(name);
+//        that.getElement().style.set(name, value);
+//    };
+//Сборка
+        var element = document.createElement(options.element);
+        element.aui = this;
+        if (options.id) this.id(options.id);
+        if (options.class) this.class(options.class);
+        if (options.addclass) this.addClass(options.addclass);
+        if (options.text || options.text === 0 || options.text === false) this.text(options.text);
+//if (options.html || options.html === 0 || options.html === false) this.html(options.html);
+    }
+//------------------------------------------------------------------------------------------------------------------- 
     /**
      * <b>Элемент DOM браузера.</b><br/>
      * По умолчанию div.<br/>

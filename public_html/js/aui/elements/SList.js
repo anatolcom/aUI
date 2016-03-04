@@ -1,4 +1,4 @@
-define([ "aui/core", "aui/elements/List", "aui/elements/ScrollList", "aui/elements/SItem" ],
+define([ "aui/core", "./List", "./ScrollList", "./SItem" ],
 function(core, List, ScrollList, SItem)
 {
 //---------------------------------------------------------------------------

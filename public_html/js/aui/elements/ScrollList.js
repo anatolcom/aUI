@@ -1,4 +1,4 @@
-define([ "aui/core", "aui/elements/List", "aui/elements/ScrollArea" ],
+define([ "aui/core", "./List", "./ScrollArea" ],
 function(core, List, ScrollArea)
 {
 //---------------------------------------------------------------------------
