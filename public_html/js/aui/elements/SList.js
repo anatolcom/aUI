@@ -1,5 +1,5 @@
-define([ "aui/core", "./List", "./ScrollList", "./SItem" ],
-function(core, List, ScrollList, SItem)
+define([ "aui/core", "./Element", "./List", "./ScrollList", "./SItem" ],
+function(core, Element, List, ScrollList, SItem)
 {
 //---------------------------------------------------------------------------
     function SList(options)
@@ -10,7 +10,7 @@ function(core, List, ScrollList, SItem)
             class : "slist",
             onchangeselected : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
 //Функции
@@ -53,7 +53,7 @@ function(core, List, ScrollList, SItem)
         scrollList.onChangeTop(changeTop);
         var list = scrollList.list();
     };
-    core.proto(SList, core.Element);
+    core.proto(SList, Element);
 //---------------------------------------------------------------------------
    return SList;
 //---------------------------------------------------------------------------

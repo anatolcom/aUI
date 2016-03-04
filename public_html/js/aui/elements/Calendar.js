@@ -1,5 +1,5 @@
-define([ "aui/core", "./Button" ],
-function(core, Button)
+define([ "aui/core", "./Element", "./Button" ],
+function(core, Element, Button)
 {
 //---------------------------------------------------------------------------
     var fn = { };
@@ -143,7 +143,7 @@ function(core, Button)
             onchange : null,
             date : new Date()
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
         var mode = "days";
@@ -220,18 +220,18 @@ function(core, Button)
             new Button({ class : "prev", text : "<", data : dayTableData.prev, onclick : clickPrev }).appendTo(that);
             new Button({ class : "level days", text : dayTableData.caption, onclick : clickMonthsMode }).appendTo(that);
             new Button({ class : "prev", text : ">", data : dayTableData.next, onclick : clickNext }).appendTo(that);
-            var table = new core.Element({ element : "table", class : "days" });
-            var th = new core.Element({ element : "tr" });
+            var table = new Element({ element : "table", class : "days" });
+            var th = new Element({ element : "tr" });
             for (var d = 0; d < 7; d++)
             {
                 var item = dayTableData.head[d];
-                var td = new core.Element({ element : "th", class : item.class, text : item.text });
+                var td = new Element({ element : "th", class : item.class, text : item.text });
                 td.appendTo(th);
             }
             th.appendTo(table);
             for (var w = 0; w < 6; w++)
             {
-                var tr = new core.Element({ element : "tr" });
+                var tr = new Element({ element : "tr" });
                 for (var d = 0; d < 7; d++)
                 {
                     var item = dayTableData.array[(w * 7) + d];
@@ -253,10 +253,10 @@ function(core, Button)
             new Button({ class : "prev", text : "<", data : data.prev, onclick : clickPrev }).appendTo(that);
             new Button({ class : "level months", text : data.caption, onclick : clickYearsMode }).appendTo(that);
             new Button({ class : "prev", text : ">", data : data.next, onclick : clickNext }).appendTo(that);
-            var table = new core.Element({ element : "table", class : "months" });
+            var table = new Element({ element : "table", class : "months" });
             for (var h = 0; h < 3; h++)
             {
-                var tr = new core.Element({ element : "tr" });
+                var tr = new Element({ element : "tr" });
                 for (var w = 0; w < 4; w++)
                 {
                     var item = data.array[(h * 4) + w];
@@ -278,10 +278,10 @@ function(core, Button)
             new Button({ class : "prev", text : "<", data : data.prev, onclick : clickPrev }).appendTo(that);
             new Button({ class : "level years", text : data.caption }).appendTo(that);
             new Button({ class : "prev", text : ">", data : data.next, onclick : clickNext }).appendTo(that);
-            var table = new core.Element({ element : "table", class : "months" });
+            var table = new Element({ element : "table", class : "months" });
             for (var h = 0; h < 3; h++)
             {
-                var tr = new core.Element({ element : "tr" });
+                var tr = new Element({ element : "tr" });
                 for (var w = 0; w < 4; w++)
                 {
                     var item = data.array[(h * 4) + w];
@@ -300,7 +300,7 @@ function(core, Button)
         if (!options.date instanceof Date) throw new Error("value is not instance of Date");
         update();
     }
-    core.proto(Calendar, core.Element);
+    core.proto(Calendar, Element);
 //---------------------------------------------------------------------------
     Calendar.prototype.getDayTableData = function(date)
     {

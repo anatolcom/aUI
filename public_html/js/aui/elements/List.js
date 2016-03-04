@@ -1,5 +1,5 @@
-define([ "aui/core", "./ListItem" ],
-function(core, ListItem)
+define([ "aui/core", "./Element", "./ListItem" ],
+function(core, Element, ListItem)
 {
 //---------------------------------------------------------------------------
     /**
@@ -17,7 +17,7 @@ function(core, ListItem)
             class : null,
             itemConstructor : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
         var itemConstructor = ListItem;
@@ -108,7 +108,7 @@ function(core, ListItem)
 //Сборка
         if (options.itemConstructor) this.itemConstructor(options.itemConstructor);
     };
-    core.proto(List, core.Element);
+    core.proto(List, Element);
 //-------------------------------------------------------------------------------------------------------------------
     return List;
 //---------------------------------------------------------------------------

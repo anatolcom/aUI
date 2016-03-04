@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/extensions" ],
-function(core, extensions)
+define([ "aui/core", "./Element", "aui/extensions" ],
+function(core, Element, extensions)
 {
 //---------------------------------------------------------------------------
     /**
@@ -26,7 +26,7 @@ function(core, extensions)
             disabled : null,
             required : false
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
         extensions.validable(this);
 //Переменные
         var that = this;
@@ -61,7 +61,7 @@ function(core, extensions)
                 for (var index in items)
                 {
                     var item = items[index];
-                    var option = new core.Element({ element : "option" });
+                    var option = new Element({ element : "option" });
                     if (item instanceof Object)
                     {
                         option.text(item.text);
@@ -81,7 +81,7 @@ function(core, extensions)
             {
                 for (var index in items)
                 {
-                    var option = new core.Element({ element : "option", text : items[index] });
+                    var option = new Element({ element : "option", text : items[index] });
                     option.attr("value", index);
                     if (index === disabled) option.attr("disabled", "");
                     option.appendTo(that);
@@ -99,7 +99,7 @@ function(core, extensions)
         this.value(options.value);
         this.items(options.items, options.disabled);
     };
-    core.proto(Select, core.Element);
+    core.proto(Select, Element);
 //---------------------------------------------------------------------------
     return Select;
 //---------------------------------------------------------------------------

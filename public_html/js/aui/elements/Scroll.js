@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/utils" ],
-function(core, utils)
+define([ "aui/core", "./Element", "aui/utils" ],
+function(core, Element, utils)
 {
 //---------------------------------------------------------------------------
     function Scroll(options)
@@ -15,7 +15,7 @@ function(core, utils)
             round : null,
             onchange : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
         var isHorizontal = true;
@@ -118,7 +118,7 @@ function(core, utils)
         };
 //Сборка
         isHorizontal = options.orientation !== "vertical";
-        var drag = new core.Element({ class : "drag" }).appendTo(this);
+        var drag = new Element({ class : "drag" }).appendTo(this);
         if (isHorizontal)
         {
             this.addClass("horisontal");
@@ -144,7 +144,7 @@ function(core, utils)
         update();
     }
     ;
-    core.proto(Scroll, core.Element);
+    core.proto(Scroll, Element);
 //---------------------------------------------------------------------------
     return Scroll;
 //---------------------------------------------------------------------------

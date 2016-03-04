@@ -1,9 +1,9 @@
-define([ "aui/core", "aui/utils", "aui/validators",
+define([ "aui/core", "./Element", "aui/utils", "aui/validators",
     "./Button",
     "./Edit",
     "./Popup",
     "./Calendar" ],
-function(core, utils, validators,
+function(core, Element, utils, validators,
 Button,
 Edit,
 Popup,
@@ -19,7 +19,7 @@ Calendar)
             mask : "dd.MM.yyyy",
             validator : new validators.Pattern("((0[1-9]|[12][0-9]|3[01]).(0[1-9]|1[0-2]).[0-9]{4})")
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
 //Функции
@@ -54,7 +54,7 @@ Calendar)
         this.value = edit.value;
         this.invalid = edit.invalid;
     }
-    core.proto(DateSelector, core.Element);
+    core.proto(DateSelector, Element);
 //---------------------------------------------------------------------------
     return DateSelector;
 //---------------------------------------------------------------------------

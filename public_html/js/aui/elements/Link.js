@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/extensions" ],
-function(core, extensions)
+define([ "aui/core", "./Element", "aui/extensions" ],
+function(core, Element, extensions)
 {
 //---------------------------------------------------------------------------
     function Link(options)
@@ -11,7 +11,7 @@ function(core, extensions)
             href : "javascript:",
             onclick : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
         extensions.clickable(this);
 //Переменные
 //Функции
@@ -19,7 +19,7 @@ function(core, extensions)
         if (options.href) this.attr("href", options.href);
         if (options.onclick) this.onClick(options.onclick);
     }
-    core.proto(Link, core.Element);
+    core.proto(Link, Element);
 
     return Link;
 //-------------------------------------------------------------------------------------------------------------------

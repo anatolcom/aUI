@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/extensions" ],
-function(core, extensions)
+define([ "aui/core", "./Element", "aui/extensions" ],
+function(core, Element, extensions)
 {
 //---------------------------------------------------------------------------
     function Movable(options)
@@ -11,7 +11,7 @@ function(core, extensions)
             onmovestart : undefined,
             onmoveend : undefined
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
         extensions.movable(this);
 //Переменные
         var that = this;
@@ -26,7 +26,7 @@ function(core, extensions)
         this.onMoveStart(options.onmovestart);
         this.onMoveEnd(options.onmoveend);
     }
-    core.proto(Movable, core.Element);
+    core.proto(Movable, Element);
 //---------------------------------------------------------------------------
     return Movable;
 //---------------------------------------------------------------------------

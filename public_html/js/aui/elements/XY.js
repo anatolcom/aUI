@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/utils" ],
-function(core, utils)
+define([ "aui/core", "./Element", "aui/utils" ],
+function(core, Element, utils)
 {
 //---------------------------------------------------------------------------
     function XY(options)
@@ -19,7 +19,7 @@ function(core, utils)
             roundX : null,
             roundY : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
         var position = { };
@@ -107,10 +107,10 @@ function(core, utils)
             options.roundY = fn;
         };
 //Сборка
-        var area = new core.Element({ class : "area" }).appendTo(this);
-        var progressX = new core.Element({ class : "x" }).appendTo(area);
-        var progressY = new core.Element({ class : "y" }).appendTo(area);
-        var move = new core.Element({ class : "move", width : 15, height : 15 }).appendTo(area);
+        var area = new Element({ class : "area" }).appendTo(this);
+        var progressX = new Element({ class : "x" }).appendTo(area);
+        var progressY = new Element({ class : "y" }).appendTo(area);
+        var move = new Element({ class : "move", width : 15, height : 15 }).appendTo(area);
         var e = area.getElement();
         var pX = progressX.getElement();
         var pY = progressY.getElement();
@@ -140,7 +140,7 @@ function(core, utils)
         m.style.left = "-7px";
         m.style.top = "-7px";
     }
-    core.proto(XY, core.Element);
+    core.proto(XY, Element);
 //---------------------------------------------------------------------------
     return XY;
 //---------------------------------------------------------------------------

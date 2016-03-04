@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/extensions" ],
-function(core, extensions)
+define([ "aui/core", "./Element", "aui/extensions" ],
+function(core, Element, extensions)
 {
 //---------------------------------------------------------------------------
     function Memo(options)
@@ -10,7 +10,7 @@ function(core, extensions)
             element : "textarea",
             required : false
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
         extensions.validable(this);
 //Переменные
         var that = this;
@@ -39,7 +39,7 @@ function(core, extensions)
         if (options.placeholder) this.placeholder(options.placeholder);
         if (options.maxLength) this.maxLength(options.maxLength);
     }
-    core.proto(Memo, core.Element);
+    core.proto(Memo, Element);
     /*Memo : function (options)
      {
      //Опции по умолчанию
@@ -52,10 +52,10 @@ function(core, extensions)
      //События
      function setKeyPress(fn) { $(input).keypress(fn); }
      //Сборка
-     var memo = core.Element({ class : options.class, id : options.id });
+     var memo = Element({ class : options.class, id : options.id });
      memo.setKeyPress = setKeyPress;
      memo.setFocus = setFocus;
-     var input = core.Element({ element : "textarea" });
+     var input = Element({ element : "textarea" });
      if (options.name) $(input).attr("name", options.name);
      memo.setValue(options.value);
      input.appendTo(memo);

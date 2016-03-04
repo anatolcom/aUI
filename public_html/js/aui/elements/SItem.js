@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/elements/ListItem" ],
-function(core, ListItem)
+define([ "aui/core", "./Element", "aui/elements/ListItem" ],
+function(core, Element, ListItem)
 {
 //---------------------------------------------------------------------------
     function SItem(options)
@@ -21,8 +21,8 @@ function(core, ListItem)
             return content;
         };
 //Сборка
-        var caption = new core.Element({ class : "caption" }).appendTo(this);
-        var content = new core.Element({ class : "content" }).appendTo(this);
+        var caption = new Element({ class : "caption" }).appendTo(this);
+        var content = new Element({ class : "content" }).appendTo(this);
     };
     core.proto(SItem, ListItem);
 //---------------------------------------------------------------------------

@@ -1,5 +1,5 @@
-define([ "aui/core" ],
-function(core)
+define([ "aui/core", "./Element" ],
+function(core, Element)
 {
 //---------------------------------------------------------------------------
     /**
@@ -27,7 +27,7 @@ function(core)
             horizontal : "auto",
             vertical : "auto"
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
 //Функции
@@ -96,7 +96,7 @@ function(core)
         this.height(options.height);
         this.width(options.width);
     }
-    core.proto(ScrollArea, core.Element);
+    core.proto(ScrollArea, Element);
 //---------------------------------------------------------------------------
     return ScrollArea;
 //---------------------------------------------------------------------------

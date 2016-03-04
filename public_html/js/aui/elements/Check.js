@@ -1,5 +1,5 @@
-define([ "aui/core" ],
-function(core)
+define([ "aui/core", "./Element" ],
+function(core, Element)
 {
 //---------------------------------------------------------------------------
     function Check(options)
@@ -10,7 +10,7 @@ function(core)
             class : "check",
             value : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Функции
         //  function getValue() { return $(input).is(":checked"); }
         //  function setValue(value)
@@ -25,13 +25,13 @@ function(core)
         //  function setKeyPress(fn) { $(input).keypress(fn); }
         //  function setChange(fn) { $(input).change(fn); }
 //Сборка
-        //  var check = core.Element({ class : options.class, id : options.id });
+        //  var check = Element({ class : options.class, id : options.id });
         //  check.getValue = getValue;
         //  check.setValue = setValue;
         //  check.setFocus = setFocus;
         //  check.setKeyPress = setKeyPress;
         //  check.setChange = setChange;
-        //  var input = core.Element({ element : "input" });
+        //  var input = Element({ element : "input" });
         //  $(input).attr("type", "checkbox");
         //// input.style.width="100%";
         //// input.style.height="100%";
@@ -40,7 +40,7 @@ function(core)
         //  //Возврат результата выполненого после сборки
         //  return check;
     }
-    core.proto(Check, core.Element);
+    core.proto(Check, Element);
 //---------------------------------------------------------------------------
     return Check;
 //---------------------------------------------------------------------------

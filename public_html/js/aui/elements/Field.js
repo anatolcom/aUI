@@ -1,5 +1,5 @@
-define([ "aui/core" ],
-function(core)
+define([ "aui/core", "./Element" ],
+function(core, Element)
 {
 //---------------------------------------------------------------------------
     function Field(options)
@@ -10,14 +10,14 @@ function(core)
             class : "field",
             caption : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
 //    var that = this;
 //Функции
 //Сборка
-//        this.caption = new core.Element({ class : "caption" }).appendTo(this);
-        var caption = new core.Element({ class : "caption" }).appendTo(this);
-        var value = new core.Element({ class : "value" }).appendTo(this);
+//        this.caption = new Element({ class : "caption" }).appendTo(this);
+        var caption = new Element({ class : "caption" }).appendTo(this);
+        var value = new Element({ class : "value" }).appendTo(this);
         Object.defineProperty(this, "caption",
         {
             get : function()
@@ -35,7 +35,7 @@ function(core)
         if (options.caption) caption.text(options.caption);
 
     }
-    core.proto(Field, core.Element);
+    core.proto(Field, Element);
 //---------------------------------------------------------------------------
 
 

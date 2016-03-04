@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/extensions" ],
-function(core, extensions)
+define([ "aui/core", "./Element", "aui/extensions" ],
+function(core, Element, extensions)
 {
 //---------------------------------------------------------------------------
     /**
@@ -21,7 +21,7 @@ function(core, extensions)
             examples : null,
             required : false
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
         extensions.validable(this);
 //Переменные
         var that = this;
@@ -66,14 +66,14 @@ function(core, extensions)
         {
             var id = "INPUT_" + "xxxxxxxxxxxxxxxx".replace(/[x]/g, fnUID);
             this.attr("list", id);
-            var datalist = new core.Element({ element : "datalist", id : id }).appendTo(this);
+            var datalist = new Element({ element : "datalist", id : id }).appendTo(this);
             for (var index in options.examples)
             {
-                new core.Element({ element : "option", text : options.examples[index] }).appendTo(datalist);
+                new Element({ element : "option", text : options.examples[index] }).appendTo(datalist);
             }
         }
     }
-    core.proto(Edit, core.Element);
+    core.proto(Edit, Element);
 //---------------------------------------------------------------------------
     return Edit;
 //---------------------------------------------------------------------------

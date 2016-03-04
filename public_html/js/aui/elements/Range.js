@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/utils", "aui/extensions" ],
-function(core, utils, extensions)
+define([ "aui/core", "./Element", "aui/utils", "aui/extensions" ],
+function(core, Element, utils, extensions)
 {
 //---------------------------------------------------------------------------
     function Range(options)
@@ -17,7 +17,7 @@ function(core, utils, extensions)
             round : null,
             onchange : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
         var valueMin = new utils.NumInRange(options.valueMin, options.min, options.max);
@@ -170,9 +170,9 @@ function(core, utils, extensions)
 //Сборка
         this.getElement().style.position = "relative";
         this.onResize(onResize);
-        var line = new core.Element({ class : "line" }).appendTo(this);
+        var line = new Element({ class : "line" }).appendTo(this);
         line.getElement().style.position = "absolute";
-        var dragMin = new core.Element({ class : "drag min" }).appendTo(this);
+        var dragMin = new Element({ class : "drag min" }).appendTo(this);
         extensions.movable(dragMin);
 //    var dragMin = new aUI.Movable({ class : "drag min" }).appendTo(this);
         dragMin.getElement().style.position = "absolute";
@@ -181,8 +181,8 @@ function(core, utils, extensions)
         dragMin.onMoveStart(onMoveStart);
         dragMin.onMoveEnd(onMoveEnd);
         dragMin.onResize(onResize);
-        var dragMinValue = new core.Element({ class : "value" }).appendTo(dragMin);
-        var dragMax = new core.Element({ class : "drag max" }).appendTo(this);
+        var dragMinValue = new Element({ class : "value" }).appendTo(dragMin);
+        var dragMax = new Element({ class : "drag max" }).appendTo(this);
         extensions.movable(dragMax);
 //    var dragMax = new aUI.Movable({ class : "drag max" }).appendTo(this);
         dragMax.getElement().style.position = "absolute";
@@ -191,13 +191,13 @@ function(core, utils, extensions)
         dragMax.onMoveStart(onMoveStart);
         dragMax.onMoveEnd(onMoveEnd);
         dragMax.onResize(onResize);
-        var dragMaxValue = new core.Element({ class : "value" }).appendTo(dragMax);
+        var dragMaxValue = new Element({ class : "value" }).appendTo(dragMax);
         var isHorizontal = options.orientation !== "vertical";
         if (isHorizontal) this.addClass("horisontal");
         else this.addClass("vertical");
         updateLine();
     }
-    core.proto(Range, core.Element);
+    core.proto(Range, Element);
 //---------------------------------------------------------------------------
     return Range;
 //---------------------------------------------------------------------------

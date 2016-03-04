@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/utils" ],
-function(core, utils)
+define([ "aui/core", "./Element", "aui/utils" ],
+function(core, Element, utils)
 {
 //---------------------------------------------------------------------------
     function Progress(options)
@@ -14,7 +14,7 @@ function(core, utils)
             max : 99,
             round : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
         var isHorizontal = true;
@@ -43,7 +43,7 @@ function(core, utils)
         };
 //Сборка
         isHorizontal = options.orientation !== "vertical";
-        var progress = new core.Element({ class : "value" }).appendTo(this);
+        var progress = new Element({ class : "value" }).appendTo(this);
         if (isHorizontal) this.addClass("horisontal");
         else this.addClass("vertical");
 //    progress.width("100%");
@@ -58,7 +58,7 @@ function(core, utils)
         p.style.bottom = "0px";
         update();
     };
-    core.proto(Progress, core.Element);
+    core.proto(Progress, Element);
 //---------------------------------------------------------------------------
     return Progress;
 //---------------------------------------------------------------------------

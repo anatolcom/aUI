@@ -1,5 +1,5 @@
-define([ "aui/core" ],
-function(core)
+define([ "aui/core", "./Element" ],
+function(core, Element)
 {
 //---------------------------------------------------------------------------
     function Scale(options)
@@ -14,7 +14,7 @@ function(core)
             each : 5
         }, options);
 //    options.element = "canvas";
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
         var count = options.count; //options.end - options.begin;
@@ -29,7 +29,7 @@ function(core)
             for (var q = 0; q <= count; q++)
             {
                 if (q % each !== 0) continue;
-                var label = new core.Element({ class : "val", text : q }).appendTo(that);
+                var label = new Element({ class : "val", text : q }).appendTo(that);
                 label.getElement().style.position = "absolute";
                 labels.push(label);
             }
@@ -99,12 +99,12 @@ function(core)
 //    this.getElement().style.zIndex = "200";
 //    var element = this.getElement();
 
-        var canvas = new core.Element({ element : "canvas" }).appendTo(this);
+        var canvas = new Element({ element : "canvas" }).appendTo(this);
         this.onResize(update);
         this.getElement().onclick = update;
         updateLabels();
     }
-    core.proto(Scale, core.Element);
+    core.proto(Scale, Element);
 //---------------------------------------------------------------------------
     return Scale;
 //---------------------------------------------------------------------------

@@ -1,5 +1,5 @@
-define([ "aui/core" ],
-function(core)
+define([ "aui/core", "./Element" ],
+function(core, Element)
 {
 //---------------------------------------------------------------------------
     function Popup(options)
@@ -10,7 +10,7 @@ function(core)
             class : "popup",
             onremove : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
         var isClicked = true; //false;
@@ -94,7 +94,7 @@ function(core)
 //    this.appendTo(body);
         appendTo(document.body);
     }
-    core.proto(Popup, core.Element);
+    core.proto(Popup, Element);
 //---------------------------------------------------------------------------
     return Popup;
 //---------------------------------------------------------------------------

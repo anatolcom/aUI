@@ -1,4 +1,5 @@
 define([ "aui/core", "aui/utils", "aui/validators", "aui/extensions",
+    "aui/elements/Element",
     //standard
     "aui/elements/Link",
     "aui/elements/Button",
@@ -31,6 +32,7 @@ define([ "aui/core", "aui/utils", "aui/validators", "aui/extensions",
     "aui/elements/XY"
 ],
 function(core, utils, validators, extensions,
+Element,
 //standard
 Link, Button, Check, Edit, Select, Memo,
 //list
@@ -54,14 +56,13 @@ Movable, XY
     aUI.construct = core.construct;
     aUI.getElement = core.getElement;
 //-------------------------------------------------------------------------------------------------------------------
-    aUI.Element = core.Element;
-//-------------------------------------------------------------------------------------------------------------------
     aUI.utils = utils;
 //-------------------------------------------------------------------------------------------------------------------
     aUI.validators = validators;
 //-------------------------------------------------------------------------------------------------------------------
     aUI.extensions = extensions;
 //-------------------------------------------------------------------------------------------------------------------
+    aUI.Element = Element;
     //standard
     aUI.Link = Link;
     aUI.Button = Button;

@@ -1,5 +1,5 @@
-define([ "aui/core", "aui/utils", "aui/extensions" ],
-function(core, utils, extensions)
+define([ "aui/core", "./Element", "aui/utils", "aui/extensions" ],
+function(core, Element, utils, extensions)
 {
 //---------------------------------------------------------------------------
     function Slider(options)
@@ -15,7 +15,7 @@ function(core, utils, extensions)
             round : null,
             onchange : null
         }, options);
-        core.Element.call(this, options);
+        Element.call(this, options);
 //Переменные
         var that = this;
         var value = new utils.NumInRange(options.value, options.min, options.max);
@@ -73,7 +73,7 @@ function(core, utils, extensions)
         this.onResize(onResize);
 //    core.addEvent(this.getElement(), "resize", onResize);
 //    var drag = new aUI.Movable({ class : "drag" }).appendTo(this);
-        var drag = new core.Element({ class : "drag" }).appendTo(this);
+        var drag = new Element({ class : "drag" }).appendTo(this);
         extensions.movable(drag);
         drag.getElement().style.position = "absolute";
 //    drag.getElement().style.zIndex = "100";
@@ -97,7 +97,7 @@ function(core, utils, extensions)
             drag.height("30px");
         }
     };
-    core.proto(Slider, core.Element);
+    core.proto(Slider, Element);
 //---------------------------------------------------------------------------
 return Slider;
 
