@@ -24,7 +24,6 @@ function(aURL, aUI) {
     }
     aurl.setListener("changeSections", "sections", changeSections);
     aurl.setListener("changeSelected", "selected", changeSelected);
-    aurl.init();
     function paramUp(name)
     {
         //console.log(name, aurl.get(name));
@@ -68,10 +67,6 @@ function(aURL, aUI) {
     {
 //        slist.select(index);//????????????????????????????????????????????????????????????????????????
     }
-    function changeTopSection()
-    {
-        aurl.set("selected", this.selected());
-    }
 
 
     var slist = new aUI.SList({ }).appendTo(parent);
@@ -81,8 +76,6 @@ function(aURL, aUI) {
     var calendarItem = slist.add({ text : "Calendar" }).content();
     var mouseItem = slist.add({ text : "Mouse" }).content();
     var linksItem = slist.add({ text : "Links" }).content();
-    slist.select(aurl.get("selected"));
-    slist.onChangeSelected(changeTopSection);
 
     var fieldButtons = new aUI.Field({ caption : "Кнопки" }).appendTo(buttonItem);
     var btn1 = new aUI.Button({ text : "button" }).appendTo(fieldButtons.value);
@@ -187,6 +180,15 @@ function(aURL, aUI) {
     ];
     for (var index in links) new aUI.Link(links[index]).appendTo(fieldLinks.value);
 
+
+    
+    aurl.init();
+    function changeTopSection()
+    {
+        aurl.set("selected", this.selected());
+    }
+    slist.select(aurl.get("selected"));
+    slist.onChangeSelected(changeTopSection);
 
 
 

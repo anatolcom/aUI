@@ -24,7 +24,8 @@ function(core, Element, List, ScrollList, SItem)
         };
         this.select = function(index)
         {
-            if (scrollList.topIndex() === Number(index)) return;
+            index = Number(index);
+            if (scrollList.topIndex() === index) return;
             scrollList.topIndex(index);
         };
         this.onChangeSelected = function(fn)

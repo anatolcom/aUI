@@ -150,7 +150,6 @@ function()
             parent = core.getElement(parent);
             if (typeof parent.appendChild !== "function") throw new Error("parent not contain appendChild function");
             parent.appendChild(that.getElement());
-            that.resize();
             return that;
         };
         this.clear = function()
