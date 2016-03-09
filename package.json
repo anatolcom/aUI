@@ -4,7 +4,15 @@
     "devDependencies" :
     {
         "requirejs" : "",
-        "grunt" : "^0.4.5",
-        "grunt-contrib-requirejs" : "~0.4.0"
+        "node-sass" : ""
+    },
+    "scripts" : {
+        "js" : "r.js.cmd -o build-aUI.json out=dist/js/aUI.js",
+        "js_mini" : "r.js.cmd -o build-aUI_mini.json out=dist/mini/js/aUI.js",
+        "scss" : "node-sass -o dist/css public_html/scss",
+        "scss_mini" : "node-sass --output-style compressed -o dist/mini/css public_html/scss",
+        "build" : "npm run js && npm run scss",
+        "build_mini" : "npm run js_mini && npm run scss_mini",
+        "build_all" : "npm run build && npm run build_mini"
     }
 }
