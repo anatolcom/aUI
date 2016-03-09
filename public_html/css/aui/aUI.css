@@ -238,7 +238,8 @@ and open the template in the editor.
   .range.horisontal {
     height: 8px;
     width: 100px;
-    padding: 0px 5px; }
+    padding: 0px 5px;
+    }
     .range.horisontal > .drag {
       height: 16px;
       width: 10px;
@@ -733,7 +734,8 @@ and open the template in the editor.
   padding: 0px 11px;
   box-sizing: border-box;
   color: #363696;
-  font-size: 0.8em; }
+  font-size: 0.8em;
+  }
   .scale > .val {
     margin-top: 2px; }
 

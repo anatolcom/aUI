@@ -8,36 +8,48 @@ function(core)
     {
 //Переменные
         var className = "selected";
+//События
+        var onchangeselected = null;
 //Функции
         owner.selectedClass = function(name)
         {
             if (name === undefined) return className;
+            if (typeof name !== "string") throw new Error("name for selectedClass not a string");
             className = name;
         };
         owner.select = function()
         {
-            owner.addClass(owner.selectedClass());
+            owner.addClass(className);
+            if (typeof onchangeselected === "function") onchangeselected.call(owner);
         };
         owner.unselect = function()
         {
-            owner.removeClass(owner.selectedClass());
+            owner.removeClass(className);
+            if (typeof onchangeselected === "function") onchangeselected.call(owner);
         };
         owner.selected = function()
         {
-            return owner.hasClass(owner.selectedClass());
+            return owner.hasClass(className);
         };
         owner.toggleSelect = function()
         {
-            owner.toggleClass(owner.selectedClass());
+            owner.toggleClass(className);
+            if (typeof onchangeselected === "function") onchangeselected.call(owner);
+        };
+        owner.onChangeSelected = function(fn)
+        {
+            if (fn === undefined) return onchangeselected;
+            if (typeof fn !== "function" && fn !== null) throw new Error("fn for onChangeSelected not a function");
+            onchangeselected = fn;
         };
     };
 //-------------------------------------------------------------------------------------------------------------------
     extensions.sizable = function(owner)
     {
-//События
-        var onresize = null;
 //Переменные
         var element = core.getElement(owner);
+//События
+        var onresize = null;
 //Функции
         owner.left = function(value)
         {
@@ -114,7 +126,7 @@ function(core)
         owner.onResize = function(fn)
         {
             if (fn === undefined) return onresize;
-            if (typeof fn !== "function") throw new Error("fn for onResize not a function");
+            if (typeof fn !== "function" && fn !== null) throw new Error("fn for onResize not a function");
             onresize = fn;
         };
         owner.resize = function()
@@ -124,54 +136,11 @@ function(core)
         core.addEvent(element, "resize", owner.resize);
     };
 //-------------------------------------------------------------------------------------------------------------------
-    /*    extensions.resizable = function(owner)
-     {
-     //События
-     var onresize = null;
-     //Переменные
-     var element = core.getElement(owner);
-     //Функции
-     owner.width = function(value)
-     {
-     if (value === undefined) return element.offsetWidth;
-     if (value === null) value = "";
-     if (typeof value === "number") value += "px";
-     element.style.width = value;
-     if (onresize) onresize.call(owner);
-     };
-     owner.height = function(value)
-     {
-     if (value === undefined) return element.offsetHeight;
-     if (value === null) value = "";
-     if (typeof value === "number") value += "px";
-     element.style.height = value;
-     if (onresize) onresize.call(owner);
-     };
-     owner.clientWidth = function(value)
-     {
-     if (value === undefined) return element.clientWidth;
-     };
-     owner.clientHeight = function(value)
-     {
-     if (value === undefined) return element.clientHeight;
-     };
-     owner.onResize = function(fn)
-     {
-     if (fn === undefined) return onresize;
-     if (typeof fn !== "function") throw new Error("fn for onResize not a function");
-     onresize = fn;
-     };
-     owner.resize = function()
-     {
-     if (onresize) onresize.call(owner, event);
-     };
-     core.addEvent(element, "resize", owner.resize);
-     };*/
-//-------------------------------------------------------------------------------------------------------------------
     extensions.clickable = function(owner)
     {
 //Переменные
         var fnList = [ ];
+//События
         var onclick = null;
 //Функции
         owner.onClick = function(fn)
@@ -230,8 +199,10 @@ function(core)
 //Переменные
         var required = false;
         var validator = null;
+//События
+        var onvalidate = null;
 //Функции
-        function onvalidate()
+        function onValidate()
         {
             if (validate(owner.value(), required)) owner.removeClass("invalid");
             else owner.addClass("invalid");
@@ -259,13 +230,19 @@ function(core)
         };
         owner.invalid = function()
         {
-            onvalidate();
+            onValidate();
             return owner.hasClass("invalid");
+        };
+        owner.onValidate = function(fn)
+        {
+            if (fn === undefined) return onvalidate;
+            if (typeof fn !== "function" && fn !== null) throw new Error("fn for onValidate not a function");
+            onvalidate = fn;
         };
 //Сборка
         var element = core.getElement(owner);
-        element.onfocus = onvalidate;
-        element.onkeyup = onvalidate;
+        element.onfocus = onValidate;
+        element.onkeyup = onValidate;
     };
 //-------------------------------------------------------------------------------------------------------------------
     extensions.movable = function(owner)

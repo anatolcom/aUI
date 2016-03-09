@@ -79,7 +79,6 @@ function(aURL, aUI) {
 
     var fieldButtons = new aUI.Field({ caption : "Кнопки" }).appendTo(buttonItem);
     var btn1 = new aUI.Button({ text : "button" }).appendTo(fieldButtons.value);
-
     var btn2 = new aUI.Button({ text : "selectable" }).appendTo(fieldButtons.value);
 
     var fieldInputs = new aUI.Field({ caption : "Поля ввода" }).appendTo(inputItem);
@@ -181,7 +180,7 @@ function(aURL, aUI) {
     for (var index in links) new aUI.Link(links[index]).appendTo(fieldLinks.value);
 
 
-    
+
     aurl.init();
     function changeTopSection()
     {

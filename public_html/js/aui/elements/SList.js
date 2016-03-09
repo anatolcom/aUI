@@ -31,7 +31,7 @@ function(core, Element, List, ScrollList, SItem)
         this.onChangeSelected = function(fn)
         {
             if (fn === undefined) return options.onchangeselected;
-            if (typeof fn !== "function") throw new Error("fn for onChangeSelected not a function");
+            if (typeof fn !== "function" && fn !== null) throw new Error("fn for onChangeSelected not a function");
             options.onchangeselected = fn;
         };
         function menuClick()
