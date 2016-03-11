@@ -202,6 +202,8 @@ function(core)
 //События
         var onvalidate = null;
 //Функции
+//field.setCustomValidity("Invalid field."); will make the field invalid.
+//field.setCustomValidity(""); will make the field valid unless it fails an HTML5 constraint.
         function onValidate()
         {
             if (validate(owner.value(), required)) owner.removeClass("invalid");

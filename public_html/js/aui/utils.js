@@ -280,6 +280,7 @@ function() {
     utils.toUriParams = function(params)
     {
         if (!params) return "";
+        if (typeof params === "string") return params;
         return  Object.keys(params).map(function(key)
         {
             var value = params[key];
@@ -299,14 +300,18 @@ function() {
     {
         try
         {
+            var method = "POST";
             var p = utils.toUriParams(param);
-            if (p !== "") url += "?" + p;
+            var body = null;
+            if (method === "POST") body = p;
+            else if (p !== "") url += "?" + p;
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
+            xhr.open(method, url, true);
+            if (method === "POST") xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.responseType = dataType;
 
-            xhr.send();
+            xhr.send(body);
 
             try
             {
@@ -330,26 +335,30 @@ function() {
      * @param {string} url адрес
      * @param {string | object} param параметры в формате вебстроки "name1=value1&name2=value2" или в виде объекта
      * @param {string} dataType тип возвращаемых данных (например json, xml)
-     * @param {function} onsuccess функция обратного вызова в случае успешного выполнения
+     * @param {function} onload функция обратного вызова в случае успешного выполнения
      * @param {function} onerror функция обратного вызова в случае ошибки
      * @returns {string}
      */
-    utils.async = function(url, param, dataType, onsuccess, onerror)
+    utils.async = function(url, param, dataType, onload, onerror)
     {
         try
         {
+            var method = "POST";
             var p = utils.toUriParams(param);
-            if (p !== "") url += "?" + p;
+            var body = null;
+            if (method === "POST") body = p;
+            else if (p !== "") url += "?" + p;
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
+            xhr.open(method, url, true);
+            if (method === "POST") xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.responseType = dataType;
             xhr.onload = function(event)
             {
                 try
                 {
                     if (this.status !== 200) throw new Error("response status " + this.status);
-                    if (typeof onsuccess === "function") onsuccess(this.response);
+                    if (typeof onload === "function") onload(this.response);
                 }
                 catch (err)
                 {
@@ -358,12 +367,46 @@ function() {
                     throw new Error(errText);
                 }
             };
-            xhr.send();
+            xhr.send(body);
         }
         catch (err)
         {
             throw new Error("async " + url + " (" + err.message + ")");
         }
+    };
+//---------------------------------------------------------------------------
+    utils.download = function(url, params, onload)
+    {
+        function extractFileName(value, alter)
+        {
+            if (value === null) return alter;
+            var expression = new RegExp("filename[^;=\\n]*=(['\"]?(.*)['\"]|[^;\\n]*)", "");
+            var match = value.match(expression);
+            if (!match) return alter;
+            if (match[2] !== undefined) return decodeURIComponent(match[2]);
+            if (match[1] !== undefined) return decodeURIComponent(match[1]);
+            return alter;
+        }
+        var alterFileName = "download.dat";
+        var p = utils.toUriParams(params);
+        if (p !== "") url += "?" + p;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.responseType = "blob";
+        xhr.onload = function(event)
+        {
+            try
+            {
+                var contentDisposition = this.getResponseHeader("Content-Disposition");
+                utils.saveBlobAsFile(this.response, extractFileName(contentDisposition, alterFileName));
+                if (typeof onload === "function") onload();
+            }
+            catch (err)
+            {
+                if (typeof onload === "function") onload(err.message);
+            }
+        };
+        xhr.send();
     };
 //---------------------------------------------------------------------------
     utils.download = function(url, params, onload)//, onSuccess, onFailure
