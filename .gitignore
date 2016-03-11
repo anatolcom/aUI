@@ -3,3 +3,5 @@ node_modules
 dist
 build
 ignore
+npm-debug.log
+public_html/css/aui
