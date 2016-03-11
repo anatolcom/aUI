@@ -199,6 +199,16 @@ function()
 //            if (value === undefined) return that.getElement().style.get(name);
 //            that.getElement().style.set(name, value);
 //        };
+        this.hidden = function(hidden)
+        {
+            if (hidden === undefined) return that.getElement().style.display === "none";
+            if (hidden) that.getElement().style.display = "none";
+            else that.getElement().style.display = "";
+        };
+        this.toggleHidden = function()
+        {
+            that.hidden(!that.hidden());
+        };
 //Сборка
         var element = document.createElement(options.element);
         element.aui = this;

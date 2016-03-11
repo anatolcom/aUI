@@ -31,63 +31,39 @@ function(core, Element)
 //Переменные
         var that = this;
 //Функции
-        this.onScroll = function(fn)
+        function scrollType(type)
         {
-            that.getElement().onscroll = fn;
-        };
-//    this.onResize = function(fn)
-//    {
-//        that.getElement().onresize = fn;
-//    };
-        this.horizontalScrollBar = function(type)
-        {
-            var x = that.getElement().style.overflowX;
             switch (type)
             {
                 case "auto":
-                    x = "auto";
-                    break;
+                    return type;
                 case "scroll":
-                    x = "scroll";
-                    break;
+                    return type;
                 case "hidden":
-                    x = "hidden";
-                    break;
+                    return type;
                 case "show":
-                    x = "scroll";
-                    break;
+                    return "scroll";
                 case "hide":
-                    x = "hidden";
-                    break;
+                    return "hidden";
                 default:
-                    throw new Error("Unknow horizontal type " + type);
+                    throw new Error("Unknow type: \"" + type + "\"");
             }
-            that.getElement().style.overflowX = x;
+        }
+        this.onScroll = function(fn)
+        {
+            if (fn === undefined) return that.getElement().onscroll;
+            if (typeof fn !== "function" && fn !== null) throw new Error("fn for onScroll not a function");
+            that.getElement().onscroll = fn;
+        };
+        this.horizontalScrollBar = function(type)
+        {
+            if (type === undefined) return that.getElement().style.overflowX;
+            that.getElement().style.overflowX = scrollType(type);
         };
         this.verticalScrollBar = function(type)
         {
-            var y = that.getElement().style.overflowY;
-            switch (type)
-            {
-                case "auto":
-                    y = "auto";
-                    break;
-                case "scroll":
-                    y = "scroll";
-                    break;
-                case "hidden":
-                    y = "hidden";
-                    break;
-                case "show":
-                    y = "scroll";
-                    break;
-                case "hide":
-                    y = "hidden";
-                    break;
-                default:
-                    throw new Error("Unknow vertical type " + type);
-            }
-            that.getElement().style.overflowY = y;
+            if (type === undefined) that.getElement().style.overflowY;
+            that.getElement().style.overflowY = scrollType(type);
         };
 //Сборка
         this.getElement().style.overflow = "auto";

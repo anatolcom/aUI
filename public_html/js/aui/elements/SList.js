@@ -24,6 +24,7 @@ function(core, Element, List, ScrollList, SItem)
         };
         this.select = function(index)
         {
+            if (index === undefined) return scrollList.topIndex();
             index = Number(index);
             if (scrollList.topIndex() === index) return;
             scrollList.topIndex(index);

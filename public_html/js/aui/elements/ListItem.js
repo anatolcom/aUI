@@ -14,7 +14,8 @@ function(core, Button)
         options = core.extend(
         {
             element : "li",
-            class : null
+            class : null,
+            onchangeselected : null
         }, options);
         Button.call(this, options);
 //Переменные
@@ -32,6 +33,7 @@ function(core, Button)
             return undefined;
         };
 //Сборка
+        if (options.onchangeselected) this.onChangeSelected(options.onchangeselected);
     }
     core.proto(ListItem, Button);
 //-------------------------------------------------------------------------------------------------------------------

@@ -9,6 +9,7 @@ and open the template in the editor.
 */
 
 @charset "utf-8";
+@import "_constants.scss";
 @import "button.scss"; 
 @import "input.scss"; 
 @import "progress.scss"; 
@@ -72,7 +73,7 @@ and open the template in the editor.
             /*width: 15px;*/
             /*height: 15px;*/
             border: #BBB solid 1px;
-            border-radius: 2px;
+            border-radius: $borderRadius;
             /* background-color: rgba(0, 0, 0, 0.1); */
             :hover
                 {
@@ -94,7 +95,7 @@ and open the template in the editor.
 .popup
 {
     border: #BBB solid 1px;
-    border-radius: 3px;
+    border-radius: $borderRadius + 1;
     padding: 10px;
     background-color: #FFF;
     box-shadow: 0px 0px 1px rgba(0,0,0,0.1), 0px 2px 3px rgba(0,0,0,0.1);
@@ -118,22 +119,11 @@ and open the template in the editor.
         margin-bottom: 1px;
         > li
         {
-            -webkit-animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;
-            animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;
+            @include clickable;
             display: inline-block;
             padding: 10px 20px;
-            cursor: default;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            /*-webkit-animation-duration: 1s;*/
-            /* animation-duration: 1s; */
-            /* transition-property: background-color; */
-            /* animation: 2s ease 0s normal none 1 running mymove; */
-            /* animation: 1s ease 2s normal none 1; */
+            /*-webkit-animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;*/
+            /*animation: 0.1s ease 0s normal none 1 running anim-bg-to-transparent;*/
             &:hover:not(.selected)
                 {
                 /*background-color: rgba(0, 0, 0, 0.1);*/
@@ -255,7 +245,7 @@ and open the template in the editor.
     /*word-wrap: normal;*/
     border: 1px solid #D0D0D0; /*?????????????????? ?????????? */
     /*border: 1px dotted #114499;  ?????????????????? ?????????? */
-    border-radius: 4px;
+    border-radius: $borderRadius;
     animation: title_anim 1s 1;
     -moz-animation: title_anim 1s 1;
     -webkit-animation: title_anim 1s 1;

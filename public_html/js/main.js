@@ -11,7 +11,7 @@ require.config({
 require([ "aURL", "aUI", "DragManager" ],
 function(aURL, aUI) {
 
-    console.dir(aUI);
+//    console.dir(aUI);
 //    var aUtils = aUI.utils; 
     var aurl = new aURL();
     function changeSections()
@@ -181,15 +181,6 @@ function(aURL, aUI) {
 
 
 
-    aurl.init();
-    function changeTopSection()
-    {
-        aurl.set("selected", this.selected());
-    }
-    slist.select(aurl.get("selected"));
-    slist.onChangeSelected(changeTopSection);
-
-
 
     var dragDock1 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
     var dragDock2 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
@@ -198,7 +189,13 @@ function(aURL, aUI) {
 
 
 
-
+    aurl.init();
+    function changeTopSection()
+    {
+        aurl.set("selected", this.selected());
+    }
+    slist.select(aurl.get("selected"));
+    slist.onChangeSelected(changeTopSection);
 
 
 

@@ -1,7 +1,7 @@
-define([],
+define([ ],
 function() {
 //---------------------------------------------------------------------------
-    var utils = {};
+    var utils = { };
 //------------------------------------------------------------------------------------------------------------------- 
 //    utils.Range = function Range(min, max)
 //    {
@@ -41,7 +41,8 @@ function() {
             onchange = fn;
         };
         data.value = utils.trimByRange(value, min, max);
-    };
+    }
+    ;
 //-------------------------------------------------------------------------------------------------------------------
     utils.NumInRange = NumInRange;
 //-------------------------------------------------------------------------------------------------------------------
@@ -279,6 +280,7 @@ function() {
     utils.toUriParams = function(params)
     {
         if (!params) return "";
+        if (typeof params === "string") return params;
         return  Object.keys(params).map(function(key)
         {
             var value = params[key];
@@ -287,7 +289,93 @@ function() {
         }).join('&');
     };
 //---------------------------------------------------------------------------
-    utils.download = function(url, params, onload)//, onSuccess, onFailure
+    /**
+     * Вызов WEB метода в синхронном режиме
+     * @param {string} url адрес
+     * @param {string | object} param параметры в формате вебстроки "name1=value1&name2=value2" или в виде объекта
+     * @param {string} dataType тип возвращаемых данных (например json, xml)
+     * @returns {string}
+     */
+    utils.sync = function(url, param, dataType)
+    {
+        try
+        {
+            var method = "POST";
+            var p = utils.toUriParams(param);
+            var body = null;
+            if (method === "POST") body = p;
+            else if (p !== "") url += "?" + p;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, url, true);
+            if (method === "POST") xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.responseType = dataType;
+
+            xhr.send(body);
+
+            try
+            {
+                if (this.status !== 200) throw new Error("response status " + this.status);
+                return this.response;
+            }
+            catch (err)
+            {
+                var errText = err.message + ". : sync " + url + " return error: \"" + this.statusText + "\"";
+                throw new Error(errText);
+            }
+        }
+        catch (err)
+        {
+            throw new Error("async " + url + " (" + err.message + ")");
+        }
+    };
+//---------------------------------------------------------------------------
+    /**
+     * Вызов WEB метода в асинхронном режиме
+     * @param {string} url адрес
+     * @param {string | object} param параметры в формате вебстроки "name1=value1&name2=value2" или в виде объекта
+     * @param {string} dataType тип возвращаемых данных (например json, xml)
+     * @param {function} onload функция обратного вызова в случае успешного выполнения
+     * @param {function} onerror функция обратного вызова в случае ошибки
+     * @returns {string}
+     */
+    utils.async = function(url, param, dataType, onload, onerror)
+    {
+        try
+        {
+            var method = "POST";
+            var p = utils.toUriParams(param);
+            var body = null;
+            if (method === "POST") body = p;
+            else if (p !== "") url += "?" + p;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, url, true);
+            if (method === "POST") xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.responseType = dataType;
+            xhr.onload = function(event)
+            {
+                try
+                {
+                    if (this.status !== 200) throw new Error("response status " + this.status);
+                    if (typeof onload === "function") onload(this.response);
+                }
+                catch (err)
+                {
+                    var errText = err.message + ". : async " + url + " return error: \"" + this.statusText + "\"";
+                    if (typeof onerror === "function") onerror(errText);
+                    throw new Error(errText);
+                }
+            };
+            xhr.send(body);
+        }
+        catch (err)
+        {
+            throw new Error("async " + url + " (" + err.message + ")");
+        }
+    };
+//---------------------------------------------------------------------------
+    utils.download = function(url, params, onload)
     {
         function extractFileName(value, alter)
         {

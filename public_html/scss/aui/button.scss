@@ -23,6 +23,7 @@ and open the template in the editor.
     text-decoration: blink;
     font-weight: bold;
     color: #363696;
+    background-color: rgba(255, 255, 255, 0.4);
     &:hover
         {
         border-color: #C3C3C3;
@@ -36,12 +37,12 @@ and open the template in the editor.
     &.selected
     {
         @include clickableDown;
-        background-color: rgba(255,255,255,0.5);
-        :hover
+        background-color: rgba(255,255,255,0.6);
+        &:hover
             {
             @include clickableDownHover;
         }
-        :active
+        &:active
             {
             @include clickableDownActive;
         }
