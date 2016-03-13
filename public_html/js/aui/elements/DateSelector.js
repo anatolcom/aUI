@@ -48,7 +48,9 @@ Calendar)
         var edit = new Edit({ required : true }).appendTo(this);
         edit.validator(options.validator);
         edit.value(utils.dateToStr(new Date(), options.mask));
-        var btn = new Button({ text : "...", onclick : click }).appendTo(this);
+//        var btn = new Button({ text : "...", onclick : click }).appendTo(this);
+        var btn = new Button({ onclick : click }).appendTo(this);
+        btn.addClass("svg_calendar");
 //    var btn = new aUI.Button({ onclick : click }).appendTo(this);
 
         this.value = edit.value;

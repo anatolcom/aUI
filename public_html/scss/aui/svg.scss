@@ -1,0 +1,31 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 11.03.2016, 23:12:36
+    Author     : Анатолий
+*/
+
+.svg_calendar 
+{
+    background-image: url("data:image/svg+xml,%3Csvg version='1.0' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='16px'%0A height='16px' viewBox='0 0 100 100' enable-background='new 0 0 100 100' xml:space='preserve'%3E%0A%3Cg id='calendar'%3E%0A %3Cpath fill='#363696' d='M85,0v10H70V0H30v10H15V0H0v100h100V0H85z M95,95H5V30h90V95z M45,50H35V40h10V50z M65,50H55V40h10V50z M85,50H75V40h10V50%0A z M25,65H15V55h10V65z M45,65H35V55h10V65z M65,65H55V55h10V65z M85,65H75V55h10V65z M25,80H15V70h10V80z M45,80H35V70h10V80z%0A M65,80H55V70h10V80z'/%3E%0A%3C/g%3E%0A%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 4px 5px;
+    width: 10px;
+    height: 18px;
+    fill: #363696;
+}
+.icon_stroke
+{
+    border: rgba(13, 0, 255, 0.15) solid 1px;
+    /*fill: transparent;*/
+/*    stroke: rgba(0, 0, 0, 0.5);
+    stroke-width: 1px;*/
+    &:hover 
+        {
+        /*stroke: skyblue;*/ 
+        fill: skyblue;
+    }
+}
