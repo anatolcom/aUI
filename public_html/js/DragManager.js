@@ -18,6 +18,7 @@ var DragManager = new function() {
     function onMouseDown(event)
     {
         if (event.which !== 1) return;
+        if (!event.target.closest) return;//???????????????????
         var elem = event.target.closest('.draggable');
         if (!elem) return;
         dragObject.elem = elem;

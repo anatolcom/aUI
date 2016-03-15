@@ -39,11 +39,11 @@ function(core, extensions)
             if (text === undefined) return that.getElement().textContent;
             that.getElement().textContent = text;
         };
-//    this.html = function(html)
-//    {
-//        if (html === undefined) return that.getElement().innerHtml;
-//        that.getElement().innerHtml = html;
-//    };
+        this.html = function(html)
+        {
+            if (html === undefined) return that.getElement().innerHTML;
+            that.getElement().innerHTML = html;
+        };
 //Сборка
         if (options.text || options.text === 0 || options.text === false) this.text(options.text);
 //if (options.html || options.html === 0 || options.html === false) this.html(options.html);
