@@ -11,7 +11,7 @@ require.config({
 require([ "aURL", "aUI", "DragManager" ],
 function(aURL, aUI) {
 
-//    console.dir(aUI);
+    console.dir(aUI);
 //    var aUtils = aUI.utils; 
     var aurl = new aURL();
     function changeSections()
@@ -175,7 +175,8 @@ function(aURL, aUI) {
         { text : "how-to-set-css3-transition-using-javascript", href : "http://stackoverflow.com/questions/8742249/how-to-set-css3-transition-using-javascript" },
         { text : "dom_obj_event", href : "http://www.w3schools.com/jsref/dom_obj_event.asp" },
         { text : "poryadok-srabatyvaniya-sobytiy", href : "http://javascript.ru/tutorial/events/intro#poryadok-srabatyvaniya-sobytiy" },
-        { text : "dobavlenie-cherez-on-imya-sobytiya", href : "http://javascript.ru/tutorial/events/comparison#dobavlenie-cherez-on-imya-sobytiya" }
+        { text : "dobavlenie-cherez-on-imya-sobytiya", href : "http://javascript.ru/tutorial/events/comparison#dobavlenie-cherez-on-imya-sobytiya" },
+        { text : "Web/API/Touch/target", href : "https://developer.mozilla.org/en-US/docs/Web/API/Touch/target" }
     ];
     for (var index in links) new aUI.Link(links[index]).appendTo(fieldLinks.value);
 

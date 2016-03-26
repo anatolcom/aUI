@@ -13,6 +13,12 @@ and open the template in the editor.
         <!--<link rel="stylesheet" href="css/test.css" type="text/css" media="screen, projection"/>-->
         <link rel="stylesheet" href="css/style.css" type="text/css" media="screen, projection"/>
         <script data-main="js/main" src="js/libs/require.js"></script>
+        <script>
+            function message(text)
+            {
+                document.getElementById("message").innerText = text;
+            }
+        </script>
     </head>
     <body>
         <svg style="display: none">
@@ -59,6 +65,7 @@ and open the template in the editor.
     </svg>        
     <header>
         <h1>aUI</h1>
+        <div id="message" style="z-index: 100; position: fixed; top: 40px; left: 15px;"></div>
     </header>
     <nav>
         <menu class="fixed circle">

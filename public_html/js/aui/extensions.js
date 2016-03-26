@@ -292,6 +292,40 @@ function(core)
             }
             if (onmove) onmove.call(owner, event, dX, dY);
         }
+        function onTouchStart(event)
+        {
+            var touch = event.touches[0];
+            if (touch.target !== element) return;
+            core.addEvent(element, "touchmove", onTouchMove);
+            core.addEvent(element, "touchend", onTouchEnd);
+            keepedClientX = touch.pageX;
+            keepedClientY = touch.pageY;
+            if (onmovestart) onmovestart.call(owner, event);
+            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+            else event.returnValue = false; // Вариант Internet Explorer:
+        }
+        function onTouchEnd(event)
+        {
+            core.removeEvent(element, "touchmove", onTouchMove);
+            core.removeEvent(element, "touchend", onTouchEnd);
+            if (onmoveend) onmoveend.call(owner, event);
+            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+            else event.returnValue = false; // Вариант Internet Explorer:
+        }
+        function onTouchMove(event)
+        {
+            var touch = event.touches[0];
+            var dX = 0;
+            if (!lockX) dX = touch.pageX - keepedClientX;
+            var dY = 0;
+            if (!lockY) dY = touch.pageY - keepedClientY;
+            if (isRefreshOffsetOnMove)
+            {
+                keepedClientX = touch.pageX;
+                keepedClientY = touch.pageY;
+            }
+            if (onmove) onmove.call(owner, event, dX, dY);
+        }
         function onDragStart()
         {
             return false;
@@ -322,6 +356,7 @@ function(core)
 //Сборка
         element.ondragstart = onDragStart;
         element.onmousedown = onMouseDown;
+        core.addEvent(element, "touchstart", onTouchStart);
     };
 //-------------------------------------------------------------------------------------------------------------------
     extensions.dragable = function(owner)
