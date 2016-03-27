@@ -1,7 +1,42 @@
-define([ "aui/core", "./Element", "./ListItem" ],
-function(core, Element, ListItem)
+define([ "aui/core", "./Element", "./Button"],
+function(core, Element, Button)
 {
 //---------------------------------------------------------------------------
+    /**
+     * <b>Элемент спиока List.</b><br/>
+     * @param {type} options параметры:<br/>
+     * @returns {Item}
+     * @see List
+     */
+    function Item(options)
+    {
+//Опции
+        options = core.extend(
+        {
+            element : "li",
+            class : null,
+            onchangeselected : null
+        }, options);
+        Button.call(this, options);
+//Переменные
+        var that = this;
+//Функции
+        this.index = function()
+        {
+            var element = that.getElement();
+            var parent = element.parentElement;
+            if (!parent) return undefined;
+            for (var index = 0; index < parent.childNodes.length; index++)
+            {
+                if (parent.childNodes[index] === element) return index;
+            }
+            return undefined;
+        };
+//Сборка
+        if (options.onchangeselected) this.onChangeSelected(options.onchangeselected);
+    }
+    core.proto(Item, Button);
+//-------------------------------------------------------------------------------------------------------------------
     /**
      * <b>Спиок.</b><br/>
      * @param {object} options параметры:<br/>
@@ -20,13 +55,13 @@ function(core, Element, ListItem)
         Element.call(this, options);
 //Переменные
         var that = this;
-        var itemConstructor = ListItem;
+        var itemConstructor = Item;
 //Функции
         this.itemConstructor = function(constructor)
         {
             if (constructor === undefined) return itemConstructor;
             if (typeof constructor !== "function") throw new Error("constructor not function");
-            if (!constructor instanceof ListItem) throw new Error("constructor not proto aUI.ListItem");
+            if (!constructor instanceof Item) throw new Error("constructor not proto aUI.ListItem");
             itemConstructor = constructor;
         };
         this.add = function()
@@ -109,6 +144,8 @@ function(core, Element, ListItem)
         if (options.itemConstructor) this.itemConstructor(options.itemConstructor);
     };
     core.proto(List, Element);
+//-------------------------------------------------------------------------------------------------------------------
+    List.Item = Item;
 //-------------------------------------------------------------------------------------------------------------------
     return List;
 //---------------------------------------------------------------------------

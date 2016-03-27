@@ -1,6 +1,30 @@
-define([ "aui/core", "./Element", "./List", "./ScrollList", "./SItem" ],
-function(core, Element, List, ScrollList, SItem)
+define([ "aui/core", "./Element", "./List", "./ScrollList" ],//, "./SItem"
+function(core, Element, List, ScrollList)//, SItem
 {
+//---------------------------------------------------------------------------
+    function SItem(options)
+    {
+//Опции
+        options = core.extend(
+        {
+        }, options);
+        List.Item.call(this, options);
+//Переменные
+        var that = this;
+//Функции
+        this.caption = function()
+        {
+            return caption;
+        };
+        this.content = function()
+        {
+            return content;
+        };
+//Сборка
+        var caption = new Element({ class : "caption" }).appendTo(this);
+        var content = new Element({ class : "content" }).appendTo(this);
+    };
+    core.proto(SItem, List.Item);
 //---------------------------------------------------------------------------
     function SList(options)
     {
@@ -56,6 +80,8 @@ function(core, Element, List, ScrollList, SItem)
         var list = scrollList.list();
     };
     core.proto(SList, Element);
+//---------------------------------------------------------------------------
+   SList.SItem = SItem;
 //---------------------------------------------------------------------------
    return SList;
 //---------------------------------------------------------------------------

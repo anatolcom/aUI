@@ -9,13 +9,11 @@ define([ "aui/core", "aui/utils", "aui/validators", "aui/extensions",
     "aui/elements/Memo",
     //list
     "aui/elements/List",
-    "aui/elements/ListItem",
     //area
     "aui/elements/Field",
     "aui/elements/Popup",
     "aui/elements/ScrollArea",
     "aui/elements/ScrollList",
-    "aui/elements/SItem",
     "aui/elements/SList",
     //date
     "aui/elements/Calendar",
@@ -36,9 +34,9 @@ Element,
 //standard
 Link, Button, Check, Edit, Select, Memo,
 //list
-List, ListItem,
+List,
 //area
-Field, Popup, ScrollArea, ScrollList, SItem, SList,
+Field, Popup, ScrollArea, ScrollList, SList,
 //date
 Calendar, DateSelector,
 //indicator
@@ -72,13 +70,11 @@ Movable, XY
     aUI.Memo = Memo;
     //list
     aUI.List = List;
-    aUI.ListItem = ListItem;
     //area
     aUI.Field = Field;
     aUI.Popup = Popup;
     aUI.ScrollArea = ScrollArea;
     aUI.ScrollList = ScrollList;
-    aUI.SItem = SItem;
     aUI.SList = SList;
     //date
     aUI.Calendar = Calendar;
