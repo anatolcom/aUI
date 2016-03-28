@@ -42,7 +42,6 @@ function() {
         };
         data.value = utils.trimByRange(value, min, max);
     }
-    ;
 //-------------------------------------------------------------------------------------------------------------------
     utils.NumInRange = NumInRange;
 //-------------------------------------------------------------------------------------------------------------------
@@ -409,39 +408,130 @@ function() {
         xhr.send();
     };
 //---------------------------------------------------------------------------
-    utils.download = function(url, params, onload)//, onSuccess, onFailure
+    function Task()
     {
-        function extractFileName(value, alter)
+        var that = this;
+        this.context = null;
+
+        var run = null;
+        var args = [ ];
+        var result = null;
+
+        Object.defineProperty(this, "run",
         {
-            if (value === null) return alter;
-            var expression = new RegExp("filename[^;=\\n]*=(['\"]?(.*)['\"]|[^;\\n]*)", "");
-            var match = value.match(expression);
-            if (!match) return alter;
-            if (match[2] !== undefined) return decodeURIComponent(match[2]);
-            if (match[1] !== undefined) return decodeURIComponent(match[1]);
-            return alter;
-        }
-        var alterFileName = "download.dat";
-        var p = utils.toUriParams(params);
-        if (p !== "") url += "?" + p;
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.responseType = "blob";
-        xhr.onload = function(event)
+            configurable : false,
+            get : function()
+            {
+                return run;
+            },
+            set : function(fn)
+            {
+                run = utils.functionOrNull(fn);
+            }
+        });
+        Object.defineProperty(this, "args",
         {
+            configurable : false,
+            get : function()
+            {
+                return args;
+            },
+            set : function(value)
+            {
+                args = [ ];
+                if (value instanceof Array) args = value;
+                else for (var index in value) args.push(value[index]);
+            }
+        });
+        Object.defineProperty(this, "result",
+        {
+            configurable : false,
+            get : function()
+            {
+                return result;
+            }
+        });
+        this.execute = function()
+        {
+            if (!run) throw new Error("run is not a function");
             try
             {
-                var contentDisposition = this.getResponseHeader("Content-Disposition");
-                utils.saveBlobAsFile(this.response, extractFileName(contentDisposition, alterFileName));
-                if (typeof onload === "function") onload();
+                return result = run.apply(that.contecst, args);
             }
             catch (err)
             {
-                if (typeof onload === "function") onload(err.message);
+                console.error(err);
+                throw err;
             }
         };
-        xhr.send();
-    };
+    }
+//---------------------------------------------------------------------------
+    function Executor()
+    {
+        var that = this;
+        var tasks = [ ];
+        var onSuccess = null;
+        var index = 0;
+        var current = null;
+
+        this.addTask = function(run, args, context)
+        {
+            var task = new Task();
+            task.run = run;
+            if (args instanceof Array) task.args = args;
+            else for (var index in args) task.args.push(args[index]);
+            task.context = context;
+            tasks.push(task);
+            return task;
+        };
+
+        Object.defineProperty(this, "onSuccess", {
+            configurable : false,
+            get : function()
+            {
+                return onSuccess;
+            },
+            set : function(fn)
+            {
+                onSuccess = utils.functionOrNull(fn);
+            }
+        });
+
+        this.isDone = function()
+        {
+            return index === null;
+        };
+
+        function done()
+        {
+            if (that.isDone()) return;
+            index = null;
+            current = null;
+            if (onSuccess) onSuccess();
+        }
+
+        Object.defineProperty(this, "current",
+        {
+            configurable : false,
+            get : function()
+            {
+                return current;
+            }
+        });
+
+        this.next = function()
+        {
+            if (that.isDone()) return;
+            current = tasks[index++];
+            if (current) current.execute();
+            else done();
+        };
+    }
+//---------------------------------------------------------------------------
+    utils.task = { };
+//---------------------------------------------------------------------------
+    utils.task.Task = Task;
+    utils.task.Executor = Executor;
 //---------------------------------------------------------------------------
     return utils;
 //---------------------------------------------------------------------------

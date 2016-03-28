@@ -13,7 +13,7 @@ function(core, Element)
 //Опции
         options = core.extend(
         {
-            element : "li",
+            element : "div",
             class : null,
             onchangeselected : null
         }, options);
@@ -47,9 +47,9 @@ function(core, Element)
 //Опции
         options = core.extend(
         {
-            element : "ul",
+            element : "div",
             id : null,
-            class : null,
+            class : "viewSet",
             viewConstructor : null
         }, options);
         Element.call(this, options);

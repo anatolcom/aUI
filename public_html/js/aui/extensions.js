@@ -19,11 +19,13 @@ function(core)
         };
         owner.select = function()
         {
+            if (owner.selected()) return;
             owner.addClass(className);
             if (typeof onchangeselected === "function") onchangeselected.call(owner);
         };
         owner.unselect = function()
         {
+            if (!owner.selected()) return;
             owner.removeClass(className);
             if (typeof onchangeselected === "function") onchangeselected.call(owner);
         };

@@ -99,9 +99,31 @@ function(aURL, aUI) {
     {
         edit.value(aUI.utils.dateToStr(this.value(), "dd.MM.yyyy"));
     }
-    var calendar1 = new aUI.Calendar({ addclass : "small", onclickday : changeDate }).appendTo(calendarItem);
-    var calendar2 = new aUI.Calendar({ addclass : "medium", onclickday : changeDate }).appendTo(calendarItem);
-    var calendar3 = new aUI.Calendar({ addclass : "large", onchange : changeDate }).appendTo(calendarItem);
+
+    var viewSelect = new aUI.List({ class : "buttons" }).appendTo(calendarItem);
+
+    var viewSet = new aUI.ViewSet().appendTo(calendarItem);
+    var viewSmall = viewSet.add();
+    var viewMedium = viewSet.add();
+    var viewLarge = viewSet.add();
+
+    function onClick()
+    {
+        viewSelect.selectSingle(this.index());
+    }
+    function onViewSelect()
+    {
+        if (this.selected()) viewSet.view(this.index());
+    }
+    viewSelect.add({ class : "button", text : "small", onclick : onClick, onchangeselected : onViewSelect });
+    viewSelect.add({ class : "button", text : "medium", onclick : onClick, onchangeselected : onViewSelect });
+    viewSelect.add({ class : "button", text : "large", onclick : onClick, onchangeselected : onViewSelect });
+    viewSelect.selectSingle(1);
+
+
+    var calendar1 = new aUI.Calendar({ addclass : "small", onclickday : changeDate }).appendTo(viewSmall);
+    var calendar2 = new aUI.Calendar({ addclass : "medium", onclickday : changeDate }).appendTo(viewMedium);
+    var calendar3 = new aUI.Calendar({ addclass : "large", onchange : changeDate }).appendTo(viewLarge);
 
     var btnPopup = new aUI.Button({ class : "button", text : "Calendar" }).appendTo(calendarItem);
     btnPopup.onClick(function(event) {
