@@ -45,6 +45,11 @@ Calendar)
             calendar.appendTo(popup);
             btn.select();
         }
+        this.mask = function (value)
+        {
+            if (value === undefined) return options.mask;
+            options.mask = value;
+        };
 //Сборка
         var edit = new Edit({ required : true }).appendTo(this);
         edit.validator(options.validator);

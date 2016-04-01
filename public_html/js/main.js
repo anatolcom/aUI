@@ -75,6 +75,7 @@ function(aURL, aUI) {
     var dragItem = slist.add({ text : "Drag" }).content();
     var calendarItem = slist.add({ text : "Calendar" }).content();
     var mouseItem = slist.add({ text : "Mouse" }).content();
+    var tableItem = slist.add({ text : "Table" }).content();
     var linksItem = slist.add({ text : "Links" }).content();
 
     var fieldButtons = new aUI.Field({ caption : "Кнопки" }).appendTo(buttonItem);
@@ -222,6 +223,32 @@ function(aURL, aUI) {
 
 
 
+    function fillEdit(data)
+    {
+        var edit = new aUI.Edit().appendTo(this);
+        edit.value(data);
+    }
+    function fillDate(data)
+    {
+        var dateSelector = new aUI.DateSelector().appendTo(this);
+        var date = aUI.utils.strToDate(data, "yyyy-MM-dd");
+        dateSelector.value(aUI.utils.dateToStr(date, dateSelector.mask()));
+    }
+
+    var table = new aUI.Table().appendTo(tableItem);
+    var tableMaper = new aUI.Table.Maper({ table : table });
+    tableMaper.fields([
+        { key : 0, text : "String" },
+        { key : 1, text : "Number", fill : fillEdit },
+        { key : 2, text : "Date", fill : fillDate }
+    ]);
+    tableMaper.entries([
+        [ "a", 1, "2016-03-01" ],
+        [ "b", 2, "2016-03-02" ],
+        [ "c", 3, "2016-03-03" ],
+        [ "d", 4, "2016-03-04" ]
+    ]);
+    tableMaper.fill();
 
     DragManager.onDragCancel = function(dragObject) {
         dragObject.avatar.rollback();

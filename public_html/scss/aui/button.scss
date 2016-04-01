@@ -24,6 +24,7 @@ and open the template in the editor.
     font-weight: bold;
     color: #363696;
     background-color: rgba(255, 255, 255, 0.4);
+    margin: 1px;
     &:hover
         {
         border-color: #C3C3C3;
@@ -75,25 +76,24 @@ and open the template in the editor.
 -----------------------------------------------------------------------------------------------*/
 .button.small
 {
-    @include buttonSize(0px 5px);
+    @include buttonSize(0px 4px);
 }
 /* Button medium
 -----------------------------------------------------------------------------------------------*/
 .button,
 .button.medium
 {
-    @include buttonSize(5px 10px);
+    @include buttonSize(4px 9px);
 }
 /* Button large
 -----------------------------------------------------------------------------------------------*/
 .button.large
 {
-    @include buttonSize(10px 20px);
+    @include buttonSize(9px 19px);
 }
 /* Buttons
 -----------------------------------------------------------------------------------------------*/
 .buttons > .button
 {
-    display: inline-block;  
-    margin: 5px 0px 5px 5px;
+    display: inline-block;
 }

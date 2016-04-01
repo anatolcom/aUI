@@ -9,6 +9,8 @@ define([ "aui/core", "aui/utils", "aui/validators", "aui/extensions",
     "aui/elements/Memo",
     //list
     "aui/elements/List",
+    //table
+    "aui/elements/Table",
     //area
     "aui/elements/Field",
     "aui/elements/Popup",
@@ -36,6 +38,8 @@ Element,
 Link, Button, Check, Edit, Select, Memo,
 //list
 List,
+//table
+Table,
 //area
 Field, Popup, ScrollArea, ScrollList, SList, ViewSet,
 //date
@@ -71,6 +75,8 @@ Movable, XY
     aUI.Memo = Memo;
     //list
     aUI.List = List;
+    //table
+    aUI.Table = Table;
     //area
     aUI.Field = Field;
     aUI.Popup = Popup;

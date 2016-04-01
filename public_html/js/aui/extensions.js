@@ -29,9 +29,11 @@ function(core)
             owner.removeClass(className);
             if (typeof onchangeselected === "function") onchangeselected.call(owner);
         };
-        owner.selected = function()
+        owner.selected = function(value)
         {
-            return owner.hasClass(className);
+            if (value === undefined) return owner.hasClass(className);
+            if (value) owner.select();
+            else owner.unselect();
         };
         owner.toggleSelect = function()
         {

@@ -361,7 +361,9 @@ function() {
                 }
                 catch (err)
                 {
-                    var errText = err.message + ". : async " + url + " return error: \"" + this.statusText + "\"";
+                    var errText = err.message + ". : async \"" + url + "\" return error: \"" + this.statusText + "\"";
+                    var errorMessage = this.getResponseHeader("Error-Message");
+                    if (errorMessage) errText += ", because: " + errorMessage;
                     if (typeof onerror === "function") onerror(errText);
                     throw new Error(errText);
                 }
