@@ -126,7 +126,7 @@ function(aURL, aUI) {
     var calendar3 = new aUI.Calendar({ addclass : "large", onchange : changeDate }).appendTo(viewLarge);
 
     var btnPopup = new aUI.Button({ class : "button", text : "Calendar" }).appendTo(calendarItem);
-    btnPopup.onClick(function(event) {
+    btnPopup.onClick(function() {
         if (btnPopup.selected())
         {
             btnPopup.unselect();
@@ -179,10 +179,12 @@ function(aURL, aUI) {
     range2.valueMax(40);
     range2.valueMin(20);
 
-    var dockMovable = new aUI.Element({ class : "dockMovable" }).appendTo(mouseItem);
 
+
+    var dockMovable = new aUI.Element({ class : "dockMovable" }).appendTo(mouseItem);
+    
     var movable = new aUI.Movable({ class : "movable", text : "Move Me!" }).appendTo(dockMovable);
-    movable.onMove(function(event, dX, dY) {
+    movable.onMove(function(dX, dY) {
         movable.left(movable.left() + dX);
         movable.top(movable.top() + dY);
     });
@@ -205,10 +207,16 @@ function(aURL, aUI) {
 
 
 
-    var dragDock1 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
-    var dragDock2 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
-    var drag1 = new aUI.Element({ class : "movable", text : "drag me" }).appendTo(dragDock1);
-    aUI.extensions.dragable(drag1);
+    var dock1 = new aUI.Element({ }).appendTo(dragItem);
+//    aUI.extensions.droppable(dock1);
+    var dock2 = new aUI.Element({ }).appendTo(dragItem);
+    aUI.extensions.droppable(dock2);
+    var drag1 = new aUI.Element({ text : "drag 1" }).appendTo(dock1);
+    aUI.extensions.draggable(drag1);
+    var drag2 = new aUI.Element({ text : "drag 2" }).appendTo(dock1);
+    aUI.extensions.draggable(drag2);
+    var drag3 = new aUI.Element({ text : "drag 3" }).appendTo(dock1);
+    aUI.extensions.draggable(drag3);
 
 
 
@@ -222,12 +230,13 @@ function(aURL, aUI) {
 
 
 
-
-    DragManager.onDragCancel = function(dragObject) {
+    var dragManager = new DragManager();
+    
+    dragManager.onDragCancel = function(dragObject) {
         dragObject.avatar.rollback();
     };
 
-    DragManager.onDragEnd = function(dragObject, dropElem)
+    dragManager.onDragEnd = function(dragObject, dropElem)
     {
         dragObject.elem.style.display = "none";
         dropElem.classList.add('computer-smile');

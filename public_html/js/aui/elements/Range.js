@@ -32,7 +32,7 @@ function(core, Element, utils, extensions)
         var roundDigits = 0;
         var fractionDigits = null;
 //Функции
-        function onResize(event)
+        function onResize()
         {
             var rect = core.rectPadding(that);
             if (isHorizontal)
@@ -50,7 +50,7 @@ function(core, Element, utils, extensions)
                 posMax.max(rect.bottom - dragMax.height());
             }
         }
-        function onMoveStart(event)
+        function onMoveStart()
         {
 //onResize();
             if (isHorizontal) lastPos = this.left();
@@ -58,19 +58,19 @@ function(core, Element, utils, extensions)
             that.addClass("move");
             this.addClass("move");
         }
-        function onMoveEnd(event)
+        function onMoveEnd()
         {
             that.removeClass("move");
             this.removeClass("move");
         }
-        function onMoveMin(event, dX, dY)
+        function onMoveMin(dX, dY)
         {
             var p = lastPos;
             if (isHorizontal) p += dX;
             else p += dY;
             that.valueMin(utils.convertRangedValue(p, posMin.min(), posMin.max(), valueMin.min(), valueMin.max()));
         }
-        function onMoveMax(event, dX, dY)
+        function onMoveMax(dX, dY)
         {
             var p = lastPos;
             if (isHorizontal) p += dX;

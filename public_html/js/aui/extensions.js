@@ -57,49 +57,49 @@ function(core)
         {
             if (value === undefined)
             {
-                var computedStyle = window.getComputedStyle(owner.getElement());
+                var computedStyle = window.getComputedStyle(element);
                 var marginLeft = parseInt(computedStyle.marginLeft, 10);
-                return owner.getElement().offsetLeft - marginLeft;
+                return element.offsetLeft - marginLeft;
             }
             if (value === null) value = "";
             if (typeof value === "number") value += "px";
-            owner.getElement().style.left = value;
+            element.style.left = value;
         };
         owner.right = function(value)
         {
             if (value === undefined)
             {
-                var computedStyle = window.getComputedStyle(owner.getElement());
+                var computedStyle = window.getComputedStyle(element);
                 var marginRight = parseInt(computedStyle.marginRight, 10);
-                return owner.getElement().offsetRight - marginRight;
+                return element.offsetRight - marginRight;
             }
             if (value === null) value = "";
             if (typeof value === "number") value += "px";
-            owner.getElement().style.right = value;
+            element.style.right = value;
         };
         owner.top = function(value)
         {
             if (value === undefined)
             {
-                var computedStyle = window.getComputedStyle(owner.getElement());
+                var computedStyle = window.getComputedStyle(element);
                 var marginTop = parseInt(computedStyle.marginTop, 10);
-                return owner.getElement().offsetTop - marginTop;
+                return element.offsetTop - marginTop;
             }
             if (value === null) value = "";
             if (typeof value === "number") value += "px";
-            owner.getElement().style.top = value;
+            element.style.top = value;
         };
         owner.bottom = function(value)
         {
             if (value === undefined)
             {
-                var computedStyle = window.getComputedStyle(owner.getElement());
+                var computedStyle = window.getComputedStyle(element);
                 var marginBottom = parseInt(computedStyle.marginBottom, 10);
-                return owner.getElement().offsetBottom - marginBottom;
+                return element.offsetBottom - marginBottom;
             }
             if (value === null) value = "";
             if (typeof value === "number") value += "px";
-            owner.getElement().style.bottom = value;
+            element.style.bottom = value;
         };
         owner.width = function(value)
         {
@@ -140,6 +140,7 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.clickable = function(owner)
     {
+        var element = core.getElement(owner);
 //Переменные
         var fnList = [ ];
 //События
@@ -193,7 +194,7 @@ function(core)
             if (onclick) onclick.apply(owner, arguments);
         };
 //Сборка
-        owner.getElement().onclick = owner.click;
+        element.onclick = owner.click;
     };
 //-------------------------------------------------------------------------------------------------------------------
     extensions.validable = function(owner)
@@ -257,8 +258,11 @@ function(core)
         var onmoveend = null;
         var onmove = null;
 //Переменные
-        var keepedClientX = 0;
-        var keepedClientY = 0;
+        var startPoint = { x : 0, y : 0 };
+        var keepedPoint = { x : 0, y : 0 };
+        var currentPoint = { x : 0, y : 0 };
+        var limit = 0;
+        var moved = false;
         var lockX = false;
         var lockY = false;
         var isRefreshOffsetOnMove = true;
@@ -267,9 +271,8 @@ function(core)
         {
             core.addEvent(document, "mousemove", onMouseMove);
             core.addEvent(document, "mouseup", onMouseUp);
-            keepedClientX = event.clientX;
-            keepedClientY = event.clientY;
-            if (onmovestart) onmovestart.call(owner, event);
+//            prepareStart({ x : event.clientX, y : event.clientY });
+            prepareStart({ x : event.pageX, y : event.pageY });
             if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
             else event.returnValue = false; // Вариант Internet Explorer:
         }
@@ -277,22 +280,14 @@ function(core)
         {
             core.removeEvent(document, "mousemove", onMouseMove);
             core.removeEvent(document, "mouseup", onMouseUp);
-            if (onmoveend) onmoveend.call(owner, event);
+            moveEnd(currentPoint);
             if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
             else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onMouseMove(event)
         {
-            var dX = 0;
-            if (!lockX) dX = event.clientX - keepedClientX;
-            var dY = 0;
-            if (!lockY) dY = event.clientY - keepedClientY;
-            if (isRefreshOffsetOnMove)
-            {
-                keepedClientX = event.clientX;
-                keepedClientY = event.clientY;
-            }
-            if (onmove) onmove.call(owner, event, dX, dY);
+//            move({ x : event.clientX, y : event.clientY });
+            move({ x : event.pageX, y : event.pageY });
         }
         function onTouchStart(event)
         {
@@ -300,9 +295,7 @@ function(core)
             if (touch.target !== element) return;
             core.addEvent(element, "touchmove", onTouchMove);
             core.addEvent(element, "touchend", onTouchEnd);
-            keepedClientX = touch.pageX;
-            keepedClientY = touch.pageY;
-            if (onmovestart) onmovestart.call(owner, event);
+            prepareStart({ x : touch.pageX, y : touch.pageY });
             if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
             else event.returnValue = false; // Вариант Internet Explorer:
         }
@@ -310,28 +303,63 @@ function(core)
         {
             core.removeEvent(element, "touchmove", onTouchMove);
             core.removeEvent(element, "touchend", onTouchEnd);
-            if (onmoveend) onmoveend.call(owner, event);
+            moveEnd(currentPoint);
             if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
             else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onTouchMove(event)
         {
             var touch = event.touches[0];
-            var dX = 0;
-            if (!lockX) dX = touch.pageX - keepedClientX;
-            var dY = 0;
-            if (!lockY) dY = touch.pageY - keepedClientY;
-            if (isRefreshOffsetOnMove)
-            {
-                keepedClientX = touch.pageX;
-                keepedClientY = touch.pageY;
-            }
-            if (onmove) onmove.call(owner, event, dX, dY);
+            move({ x : touch.pageX, y : touch.pageY });
         }
         function onDragStart()
         {
             return false;
         }
+        function prepareStart(point)
+        {
+            currentPoint.x = keepedPoint.x = startPoint.x = point.x;
+            currentPoint.y = keepedPoint.y = startPoint.y = point.y;
+            moved = false;
+//            if (onmovestart) onmovestart.call(owner);
+        }
+        function moveStart()
+        {
+            if (moved) return;
+            moved = true;
+            var point = { x : currentPoint.x, y : currentPoint.y };
+            if (onmovestart) onmovestart.call(owner, point);
+        }
+        function moveEnd()
+        {
+            var point = { x : currentPoint.x, y : currentPoint.y };
+            currentPoint.x = keepedPoint.x = startPoint.x = 0;
+            currentPoint.y = keepedPoint.y = startPoint.y = 0;
+            moved = false;
+            if (onmoveend) onmoveend.call(owner, point);
+        }
+        function move(point)
+        {
+            currentPoint.x = point.x;
+            currentPoint.y = point.y;
+            var d =
+            {
+                x : point.x - keepedPoint.x,
+                y : point.y - keepedPoint.y
+            };
+            if (Math.abs(point.x - startPoint.x) > limit) moveStart(); //d.x = 0;
+            if (Math.abs(point.y - startPoint.y) > limit) moveStart(); //d.y = 0;
+            if (!moved) return;
+            if (lockX) d.x = 0;
+            if (lockY) d.y = 0;
+            if (isRefreshOffsetOnMove)
+            {
+                keepedPoint.x = point.x;
+                keepedPoint.y = point.y;
+            }
+            if (onmove) onmove.call(owner, d.x, d.y, currentPoint);
+        }
+
         owner.onMoveStart = function(fn)
         {
             if (fn === undefined) return onmovestart;
@@ -355,14 +383,129 @@ function(core)
             if (value === undefined) return isRefreshOffsetOnMove;
             isRefreshOffsetOnMove = !!value;
         };
+        owner.limit = function(value)
+        {
+            if (value === undefined) return limit;
+            if (typeof value !== "number") throw new Error("limit is not a number");
+            limit = value;
+        };
 //Сборка
         element.ondragstart = onDragStart;
         element.onmousedown = onMouseDown;
         core.addEvent(element, "touchstart", onTouchStart);
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extensions.dragable = function(owner)
+    extensions.draggable = function(owner)
     {
+        var element = core.getElement(owner);
+        element.classList.add("draggable");
+
+        extensions.movable(owner);
+
+//        owner.limit(10);
+
+        var backup = null;
+
+
+        function save(element)
+        {
+            backup =
+            {
+                parent : element.parentNode,
+                nextSibling : element.nextSibling,
+                style :
+                {
+                    position : element.style.position,
+                    left : element.style.left,
+                    right : element.style.right,
+                    top : element.style.top,
+                    bottom : element.style.bottom,
+                    zIndex : element.style.zIndex
+                }
+            };
+        }
+        function rollback(element)
+        {
+            backup.parent.insertBefore(element, backup.nextSibling);
+            element.style.position = backup.style.position;
+            element.style.left = backup.style.left;
+            element.style.top = backup.style.top;
+            element.style.right = backup.style.right;
+            element.style.bottom = backup.style.bottom;
+            element.style.zIndex = backup.style.zIndex;
+        }
+
+
+
+        owner.onMoveStart(function(point)
+        {
+            save(element);
+            var rect = core.rectPadding(element);
+            var left = point.x - rect.left;
+            var top = point.y - rect.top;
+
+//            var left = element.offsetLeft;
+//            var top = element.offsetTop;
+//            var left = element.screenLeft;
+//            var top = element.ScreenTop;
+            console.dir(element);
+            console.log("rect.left", rect.left, "rect.top", rect.top, "rect.right", rect.right, "rect.bottom", rect.bottom);
+            console.log("left", left, "top", top);
+            console.log("x", point.x, "y", point.y);
+            console.log("x", left - point.x, "y", top - point.y);
+//            element.style.position = "static";
+            element.style.position = "absolute";
+            window.auiCurrentDragObject = owner;
+//            element.style.left = (point.x + (left - point.x)) + "px";
+//            element.style.top = (point.y + (top - point.y)) + "px";
+            document.body.appendChild(element);
+            element.style.left = left + "px";
+            element.style.top = top + "px";
+        });
+        owner.onMoveEnd(function()
+        {
+            rollback(element);
+            delete window.auiCurrentDragObject;
+        });
+        owner.onMove(function(dX, dY)
+        {
+            owner.left(owner.left() + dX);
+            owner.top(owner.top() + dY);
+        });
+
+        var dock = undefined;
+        owner.dock = function(value)
+        {
+            if (value === undefined) return dock;
+            dock = value;
+        };
+
+
+//https://learn.javascript.ru/drag-and-drop
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    extensions.droppable = function(owner)
+    {
+        var element = core.getElement(owner);
+        element.classList.add("droppable");
+
+        function notAcceptable()
+        {
+            if (typeof window.auiCurrentDragObject !== "object") return 1;
+            if (typeof window.auiCurrentDragObject.dock !== "function") return 2;
+            if (window.auiCurrentDragObject.dock() === owner) return 3;
+            return false;
+        }
+        function onMove(event)
+        {
+//            console.log("notAcceptable", notAcceptable());
+            if (notAcceptable()) return;
+            window.auiCurrentDragObject.dock(owner);
+            element.classList.add("redy");
+            console.log(event);
+        }
+        core.addEvent(element, "mousemove", onMove);
+        core.addEvent(element, "touchmove", onMove);
 //https://learn.javascript.ru/drag-and-drop
     };
 //-------------------------------------------------------------------------------------------------------------------

@@ -64,6 +64,92 @@ function()
         return rect;
     };
 //-------------------------------------------------------------------------------------------------------------------
+    core.left = function(target, value)
+    {
+        var element = core.getElement(target);
+        if (value === undefined)
+        {
+            var computedStyle = window.getComputedStyle(element);
+            var marginLeft = parseInt(computedStyle.marginLeft, 10);
+            return element.offsetLeft - marginLeft;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.left = value;
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    core.right = function(target, value)
+    {
+        var element = core.getElement(target);
+        if (value === undefined)
+        {
+            var computedStyle = window.getComputedStyle(element);
+            var marginRight = parseInt(computedStyle.marginRight, 10);
+            return element.offsetRight - marginRight;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.right = value;
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    core.top = function(target, value)
+    {
+        var element = core.getElement(target);
+        if (value === undefined)
+        {
+            var computedStyle = window.getComputedStyle(element);
+            var marginTop = parseInt(computedStyle.marginTop, 10);
+            return element.offsetTop - marginTop;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.top = value;
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    core.bottom = function(target, value)
+    {
+        var element = core.getElement(target);
+        if (value === undefined)
+        {
+            var computedStyle = window.getComputedStyle(element);
+            var marginBottom = parseInt(computedStyle.marginBottom, 10);
+            return element.offsetBottom - marginBottom;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.bottom = value;
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    core.width = function(target, value)
+    {
+        var element = core.getElement(target);
+        if (value === undefined) return element.offsetWidth;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.width = value;
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    core.height = function(target, value)
+    {
+        var element = core.getElement(target);
+        if (value === undefined) return element.offsetHeight;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        element.style.height = value;
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    core.clientWidth = function(target, value)
+    {
+        var element = core.getElement(target);
+        if (value === undefined) return element.clientWidth;
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    core.clientHeight = function(target, value)
+    {
+        var element = core.getElement(target);
+        if (value === undefined) return element.clientHeight;
+    };
+//-------------------------------------------------------------------------------------------------------------------
 //if (typeof Element.prototype.addEventListener === 'undefined') 
 //{
 //    Element.prototype.addEventListener = function(e, callback) 

@@ -1,4 +1,4 @@
-var DragManager = new function() {
+var DragManager = function() {
 
     /**
      * составной объект для хранения информации о переносе:
@@ -11,15 +11,15 @@ var DragManager = new function() {
      */
     var dragObject = { };
 
-    var self = this;
-    
+    var that = this;
+
     var limitForDrag = 30;
 
     function onMouseDown(event)
     {
         if (event.which !== 1) return;
         if (!event.target.closest) return;//???????????????????
-        var elem = event.target.closest('.draggable');
+        var elem = event.target.closest('.testDraggable');
         if (!elem) return;
         dragObject.elem = elem;
         // запомним, что элемент нажат на текущих координатах pageX/pageY
@@ -32,7 +32,7 @@ var DragManager = new function() {
     {
         if (!dragObject.elem) return; // элемент не зажат
         if (!dragObject.avatar) // если перенос не начат...
-        { 
+        {
             var moveX = event.pageX - dragObject.downX;
             var moveY = event.pageY - dragObject.downY;
             // если мышь передвинулась в нажатом состоянии недостаточно далеко
@@ -41,7 +41,7 @@ var DragManager = new function() {
             // начинаем перенос
             dragObject.avatar = createAvatar(event); // создать аватар
             if (!dragObject.avatar) // отмена переноса, нельзя "захватить" за эту часть элемента
-            { 
+            {
                 dragObject = { };
                 return;
             }
@@ -68,42 +68,7 @@ var DragManager = new function() {
         // в любом случае очистим "состояние переноса" dragObject
         dragObject = { };
     }
-
-    function finishDrag(event)
-    {
-        var dropElem = findDroppable(event);
-        if (!dropElem) self.onDragCancel(dragObject);
-        else self.onDragEnd(dragObject, dropElem);
-    }
-
-    function createAvatar(event)
-    {
-
-        // запомнить старые свойства, чтобы вернуться к ним при отмене переноса
-        var avatar = dragObject.elem;
-        var old =
-        {
-            parent : avatar.parentNode,
-            nextSibling : avatar.nextSibling,
-            position : avatar.position || '',
-            left : avatar.left || '',
-            top : avatar.top || '',
-            zIndex : avatar.zIndex || ''
-        };
-
-        // функция для отмены переноса
-        avatar.rollback = function() 
-        {
-            old.parent.insertBefore(avatar, old.nextSibling);
-            avatar.style.position = old.position;
-            avatar.style.left = old.left;
-            avatar.style.top = old.top;
-            avatar.style.zIndex = old.zIndex;
-        };
-
-        return avatar;
-    }
-
+    
     function startDrag(event)
     {
         var avatar = dragObject.avatar;
@@ -112,16 +77,56 @@ var DragManager = new function() {
         avatar.style.zIndex = 9999;
         avatar.style.position = 'absolute';
     }
+    function finishDrag(event)
+    {
+        var droppableElement = findDroppable(event);
+        if (!droppableElement) that.onDragCancel(dragObject);
+        else that.onDragEnd(dragObject, droppableElement);
+    }
+
+    function createAvatar(event)
+    {
+        // запомнить старые свойства, чтобы вернуться к ним при отмене переноса
+        var avatar = dragObject.elem;
+        var keep =
+        {
+            parent : avatar.parentNode,
+            nextSibling : avatar.nextSibling,
+            position : avatar.position || '',
+            left : avatar.left || '',
+            top : avatar.top || '',
+            zIndex : avatar.zIndex || ''
+        };
+        // функция для отмены переноса
+        avatar.rollback = function()
+        {
+            keep.parent.insertBefore(avatar, keep.nextSibling);
+            avatar.style.position = keep.position;
+            avatar.style.left = keep.left;
+            avatar.style.top = keep.top;
+            avatar.style.zIndex = keep.zIndex;
+        };
+        return avatar;
+    }
+
     function findDroppable(event)
     {
         // спрячем переносимый элемент
+//        console.log("dragObject", dragObject);
+//        console.log("dragObject event", event);
+//        event.target.hidden = true;
         dragObject.avatar.hidden = true;
         // получить самый вложенный элемент под курсором мыши
-        var elem = document.elementFromPoint(event.clientX, event.clientY);
+        console.log("X", event.clientX, "Y", event.clientY);
+        var topElement = document.elementFromPoint(event.clientX, event.clientY);
+        console.log("topElement", topElement);
         // показать переносимый элемент обратно
         dragObject.avatar.hidden = false;
-        if (elem === null) return null; // такое возможно, если курсор мыши "вылетел" за границу окна
-        return elem.closest('.droppable');
+//        event.target.hidden = false;
+        if (topElement === null) return null; // такое возможно, если курсор мыши "вылетел" за границу окна
+        var droppableElement = topElement.closest(".testDroppable");
+        console.log("droppableElement", droppableElement);
+        return droppableElement;
     }
 
     document.onmousemove = onMouseMove;

@@ -24,23 +24,22 @@ function(core, Element, utils, extensions)
         pos.onChange(changePos);
         var lastPos = null;
 //Функции
-        function onResize(event)
+        function onResize()
         {
             if (isHorizontal) pos.max(that.clientWidth() - drag.width());
             else pos.max(that.clientHeight() - drag.height());
-//console.log("W", that.clientWidth(), "w", drag.width());
         }
-        function onMoveStart(event)
+        function onMoveStart()
         {
             if (isHorizontal) lastPos = drag.left();
             else lastPos = drag.top();
             that.addClass("move");
         }
-        function onMoveEnd(event)
+        function onMoveEnd()
         {
             that.removeClass("move");
         }
-        function onMove(event, dX, dY)
+        function onMove(dX, dY)
         {
             var p = lastPos;
             if (isHorizontal) p += dX;
@@ -71,12 +70,9 @@ function(core, Element, utils, extensions)
 //Сборка
         this.getElement().style.position = "relative";
         this.onResize(onResize);
-//    core.addEvent(this.getElement(), "resize", onResize);
-//    var drag = new aUI.Movable({ class : "drag" }).appendTo(this);
         var drag = new Element({ class : "drag" }).appendTo(this);
         extensions.movable(drag);
         drag.getElement().style.position = "absolute";
-//    drag.getElement().style.zIndex = "100";
 
         drag.refreshOffsetOnMove(false);
         drag.onMove(onMove);
