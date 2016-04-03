@@ -48,21 +48,199 @@ function()
         throw new Error("is not HTMLElement");
     };
 //-------------------------------------------------------------------------------------------------------------------
-    core.rectPadding = function(target)
+    /**
+     * внешний прямоугольник
+     * @param {type} target
+     * @returns {data}
+     */
+    core.margin = function(target)
     {
         var element = core.getElement(target);
         var computedStyle = window.getComputedStyle(element);
-        var rect = { }; //new aUtils.Rect();
-        rect.left = parseInt(computedStyle.paddingLeft, 10);
+        var data = { left : 0, right : 0, top : 0, bottom : 0, width : 0, height : 0, boxSizing : "content-box" };
+
+        data.left = parseInt(computedStyle.marginLeft, 10);
+        data.right = parseInt(computedStyle.marginRight, 10);
+        data.top = parseInt(computedStyle.marginTop, 10);
+        data.bottom = parseInt(computedStyle.marginBottom, 10);
+
+        if (computedStyle.boxSizing === "border-box") data.boxSizing = "border-box";
+
+        data.offsetWidth = element.offsetWidth;
+        data.offsetHeight = element.offsetHeight;
+        data.clientWidth = element.clientWidth;
+        data.clientHeight = element.clientHeight;
+
+        data.width = element.offsetWidth + (data.left + data.right);
+        data.height = element.offsetHeight + (data.top + data.bottom);
+        return data;
+    };
+//-------------------------------------------------------------------------------------------------------------------
+    /**
+     * прямоугольник border
+     * @param {type} target
+     * @returns {data}
+     */
+    core.border = function(target)
+    {
+        var element = core.getElement(target);
+        var computedStyle = window.getComputedStyle(element);
+        var rect = { };
+        rect.left = parseInt(computedStyle.borderLeft, 10);
         if (isNaN(rect.left)) rect.left = 0;
-        rect.right = element.clientWidth - parseInt(computedStyle.paddingRight, 10);
-        if (isNaN(rect.right)) rect.right = target.width;
-        rect.top = parseInt(computedStyle.paddingTop, 10);
-        if (isNaN(rect.top)) rect.top = target.height;
-        rect.bottom = element.clientHeight - parseInt(computedStyle.paddingBottom, 10);
+        rect.right = parseInt(computedStyle.borderRight, 10);
+        if (isNaN(rect.right)) rect.right = 0;
+        rect.top = parseInt(computedStyle.borderTop, 10);
+        if (isNaN(rect.top)) rect.top = 0;
+        rect.bottom = parseInt(computedStyle.borderBottom, 10);
         if (isNaN(rect.bottom)) rect.bottom = 0;
         return rect;
     };
+//-------------------------------------------------------------------------------------------------------------------
+    /**
+     * внутренний прямоугольник
+     * @param {type} target
+     * @returns {data}
+     */
+    core.padding = function(target)
+    {
+        var element = core.getElement(target);
+        var computedStyle = window.getComputedStyle(element);
+        var data = { left : 0, right : 0, top : 0, bottom : 0, width : 0, height : 0, boxSizing : "content-box" };
+
+        data.left = parseInt(computedStyle.paddingLeft, 10);
+        data.right = parseInt(computedStyle.paddingRight, 10);
+        data.top = parseInt(computedStyle.paddingTop, 10);
+        data.bottom = parseInt(computedStyle.paddingBottom, 10);
+
+        if (computedStyle.boxSizing === "border-box") data.boxSizing = "border-box";
+
+        data.offsetWidth = element.offsetWidth;
+        data.offsetHeight = element.offsetHeight;
+        data.clientWidth = element.clientWidth;
+        data.clientHeight = element.clientHeight;
+
+        data.width = element.clientWidth - (data.left + data.right);
+        data.height = element.clientHeight - (data.top + data.bottom);
+        return data;
+    };
+//-------------------------------------------------------------------------------------------------------------------
+//    /**
+//     * внешний прямоугольник
+//     * @param {type} target
+//     * @returns {data}
+//     */
+//    core.marginRect = function(target)
+//    {
+//        var element = core.getElement(target);
+//        var computedStyle = window.getComputedStyle(element);
+//        var rect = { left : 0, right : element.clientWidth, top : 0, bottom : element.clientHeight, boxSizing : "content-box" };
+//        if (computedStyle.boxSizing === "border-box")
+//        {
+//            rect.boxSizing = "border-box";
+//            rect.left -= parseInt(computedStyle.borderLeft, 10) - parseInt(computedStyle.marginLeft, 10);
+//            rect.right += parseInt(computedStyle.borderRight, 10) + parseInt(computedStyle.marginRight, 10);
+//            rect.top -= parseInt(computedStyle.borderTop, 10) - parseInt(computedStyle.marginTop, 10);
+//            rect.bottom += parseInt(computedStyle.borderBottom, 10) + parseInt(computedStyle.marginBottom, 10);
+//        }
+//        else
+//        {
+//            rect.left -= parseInt(computedStyle.marginLeft, 10);
+//            rect.right += parseInt(computedStyle.marginRight, 10);
+//            rect.top -= parseInt(computedStyle.marginTop, 10);
+//            rect.bottom += parseInt(computedStyle.marginBottom, 10);
+//        }
+//        rect.width = rect.right - rect.left;
+//        rect.height = rect.bottom - rect.top;
+//        return rect;
+//    };
+//-------------------------------------------------------------------------------------------------------------------
+//    /**
+//     * прямоугольник border
+//     * @param {type} target
+//     * @returns {data}
+//     */
+//    core.rectBorder = function(target)
+//    {
+//        var element = core.getElement(target);
+//        var computedStyle = window.getComputedStyle(element);
+//        var rect = { left : 0, right : element.clientWidth, top : 0, bottom : element.clientHeight, boxSizing : "content-box" };
+//        if (computedStyle.boxSizing !== "border-box")
+//        {
+//            rect.left += parseInt(computedStyle.borderLeft, 10);
+//            rect.right -= parseInt(computedStyle.borderRight, 10);
+//            rect.top += parseInt(computedStyle.borderTop, 10);
+//            rect.bottom -= parseInt(computedStyle.borderBottom, 10);
+//        }
+//        else
+//        {
+//            rect.boxSizing = "border-box";
+//        }
+//        return rect;
+//    };
+//-------------------------------------------------------------------------------------------------------------------
+//    /**
+//     * клиентский прямоугольник
+//     * @param {type} target
+//     * @returns {data}
+//     */
+//    core.clientRect = function(target)
+//    {
+//        var element = core.getElement(target);
+//        var computedStyle = window.getComputedStyle(element);
+//        var rect = { left : 0, right : element.clientWidth, top : 0, bottom : element.clientHeight, boxSizing : "content-box" };
+//        if (computedStyle.boxSizing === "border-box")
+//        {
+//            rect.boxSizing = "border-box";
+//            rect.left -= parseInt(computedStyle.borderLeft, 10);
+//            rect.right -= parseInt(computedStyle.borderRight, 10);
+//            rect.top -= parseInt(computedStyle.borderTop, 10);
+//            rect.bottom -= parseInt(computedStyle.borderBottom, 10);
+//        }
+//        return rect;
+//    };
+//-------------------------------------------------------------------------------------------------------------------
+//    /**
+//     * внутренний прямоугольник
+//     * @param {type} target
+//     * @returns {data}
+//     */
+//    core.paddingRect = function(target)
+//    {
+//        var element = core.getElement(target);
+//        var computedStyle = window.getComputedStyle(element);
+//        var rect = { left : 0, right : element.clientWidth, top : 0, bottom : element.clientHeight, boxSizing : "content-box" };
+//
+//        rect.padding = { };
+//        rect.padding.left = parseInt(computedStyle.paddingLeft, 10);
+//        rect.padding.right = parseInt(computedStyle.paddingRight, 10);
+//        rect.padding.top = parseInt(computedStyle.paddingTop, 10);
+//        rect.padding.bottom = parseInt(computedStyle.paddingBottom, 10);
+//
+//        rect.left += rect.padding.left;
+//        rect.right -= rect.padding.right;
+//        rect.top += rect.padding.top;
+//        rect.bottom -= rect.padding.bottom;
+//
+//        if (computedStyle.boxSizing === "border-box")
+//        {
+//            rect.boxSizing = "border-box";
+//
+//            rect.border = { };
+//            rect.border.left = parseInt(computedStyle.borderLeft, 10);
+//            rect.border.right = parseInt(computedStyle.borderRight, 10);
+//            rect.border.top = parseInt(computedStyle.borderTop, 10);
+//            rect.border.bottom = parseInt(computedStyle.borderBottom, 10);
+//
+//            rect.left += rect.border.left;
+//            rect.right -= rect.border.right;
+//            rect.top += rect.border.top;
+//            rect.bottom -= rect.border.bottom;
+//        }
+//        rect.width = rect.right - rect.left;
+//        rect.height = rect.bottom - rect.top;
+//        return rect;
+//    };
 //-------------------------------------------------------------------------------------------------------------------
     core.left = function(target, value)
     {

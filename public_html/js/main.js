@@ -161,8 +161,8 @@ function(aURL, aUI) {
 
     var scroll1 = new aUI.Scroll({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
     scroll1.value(70);
-    var slider1 = new aUI.Slider({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
-    slider1.value(70);
+    var scroll2 = new aUI.Scroll({ class : "scroll touch", width : 200, onchange : progress1.value }).appendTo(progressGroup);
+    scroll2.value(70);
 
     var range1 = new aUI.Range({ max : 10, width : 200, blocked : true }).appendTo(progressGroup);
     range1.round(Math.round);
@@ -170,9 +170,11 @@ function(aURL, aUI) {
     range1.valueMin(1);
 
     var scale = new aUI.Scale({ height : 6, width : 200 }).appendTo(progressGroup);
+    
+    var switch1 = new aUI.Switch().appendTo(progressGroup);
 
-    var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(mouseItem);
-    scroll2.value(70);
+    var scroll3 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(mouseItem);
+    scroll3.value(70);
 
     var range2 = new aUI.Range({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
     range2.round(0.1);

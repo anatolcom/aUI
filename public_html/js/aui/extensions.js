@@ -434,38 +434,25 @@ function(core)
             element.style.bottom = backup.style.bottom;
             element.style.zIndex = backup.style.zIndex;
         }
-
-
-
         owner.onMoveStart(function(point)
         {
             save(element);
-            var rect = core.rectPadding(element);
-            var left = point.x - rect.left;
-            var top = point.y - rect.top;
-
-//            var left = element.offsetLeft;
-//            var top = element.offsetTop;
-//            var left = element.screenLeft;
-//            var top = element.ScreenTop;
-            console.dir(element);
-            console.log("rect.left", rect.left, "rect.top", rect.top, "rect.right", rect.right, "rect.bottom", rect.bottom);
-            console.log("left", left, "top", top);
-            console.log("x", point.x, "y", point.y);
-            console.log("x", left - point.x, "y", top - point.y);
-//            element.style.position = "static";
+            var computedStyle = window.getComputedStyle(element);
+            var left = parseInt(computedStyle.paddingLeft, 10);
+            if (isNaN(left)) left = 0;
+            var top = parseInt(computedStyle.paddingTop, 10);
+            if (isNaN(top)) top = 0;
+            var rect = element.getBoundingClientRect();
             element.style.position = "absolute";
-            window.auiCurrentDragObject = owner;
-//            element.style.left = (point.x + (left - point.x)) + "px";
-//            element.style.top = (point.y + (top - point.y)) + "px";
+            window.auiCurrentDragObject = owner;//??????????????????????????
             document.body.appendChild(element);
-            element.style.left = left + "px";
-            element.style.top = top + "px";
+            element.style.left = rect.left - left + window.scrollX + "px";
+            element.style.top = rect.top - top + window.scrollY + "px";
         });
         owner.onMoveEnd(function()
         {
             rollback(element);
-            delete window.auiCurrentDragObject;
+            delete window.auiCurrentDragObject;//??????????????????????????
         });
         owner.onMove(function(dX, dY)
         {

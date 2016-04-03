@@ -23,8 +23,8 @@ define([ "aui/core", "aui/utils", "aui/validators", "aui/extensions",
     "aui/elements/Progress",
     "aui/elements/Scale",
     //mouse
+    "aui/elements/Switch",
     "aui/elements/Scroll",
-    "aui/elements/Slider",
     "aui/elements/Range",
     //experemental
     "aui/elements/Movable",
@@ -43,7 +43,7 @@ Calendar, DateSelector,
 //indicator
 Progress, Scale,
 //mouse
-Scroll, Slider, Range,
+Switch, Scroll, Range,
 //experemental
 Movable, XY
 )
@@ -85,8 +85,8 @@ Movable, XY
     aUI.Progress = Progress;
     aUI.Scale = Scale;
     //mouse
+    aUI.Switch = Switch;
     aUI.Scroll = Scroll;
-    aUI.Slider = Slider;
     aUI.Range = Range;
     //experemental
     aUI.Movable = Movable;

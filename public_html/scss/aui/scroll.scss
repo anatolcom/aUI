@@ -13,19 +13,30 @@ and open the template in the editor.
 
 /* Scroll
 -----------------------------------------------------------------------------------------------*/
-.scroll
+.scroll.slim
 {
     border: rgba(128, 128, 128, 0.2) solid 1px;
     box-sizing: border-box;
+    /*padding: 1px;*/
     &.horisontal
     {
         height: 8px;
         width: 100px;
+        > .drag
+        {
+            height: 6px;
+            width: 30px;
+        }
     }
     &.vertical
     {
         height: 100px;
         width: 8px;
+        > .drag
+        {
+            height: 30px;
+            width: 6px;
+        }
     }
     > .drag
     {
@@ -33,13 +44,37 @@ and open the template in the editor.
         background-color: #888;
         box-sizing: border-box;
     }
-    &:hover,
-        &.move
+    &:hover,&.move
         {
         border-color: #C3C3C3;
         > .drag
         {
             border-width: 1px;
         }
+    }
+}
+
+
+.scroll.touch
+{
+    @include clickable;
+    @include clickableDown;
+    overflow: hidden;
+    height: 24px;
+    border-width: 0px;
+    border-radius: $borderRadius;
+    /*padding: 1px;*/
+    > .drag
+    {
+        @include clickable;
+        @include clickableUp;
+        width: 22px;
+        height: 22px;
+        margin: 1px;
+        /*width: 24px;*/
+        /*height: 24px;*/
+        border-width: 0px;
+        border-radius: $borderRadius - 1px;
+        background-color: rgba(255, 255, 255, 0.4);
     }
 }

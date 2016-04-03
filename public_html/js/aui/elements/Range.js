@@ -34,20 +34,21 @@ function(core, Element, utils, extensions)
 //Функции
         function onResize()
         {
-            var rect = core.rectPadding(that);
+//            var rect = core.paddingRect(that);
+            var rect = core.padding(that);
             if (isHorizontal)
             {
                 posMin.min(rect.left);
-                posMin.max(rect.right - dragMin.width());
+                posMin.max(rect.width + rect.right - dragMin.width());
                 posMax.min(rect.left);
-                posMax.max(rect.right - dragMax.width());
+                posMax.max(rect.width + rect.right - dragMax.width());
             }
             else
             {
                 posMin.min(rect.top);
-                posMin.max(rect.bottom - dragMin.height());
+                posMin.max(rect.height + rect.bottom - dragMin.height());
                 posMax.min(rect.top);
-                posMax.max(rect.bottom - dragMax.height());
+                posMax.max(rect.height + rect.bottom - dragMax.height());
             }
         }
         function onMoveStart()

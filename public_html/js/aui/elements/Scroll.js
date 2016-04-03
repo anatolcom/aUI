@@ -1,5 +1,5 @@
-define([ "aui/core", "./Element", "aui/utils" ],
-function(core, Element, utils)
+define([ "aui/core", "./Element", "aui/utils", "aui/extensions" ],
+function(core, Element, utils, extensions)
 {
 //---------------------------------------------------------------------------
     function Scroll(options)
@@ -7,7 +7,7 @@ function(core, Element, utils)
 //Опции
         options = core.extend(
         {
-            class : "scroll",
+            class : "scroll slim",
             orientation : "horizontal",
             value : 0,
             min : 0,
@@ -18,132 +18,83 @@ function(core, Element, utils)
         Element.call(this, options);
 //Переменные
         var that = this;
-        var isHorizontal = true;
-        var size = 50;
-        var progressRect;
-        var dragRect;
-        var dragOffset = 0;
-        var update;
-        var onMouseMove;
+        var value = new utils.NumInRange(options.value, options.min, options.max);
+        var pos = new utils.NumInRange(0, 0, 0);
+        value.onChange(changeValue);
+        pos.onChange(changePos);
+        var lastPos = null;
 //Функции
-        function updateHorizontal()
+        function onResize()
         {
-            var min = 0;
-            var max = e.clientWidth - size;
-            d.style.width = size + "px";
-            var value = utils.convertRangedValue(options.value, options.min, options.max, min, max);
-            value = Math.round(value);
-            d.style.left = value + "px";
-            if (typeof options.onchange === "function") options.onchange.call(that, options.value);
-        }
-        function updateVertical()
-        {
-            var min = 0;
-            var max = e.clientHeight - size;
-            d.style.height = size + "px";
-            var value = utils.convertRangedValue(options.value, options.min, options.max, min, max);
-            value = Math.round(value);
-            d.style.top = value + "px";
-            if (typeof options.onchange === "function") options.onchange.call(that, options.value);
-        }
-        function onMouseDown(event)
-        {
-            core.addEvent(document, "mousemove", onMouseMove);
-            core.addEvent(document, "mouseup", onMouseUp);
-            progressRect = e.getBoundingClientRect();
-            dragRect = d.getBoundingClientRect();
+            var thatPadding = core.padding(that);
+            var dragMargin = core.margin(drag);
+
             if (isHorizontal)
             {
-                var dragLeftBorderWidth = Math.floor((progressRect.width - e.clientWidth) / 2);
-                dragOffset = (event.clientX - dragRect.left) + dragLeftBorderWidth;
+                pos.min(thatPadding.left);
+                pos.max(thatPadding.width - dragMargin.width + thatPadding.right);
+                drag.top(thatPadding.top);
             }
             else
             {
-                var dragTopBorderHeight = Math.floor((progressRect.height - e.clientHeight) / 2);
-                dragOffset = (event.clientY - dragRect.top) + dragTopBorderHeight;
+                pos.min(thatPadding.top);
+                pos.max(thatPadding.height - dragMargin.height + thatPadding.top);
+                drag.left(thatPadding.left);
             }
-
-            onMouseMove(event);
+        }
+        function onMoveStart()
+        {
+            if (isHorizontal) lastPos = drag.left();
+            else lastPos = drag.top();
             that.addClass("move");
-            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-            else event.returnValue = false; // Вариант Internet Explorer:
         }
-        function onMouseUp(event)
+        function onMoveEnd()
         {
-            core.removeEvent(document, "mousemove", onMouseMove);
-            core.removeEvent(document, "mouseup", onMouseUp);
             that.removeClass("move");
-            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-            else event.returnValue = false; // Вариант Internet Explorer:
         }
-        function onMoveHorisontal(event)
+        function onMove(dX, dY)
         {
-            var min = 0;
-            var max = e.clientWidth - size;
-            var pos = event.clientX - progressRect.left - dragOffset;
-            pos = utils.trimByRange(pos, min, max);
-            that.value(utils.convertRangedValue(pos, min, max, options.min, options.max));
+            var p = lastPos;
+            if (isHorizontal) p += dX;
+            else p += dY;
+            that.value(utils.convertRangedValue(p, pos.min(), pos.max(), value.min(), value.max()));
         }
-        function onMoveVertical(event)
+        function  changeValue(val)
         {
-            var min = 0;
-            var max = e.clientHeight - size;
-            var pos = event.clientY - progressRect.top - dragOffset;
-            pos = utils.trimByRange(pos, min, max);
-            that.value(utils.convertRangedValue(pos, min, max, options.min, options.max));
+            pos.value(utils.convertRangedValue(value.value(), value.min(), value.max(), pos.min(), pos.max()));
+            if (options.onchange) options.onchange.call(that, val);
         }
-        function onDragStart()
+        function  changePos(val)
         {
-            return false;
+            if (isHorizontal) drag.left(val);
+            else drag.top(val);
         }
-        this.value = function(value)
+        this.value = function(val)
         {
-            if (value === undefined) return options.value;
-            if (options.round) value = options.round(value);
-            value = utils.trimByRange(value, options.min, options.max);
-            if (options.value === value) return;
-            options.value = value;
-            update();
+            value.value(Math.ceil(val));//round val
         };
-        this.round = function(fn)
+        this.onChange = function(fn)
         {
-            if (fn === undefined) return options.round;
-            if (fn === null)
-            {
-                options.round = null;
-                return;
-            }
-            if (typeof fn !== "function") throw new Error("set round not a function");
-            options.round = fn;
+            if (fn === undefined) return options.onchange;
+            if (typeof fn !== "function") throw new Error("fn for onChange not a function");
+            options.onchange = fn;
         };
 //Сборка
-        isHorizontal = options.orientation !== "vertical";
+        this.getElement().style.position = "relative";
+        this.onResize(onResize);
         var drag = new Element({ class : "drag" }).appendTo(this);
-        if (isHorizontal)
-        {
-            this.addClass("horisontal");
-            update = updateHorizontal;
-            onMouseMove = onMoveHorisontal;
-        }
-        else
-        {
-            this.addClass("vertical");
-            update = updateVertical;
-            onMouseMove = onMoveVertical;
-        }
-        var e = this.getElement();
-        var d = drag.getElement();
-        e.style.position = "relative";
-        d.style.position = "absolute";
-        d.style.width = "100%";
-        d.style.height = "100%";
-        d.ondragstart = onDragStart;
-        d.onmousedown = onMouseDown;
-        this.round(options.round);
-        this.value(options.value);
-        update();
+        extensions.movable(drag);
+        drag.getElement().style.position = "absolute";
+
+        drag.refreshOffsetOnMove(false);
+        drag.onMove(onMove);
+        drag.onMoveStart(onMoveStart);
+        drag.onMoveEnd(onMoveEnd);
+        drag.onResize(onResize);
+        var isHorizontal = options.orientation !== "vertical";
+        if (isHorizontal) this.addClass("horisontal");
+        else this.addClass("vertical");
     }
-    ;
     core.proto(Scroll, Element);
 //---------------------------------------------------------------------------
     return Scroll;

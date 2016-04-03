@@ -2,12 +2,12 @@ define([ "aui/core", "./Element", "aui/utils", "aui/extensions" ],
 function(core, Element, utils, extensions)
 {
 //---------------------------------------------------------------------------
-    function Slider(options)
+    function Switch(options)
     {
 //Опции
         options = core.extend(
         {
-            class : "scroll",
+            class : "switch",
             orientation : "horizontal",
             value : 0,
             min : 0,
@@ -24,10 +24,28 @@ function(core, Element, utils, extensions)
         pos.onChange(changePos);
         var lastPos = null;
 //Функции
+        function onClick()
+        {
+//            if (pos.value() > (pos.max() - pos.min()) / 2) value.value(options.max);
+//            else  value.value(options.min);
+        }
         function onResize()
         {
-            if (isHorizontal) pos.max(that.clientWidth() - drag.width());
-            else pos.max(that.clientHeight() - drag.height());
+            var thatPadding = core.padding(that);
+            var dragMargin = core.margin(drag);
+
+            if (isHorizontal)
+            {
+                pos.min(thatPadding.left);
+                pos.max(thatPadding.width - dragMargin.width + thatPadding.right);
+                drag.top(thatPadding.top);
+            }
+            else
+            {
+                pos.min(thatPadding.top);
+                pos.max(thatPadding.height - dragMargin.height + thatPadding.top);
+                drag.left(thatPadding.left);
+            }
         }
         function onMoveStart()
         {
@@ -38,6 +56,9 @@ function(core, Element, utils, extensions)
         function onMoveEnd()
         {
             that.removeClass("move");
+//            console.log("pos", pos.min(), pos.value(), pos.max());
+            if (pos.value() > (pos.max() - pos.min()) / 2) value.value(options.max);
+            else  value.value(options.min);
         }
         function onMove(dX, dY)
         {
@@ -48,8 +69,8 @@ function(core, Element, utils, extensions)
         }
         function  changeValue(val)
         {
-            pos.value(utils.convertRangedValue(value.value(), value.min(), value.max(), pos.min(), pos.max()));
-            if (options.onchange) options.onchange.call(that, val);
+            pos.value(utils.convertRangedValue(val, value.min(), value.max(), pos.min(), pos.max()));
+            if (options.onchange) options.onchange.call(that, pos.value() > (pos.max() - pos.min()) / 2);
         }
         function  changePos(val)
         {
@@ -58,8 +79,10 @@ function(core, Element, utils, extensions)
         }
         this.value = function(val)
         {
-//round val
-            value.value(Math.ceil(val));
+            if (val === undefined) return pos.value() > (pos.max() - pos.min()) / 2;
+            value.value(Math.ceil(val));//round val
+//            if (val) value.value(options.max);
+//            else value.value(options.min);
         };
         this.onChange = function(fn)
         {
@@ -68,11 +91,16 @@ function(core, Element, utils, extensions)
             options.onchange = fn;
         };
 //Сборка
+        this.getElement().onclick = onClick;
+
         this.getElement().style.position = "relative";
         this.onResize(onResize);
         var drag = new Element({ class : "drag" }).appendTo(this);
         extensions.movable(drag);
         drag.getElement().style.position = "absolute";
+        
+        var ok = new Element({ class : "ok" }).appendTo(drag);
+        var no = new Element({ class : "no" }).appendTo(drag);
 
         drag.refreshOffsetOnMove(false);
         drag.onMove(onMove);
@@ -80,22 +108,12 @@ function(core, Element, utils, extensions)
         drag.onMoveEnd(onMoveEnd);
         drag.onResize(onResize);
         var isHorizontal = options.orientation !== "vertical";
-        if (isHorizontal)
-        {
-            this.addClass("horisontal");
-            drag.width("30px");
-            drag.height("100%");
-        }
-        else
-        {
-            this.addClass("vertical");
-            drag.width("100%");
-            drag.height("30px");
-        }
-    };
-    core.proto(Slider, Element);
+        if (isHorizontal) this.addClass("horisontal");
+        else this.addClass("vertical");
+    }
+    core.proto(Switch, Element);
 //---------------------------------------------------------------------------
-return Slider;
-
+    return Switch;
 //---------------------------------------------------------------------------
 });
+

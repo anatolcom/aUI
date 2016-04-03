@@ -269,3 +269,45 @@ menu.circle > *:active
     cursor: pointer;
     display: inline-block;
 }
+
+
+
+.switch
+{
+    overflow: hidden;
+    height: 24px;
+    border-radius: 2px;
+    /*border: #C3C3C3 solid 1px;*/
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2) inset, 0px 1px 1px rgba(0, 0, 0, 0.2) inset;
+    padding: 1px;
+}
+.switch > .drag
+{
+    width: 24px;
+    height: 24px;
+    border-radius: 1px;
+    /*border: #C3C3C3 solid 1px;*/
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.2);
+    /*box-sizing: border-box;*/
+    /*margin: 1px;*/
+    background-color: rgba(255, 255, 255, 0.4);
+}
+.switch > .drag > .ok
+{
+    position: absolute;
+    top:0px;
+    width: 1000px;
+    height: 24px;
+    /*right: 0px;*/
+    margin-left: -1001px;
+    background: rgba(24, 24, 122, 0.5);
+}
+.switch > .drag > .no
+{
+    position: absolute;
+    top:0px;
+    width: 1000px;
+    height: 24px;
+    margin-left: 25px;
+    /*background: rgba(0, 0, 0, 0.2);*/
+}
