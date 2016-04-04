@@ -276,6 +276,7 @@ menu.circle > *:active
 {
     overflow: hidden;
     height: 24px;
+    width: 60px;
     border-radius: 2px;
     /*border: #C3C3C3 solid 1px;*/
     box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2) inset, 0px 1px 1px rgba(0, 0, 0, 0.2) inset;

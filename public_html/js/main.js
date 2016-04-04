@@ -89,12 +89,15 @@ function(aURL, aUI) {
     //edit.attr("data-title", "Редактируемое поле с примерами");
 
     var select = new aUI.Select({ items : [ "...", "edit", "memo", "select" ], disabled : 0, value : 0 }).appendTo(fieldInputs.value);
+    select.onChange(function(){
+        memo.value(select.value());
+    });
 
     var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(fieldInputs.value);
     memo.validator(new aUI.validators.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
 
     btn1.onClick(btn2.toggleSelect, edit.focus);
-    btn2.onClick(btn2.toggleSelect, memo.value, "!!!", memo.focus);
+    btn2.onClick(btn2.toggleSelect, memo.value, "текст", memo.focus);
 
     function changeDate()
     {
@@ -171,7 +174,7 @@ function(aURL, aUI) {
     range1.valueMin(1);
 
     var scale = new aUI.Scale({ height : 6, width : 200 }).appendTo(progressGroup);
-    
+
     var switch1 = new aUI.Switch().appendTo(progressGroup);
 
     var scroll3 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(mouseItem);
@@ -185,7 +188,7 @@ function(aURL, aUI) {
 
 
     var dockMovable = new aUI.Element({ class : "dockMovable" }).appendTo(mouseItem);
-    
+
     var movable = new aUI.Movable({ class : "movable", text : "Move Me!" }).appendTo(dockMovable);
     movable.onMove(function(dX, dY) {
         movable.left(movable.left() + dX);
@@ -223,13 +226,6 @@ function(aURL, aUI) {
 
 
 
-    aurl.init();
-    function changeTopSection()
-    {
-        aurl.set("selected", this.selected());
-    }
-    slist.select(aurl.get("selected"));
-    slist.onChangeSelected(changeTopSection);
 
     function fillEdit(data)
     {
@@ -242,13 +238,23 @@ function(aURL, aUI) {
         var date = aUI.utils.strToDate(data, "yyyy-MM-dd");
         dateSelector.value(aUI.utils.dateToStr(date, dateSelector.mask()));
     }
+    function fillAction(data)
+    {
+        var edit = new aUI.Button({ text : "action" }).appendTo(this);
+    }
+    function onAction()
+    {
+        //alert(data);
+        console.log(this.data.entry[this.data.key]);
+    }
 
     var table = new aUI.Table().appendTo(tableItem);
     var tableMaper = new aUI.Table.Maper({ table : table });
     tableMaper.fields([
-        { key : 0, text : "String" },
-        { key : 1, text : "Number", fill : fillEdit },
-        { key : 2, text : "Date", fill : fillDate }
+        { key : 0, text : "String", fill : fillEdit },
+        { key : 1, text : "Number", onclick : onAction },
+        { key : 2, text : "Date", fill : fillDate },
+        { key : 3, text : "Action", fill : fillAction }
     ]);
     tableMaper.entries([
         [ "a", 1, "2016-03-01" ],
@@ -258,9 +264,21 @@ function(aURL, aUI) {
     ]);
     tableMaper.fill();
 
+
+    //-------- INIT ---
+
+    aurl.init();
+    function changeTopSection()
+    {
+        aurl.set("selected", this.selected());
+    }
+    slist.select(aurl.get("selected"));
+    slist.onChangeSelected(changeTopSection);
+
     var dragManager = new DragManager();
-    
-    dragManager.onDragCancel = function(dragObject) {
+
+    dragManager.onDragCancel = function(dragObject)
+    {
         dragObject.avatar.rollback();
     };
 

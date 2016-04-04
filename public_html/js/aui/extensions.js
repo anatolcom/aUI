@@ -246,6 +246,7 @@ function(core)
             if (typeof fn !== "function" && fn !== null) throw new Error("fn for onValidate not a function");
             onvalidate = fn;
         };
+        owner.validate = onValidate;
 //Сборка
         var element = core.getElement(owner);
         element.onfocus = onValidate;

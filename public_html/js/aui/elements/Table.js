@@ -1,5 +1,5 @@
-define([ "aui/core", "./Element" ],
-function(core, Element)
+define([ "aui/core", "./Element", "aui/extensions" ],
+function(core, Element, extensions)
 {
 //---------------------------------------------------------------------------
     function Cell(options)
@@ -123,13 +123,14 @@ function(core, Element)
     }
     core.proto(Table, Element);
 //---------------------------------------------------------------------------
-    function Maper(options)
+        function Maper(options)
     {
         options = core.extend(
         {
             table : null,
             fields : [ ],
-            entries : [ ]
+            entries : [ ],
+            onheadclick : null
         }, options);
         //Переменные
         var that = this;
@@ -152,19 +153,29 @@ function(core, Element)
             if (!value instanceof Array) throw new Error("entries in not Array");
             options.entries = value;
         };
-        function fillRow(row, fields, datas)
+        function getKey(field, index)
+        {
+            var key = index;
+            if (typeof field.key === "string") key = field.key;
+            if (typeof field.key === "number") key = field.key;
+            return key;
+        }
+        function fillRow(row, fields, entry)
         {
             if (!row instanceof Row) throw new Error("row is not a Row");
             for (var index in fields)
             {
                 var field = fields[index];
-                var key = index;
-                if (typeof field.key === "string") key = field.key;
-                if (typeof field.key === "number") key = field.key;
-                var data = datas[key];
+                var key = getKey(field, index);
+                var data = entry[key];
                 var cell = row.addCell();
-                cell.data = { datas : datas, key : key };
-                if (typeof field.fill === "function") field.fill.call(cell, data, datas, key);
+                cell.data = { entry : entry, key : key };
+                if (typeof field.onclick === "function")
+                {
+                    extensions.clickable(cell);
+                    cell.onClick(field.onclick);
+                }
+                if (typeof field.fill === "function") field.fill.call(cell, data, entry, key);
                 else cell.text(data);
             }
         }
@@ -177,27 +188,50 @@ function(core, Element)
                 fillRow(row, fields, entries[index]);
             }
         }
-        this.clear = function()
+        function fillHead(data, entry, key)
         {
-            if (options.table === null) throw new Error("table not set");
-            options.table.clear();
-        };
-        this.fill = function()
+            this.text(data.text);
+            this.data = { key: data.key };
+        }
+        function getHead()
         {
-            if (options.table === null) throw new Error("table not set");
-            options.table.clear();
-
             var head = { fields : [ ], entries : [ ] };
-            var captions = [ ];
+            var captions = [];
             for (var index in options.fields)
             {
                 var field = options.fields[index];
-                head.fields.push({ });
-                captions.push([ field.text ]);
+                var headField = { fill : fillHead };
+                if (typeof options.onheadclick === "function") headField.onclick = options.onheadclick;
+                head.fields.push(headField);
+                captions.push({ text : field.text, key : getKey(field, index)});
             }
             head.entries.push(captions);
-            fillBlock(options.table.thead, head.fields, head.entries);
-            fillBlock(options.table.tbody, options.fields, options.entries);
+            return head;
+        }
+        function getBody()
+        {
+            var body = { };
+            body.fields = options.fields;
+            body.entries = options.entries;
+            return body;
+        }
+        function getTable()
+        {
+            if (options.table === null) throw new Error("table not set");
+            return options.table;
+        }
+        this.clear = function()
+        {
+            getTable().clear();
+        };
+        this.fill = function()
+        {
+            var table = getTable();
+            var head = getHead();
+            var body = getBody();
+            table.clear();
+            fillBlock(table.thead, head.fields, head.entries);
+            fillBlock(table.tbody, body.fields, body.entries);
         };
         //Сборка
         if (options.table) this.table(options.table);

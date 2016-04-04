@@ -19,6 +19,7 @@ function(core, Element, extensions)
         {
             if (value === undefined) return that.getElement().value;
             that.getElement().value = value;
+            that.validate();
         };
         this.placeholder = function(value)
         {

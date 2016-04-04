@@ -24,7 +24,8 @@ function(core, Element, extensions)
             value : null,
             items : null,
             disabled : null,
-            required : false
+            required : false,
+            onchange : null
         }, options);
         Element.call(this, options);
         extensions.validable(this);
@@ -93,11 +94,22 @@ function(core, Element, extensions)
         {
             that.getElement().focus();
         };
+        this.onChange = function(fn)
+        {
+            if (fn === undefined) return options.onchange;
+            if (typeof fn !== "function") throw new Error("onChange is not a function");
+            options.onchange = fn;
+        };
+        function onchange(event)
+        {
+            if (options.onchange !== null) options.onchange.call(that);
+        }
 //Сборка
         if (options.type) this.type(options.type);
         if (options.required) this.required(options.required);
         this.value(options.value);
         this.items(options.items, options.disabled);
+        this.getElement().onchange = onchange;
     };
     core.proto(Select, Element);
 //---------------------------------------------------------------------------
