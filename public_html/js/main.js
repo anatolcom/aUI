@@ -127,7 +127,7 @@ function(aURL, aUI) {
     var calendar3 = new aUI.Calendar({ addclass : "large", onchange : changeDate }).appendTo(viewLarge);
 
     var btnPopup = new aUI.Button({ class : "button", text : "Calendar" }).appendTo(calendarItem);
-    btnPopup.onClick(function(event) {
+    btnPopup.onClick(function() {
         if (btnPopup.selected())
         {
             btnPopup.unselect();
@@ -162,8 +162,8 @@ function(aURL, aUI) {
 
     var scroll1 = new aUI.Scroll({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
     scroll1.value(70);
-    var slider1 = new aUI.Slider({ width : 200, onchange : progress1.value }).appendTo(progressGroup);
-    slider1.value(70);
+    var scroll2 = new aUI.Scroll({ class : "scroll touch", width : 200, onchange : progress1.value }).appendTo(progressGroup);
+    scroll2.value(70);
 
     var range1 = new aUI.Range({ max : 10, width : 200, blocked : true }).appendTo(progressGroup);
     range1.round(Math.round);
@@ -171,19 +171,23 @@ function(aURL, aUI) {
     range1.valueMin(1);
 
     var scale = new aUI.Scale({ height : 6, width : 200 }).appendTo(progressGroup);
+    
+    var switch1 = new aUI.Switch().appendTo(progressGroup);
 
-    var scroll2 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(mouseItem);
-    scroll2.value(70);
+    var scroll3 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(mouseItem);
+    scroll3.value(70);
 
     var range2 = new aUI.Range({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
     range2.round(0.1);
     range2.valueMax(40);
     range2.valueMin(20);
 
-    var dockMovable = new aUI.Element({ class : "dockMovable" }).appendTo(mouseItem);
 
+
+    var dockMovable = new aUI.Element({ class : "dockMovable" }).appendTo(mouseItem);
+    
     var movable = new aUI.Movable({ class : "movable", text : "Move Me!" }).appendTo(dockMovable);
-    movable.onMove(function(event, dX, dY) {
+    movable.onMove(function(dX, dY) {
         movable.left(movable.left() + dX);
         movable.top(movable.top() + dY);
     });
@@ -206,10 +210,16 @@ function(aURL, aUI) {
 
 
 
-    var dragDock1 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
-    var dragDock2 = new aUI.Element({ class : "dragDock dockMovable" }).appendTo(dragItem);
-    var drag1 = new aUI.Element({ class : "movable", text : "drag me" }).appendTo(dragDock1);
-    aUI.extensions.dragable(drag1);
+    var dock1 = new aUI.Element({ }).appendTo(dragItem);
+//    aUI.extensions.droppable(dock1);
+    var dock2 = new aUI.Element({ }).appendTo(dragItem);
+    aUI.extensions.droppable(dock2);
+    var drag1 = new aUI.Element({ text : "drag 1" }).appendTo(dock1);
+    aUI.extensions.draggable(drag1);
+    var drag2 = new aUI.Element({ text : "drag 2" }).appendTo(dock1);
+    aUI.extensions.draggable(drag2);
+    var drag3 = new aUI.Element({ text : "drag 3" }).appendTo(dock1);
+    aUI.extensions.draggable(drag3);
 
 
 
@@ -220,8 +230,6 @@ function(aURL, aUI) {
     }
     slist.select(aurl.get("selected"));
     slist.onChangeSelected(changeTopSection);
-
-
 
     function fillEdit(data)
     {
@@ -250,11 +258,13 @@ function(aURL, aUI) {
     ]);
     tableMaper.fill();
 
-    DragManager.onDragCancel = function(dragObject) {
+    var dragManager = new DragManager();
+    
+    dragManager.onDragCancel = function(dragObject) {
         dragObject.avatar.rollback();
     };
 
-    DragManager.onDragEnd = function(dragObject, dropElem)
+    dragManager.onDragEnd = function(dragObject, dropElem)
     {
         dragObject.elem.style.display = "none";
         dropElem.classList.add('computer-smile');

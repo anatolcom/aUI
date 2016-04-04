@@ -14,8 +14,8 @@ and open the template in the editor.
 
 * 
 {
- margin: 0;
- padding: 0;
+    margin: 0;
+    padding: 0;
 }
 /*html 
 {
@@ -24,124 +24,124 @@ and open the template in the editor.
 /*---------------------------*/
 body
 {
- font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
- background-color: #EAECEE;
- color: #222;
+    font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
+    background-color: #EAECEE;
+    color: #222;
 }
 header
 {
- margin: 0px 0px 0px 0px;
- background-color: #CFD3D6;
- color: #000;
- height: 100px;
+    margin: 0px 0px 0px 0px;
+    background-color: #CFD3D6;
+    color: #000;
+    height: 100px;
 }
 section
 {
- margin: -20px 20px 0px 200px;
- /* background-color: rgba(255, 255, 255, 1); */
- color: #222;
- /* padding: 15px; */
+    margin: -20px 20px 0px 200px;
+    /* background-color: rgba(255, 255, 255, 1); */
+    color: #222;
+    /* padding: 15px; */
 }
 footer
 {
 
- position: fixed;
+    position: fixed;
 
- bottom: 0px;
+    bottom: 0px;
 
- left: 0px;
+    left: 0px;
 
- width: 100%;
+    width: 100%;
 
- text-align: center;
+    text-align: center;
 
- color: rgba(0, 0, 0, 0.5);
+    color: rgba(0, 0, 0, 0.5);
 }
 h1
 {
- padding: 15px; 
+    padding: 15px; 
 }
 h2
 {
- padding: 12px; 
+    padding: 12px; 
 }
 
 
 
 menu.absolute
 {
- position: absolute;
+    position: absolute;
 }
 
 menu.fixed
 {
- position: fixed;
- top: 0px;
- right: 0px;
- /*top: 20px;*/
- /*right: 20px;*/
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    /*top: 20px;*/
+    /*right: 20px;*/
 }
 menu > *
 {
- display: inline-block;
- vertical-align: middle;
- /*list-style-type: none;*/
- background-color: #F6F7F8;
- color: #222;
- /* text-decoration: none; */
- text-align: center;
- font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+    /*list-style-type: none;*/
+    background-color: #F6F7F8;
+    color: #222;
+    /* text-decoration: none; */
+    text-align: center;
+    font-weight: bold;
 }
 menu > *:hover
 {
- background-color: #E5E9EC;
+    background-color: #E5E9EC;
 }
 menu > *:active
 {
- /* background-color: rgba(0, 0, 0, 0.05); */
+    /* background-color: rgba(0, 0, 0, 0.05); */
 }
 menu > a
 {
- border-bottom: 3px solid rgba(24, 24, 122, 0.6);//
- height: 40px;
- padding: 10px 20px;
+    border-bottom: 3px solid rgba(24, 24, 122, 0.6);//
+    height: 40px;
+    padding: 10px 20px;
 }
 menu > a:hover
 {
- border-bottom: 3px solid rgba(24, 24, 122, 0.8);
+    border-bottom: 3px solid rgba(24, 24, 122, 0.8);
 }
 menu > a:active
 {
- border-bottom: 3px solid rgba(24, 24, 122, 0.3);
- /* padding-bottom: 12px; */
- /* border-bottom-width: 1px; */
+    border-bottom: 3px solid rgba(24, 24, 122, 0.3);
+    /* padding-bottom: 12px; */
+    /* border-bottom-width: 1px; */
 }
 
 
 menu.circle  > *
 {
- margin: 15px 20px 0px -15px;
- padding: 0px;
- width: 40px;
- height: 40px;
- line-height: 38px;
- border-radius: 40px;
- border: 3px solid #FFF;
- color: #FFF;
- background-color: rgba(24, 24, 122, 0.6);
+    margin: 15px 20px 0px -15px;
+    padding: 0px;
+    width: 40px;
+    height: 40px;
+    line-height: 38px;
+    border-radius: 40px;
+    border: 3px solid #FFF;
+    color: #FFF;
+    background-color: rgba(24, 24, 122, 0.6);
 }
 menu.circle > *:hover
 {
- border: 3px solid #FFF;
- color: #FFF;
- background-color: rgba(24, 24, 122, 0.7);
+    border: 3px solid #FFF;
+    color: #FFF;
+    background-color: rgba(24, 24, 122, 0.7);
 }
 menu.circle > *:active
 {
- margin: 16px 21px 1px -14px;
- border: 2px solid #FFF;
- color: #FFF;
- /*background-color: rgba(24, 24, 122, 0.5);*/
+    margin: 16px 21px 1px -14px;
+    border: 2px solid #FFF;
+    color: #FFF;
+    /*background-color: rgba(24, 24, 122, 0.5);*/
 }
 
 
@@ -152,68 +152,100 @@ menu.circle > *:active
 
 .resultBlock
 {
- padding: 10px 0px;
+    padding: 10px 0px;
 }
 .resultBlock > .circle
 {
- display: inline-block;
- width: 40px;
- height: 40px;
- border: 3px solid #E2E2E2;
- border-radius: 40px;
- text-align: center;
- font-weight: bold;
- line-height: 39px;
- margin: 3px;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 3px solid #E2E2E2;
+    border-radius: 40px;
+    text-align: center;
+    font-weight: bold;
+    line-height: 39px;
+    margin: 3px;
 }
 
 
 .group > *
 {
- margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .field.links > *
 {
- /* vertical-align: top; */
+    /* vertical-align: top; */
 }
 .field.links > .value > *
 {
- display: block;
+    display: block;
 }
 
 
 .slist > .scrollarea > ul > li > .content > *
 {
- display: inline-block;
- margin-right: 20px;
- vertical-align: top;
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: top;
 }
 
 
 
 .dockMovable
 {
- position: relative;
- width: 200px;
- height: 200px;
- border: #C3C3C3 solid 1px;
- box-sizing: border-box;
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border: #C3C3C3 solid 1px;
+    box-sizing: border-box;
 }
 .movable
 {
- border: #363696 solid 1px;
- border-radius: 3px;
- /* width: 20px; */
- /* height: 20px; */
- padding: 10px;
- box-sizing: border-box;
- margin: 10px;
- cursor: default;
- background-color: rgba(255, 255, 255, 0.5);
- width: 75px;
- text-align: center;
+    border: #363696 solid 1px;
+    border-radius: 3px;
+    /* width: 20px; */
+    /* height: 20px; */
+    padding: 10px;
+    box-sizing: border-box;
+    margin: 10px;
+    cursor: default;
+    background-color: rgba(255, 255, 255, 0.5);
+    width: 75px;
+    text-align: center;
 }
+
+
+.draggable
+{
+    border: #363696 solid 1px;
+    border-radius: 2px;
+    padding: 10px;
+    box-sizing: border-box;
+    margin: 10px;
+    cursor: default;
+    background-color: rgba(255, 255, 255, 0.5);
+    width: 75px;
+    text-align: center;
+}
+
+.droppable
+{
+    width: 200px;
+    height: 200px;
+}
+.droppable
+{
+    border: #C3C3C3 solid 1px;
+    box-sizing: border-box;
+}
+.droppable.redy
+{
+    border-color: #363696;  
+}
+
+
+
 
 
 
@@ -222,18 +254,60 @@ menu.circle > *:active
 
 
 .computer {
-  width: 93px;
-  height: 98px;
-  background: url(https://js.cx/clipart/computer.gif) no-repeat;
-  padding: 5px;
-  font-style: italic;
+    width: 93px;
+    height: 98px;
+    background: url(https://js.cx/clipart/computer.gif) no-repeat;
+    padding: 5px;
+    font-style: italic;
 }
 
 .computer-smile {
-  background: url(https://js.cx/clipart/computer-smile.gif) no-repeat;
+    background: url(https://js.cx/clipart/computer-smile.gif) no-repeat;
 }
 
-.draggable {
-  cursor: pointer;
-  display: inline-block;
+.testDraggable {
+    cursor: pointer;
+    display: inline-block;
+}
+
+
+
+.switch
+{
+    overflow: hidden;
+    height: 24px;
+    border-radius: 2px;
+    /*border: #C3C3C3 solid 1px;*/
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2) inset, 0px 1px 1px rgba(0, 0, 0, 0.2) inset;
+    padding: 1px;
+}
+.switch > .drag
+{
+    width: 24px;
+    height: 24px;
+    border-radius: 1px;
+    /*border: #C3C3C3 solid 1px;*/
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.2);
+    /*box-sizing: border-box;*/
+    /*margin: 1px;*/
+    background-color: rgba(255, 255, 255, 0.4);
+}
+.switch > .drag > .ok
+{
+    position: absolute;
+    top:0px;
+    width: 1000px;
+    height: 24px;
+    /*right: 0px;*/
+    margin-left: -1001px;
+    background: rgba(24, 24, 122, 0.5);
+}
+.switch > .drag > .no
+{
+    position: absolute;
+    top:0px;
+    width: 1000px;
+    height: 24px;
+    margin-left: 25px;
+    /*background: rgba(0, 0, 0, 0.2);*/
 }

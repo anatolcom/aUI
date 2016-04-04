@@ -42,7 +42,8 @@ function(core, Element)
         {
             var computedStyle = window.getComputedStyle(that.getElement());
 //        console.log("computedStyle", computedStyle);
-            var rect = core.rectPadding(that);
+//            var rect = core.paddingRect(that);
+            var rect = core.padding(that);
 //        console.log("rect", rect);
             var indent = { };
             indent.left = 0;
@@ -50,8 +51,10 @@ function(core, Element)
             indent.top = 0;
             indent.bottom = 0;
             var ce = canvas.getElement();
-            ce.width = rect.right - rect.left;
-            ce.height = rect.bottom - rect.top;
+//            ce.width = rect.right - rect.left;
+//            ce.height = rect.bottom - rect.top;
+            ce.width = rect.width;
+            ce.height = rect.height;
             var ctx = ce.getContext("2d");
             ctx.clearRect(0, 0, ce.width, ce.height); //Очистка области
             ctx.strokeStyle = computedStyle.color;
