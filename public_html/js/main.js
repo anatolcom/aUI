@@ -89,7 +89,7 @@ function(aURL, aUI) {
     //edit.attr("data-title", "Редактируемое поле с примерами");
 
     var select = new aUI.Select({ items : [ "...", "edit", "memo", "select" ], disabled : 0, value : 0 }).appendTo(fieldInputs.value);
-    select.onChange(function(){
+    select.onChange(function() {
         memo.value(select.value());
     });
 
@@ -249,20 +249,20 @@ function(aURL, aUI) {
     }
 
     var table = new aUI.Table().appendTo(tableItem);
-    var tableMaper = new aUI.Table.Maper({ table : table });
-    tableMaper.fields([
-        { key : 0, text : "String", fill : fillEdit },
-        { key : 1, text : "Number", onclick : onAction },
-        { key : 2, text : "Date", fill : fillDate },
-        { key : 3, text : "Action", fill : fillAction }
+    var tableMapper = new aUI.Table.Mapper({ table : table });
+    tableMapper.fields([
+        { key : 0, head : { text : "String" }, fill : fillEdit },
+        { key : 1, head : { text : "Number" }, onclick : onAction },
+        { key : 2, head : { text : "Date" }, fill : fillDate },
+        { key : 3, head : { text : "Action" }, fill : fillAction }
     ]);
-    tableMaper.entries([
+    tableMapper.entries([
         [ "a", 1, "2016-03-01" ],
         [ "b", 2, "2016-03-02" ],
         [ "c", 3, "2016-03-03" ],
         [ "d", 4, "2016-03-04" ]
     ]);
-    tableMaper.fill();
+    tableMapper.fill();
 
 
     //-------- INIT ---

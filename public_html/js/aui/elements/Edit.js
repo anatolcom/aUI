@@ -17,9 +17,11 @@ function(core, Element, extensions)
         {
             element : "input",
             type : null,
+            value : null,
             placeholder : null,
             examples : null,
-            required : false
+            required : false,
+            onchange : null
         }, options);
         Element.call(this, options);
         extensions.validable(this);
@@ -30,6 +32,7 @@ function(core, Element, extensions)
         {
             if (value === undefined) return that.getElement().value;
             that.getElement().value = value;
+            that.validate();
         };
         this.type = function(value)
         {
@@ -48,8 +51,13 @@ function(core, Element, extensions)
         };
         this.focus = function()
         {
-//if (value === undefined) return that.attr("placeholder");
             that.getElement().focus();
+        };
+        this.onChange = function(fn)
+        {
+            if (fn === undefined) return options.onchange;
+            if (typeof fn !== "function") throw new Error("onChange is not function");
+            options.onchange = fn;
         };
         function fnUID(char)
         {
@@ -57,21 +65,28 @@ function(core, Element, extensions)
             var v = char === "x" ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         }
+        function setExamples(examples)
+        {
+            var id = "INPUT_" + "xxxxxxxxxxxxxxxx".replace(/[x]/g, fnUID);
+            that.attr("list", id);
+            var datalist = new Element({ element : "datalist", id : id }).appendTo(that);
+            for (var index in examples)
+            {
+                new Element({ element : "option", text : examples[index] }).appendTo(datalist);
+            }
+        }
 //Сборка
         if (options.type) this.type(options.type);
+        if (options.value !== undefined) this.value(options.value);
         if (options.required) this.required(options.required);
         if (options.placeholder) this.placeholder(options.placeholder);
         if (options.maxLength) this.maxLength(options.maxLength);
-        if (options.examples)
+        if (options.examples) setExamples(options.examples);
+        if (options.onchange) this.onChange(options.onchange);
+        core.addEvent(this.getElement(), "keyup", function()
         {
-            var id = "INPUT_" + "xxxxxxxxxxxxxxxx".replace(/[x]/g, fnUID);
-            this.attr("list", id);
-            var datalist = new Element({ element : "datalist", id : id }).appendTo(this);
-            for (var index in options.examples)
-            {
-                new Element({ element : "option", text : options.examples[index] }).appendTo(datalist);
-            }
-        }
+            if (options.onchange) options.onchange.call(that);
+        });
     }
     core.proto(Edit, Element);
 //---------------------------------------------------------------------------

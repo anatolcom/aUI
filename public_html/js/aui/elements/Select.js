@@ -45,11 +45,13 @@ function(core, Element, extensions)
          * - <b>список ключей и значений</b> [{value:key1,text:"Название1"},{value:key2,text:"Название2"}].<br/>
          * @param {type} items поля выпадающего списка.
          * @param {type} disabled значение невыбираемого элемента, null если нет значения<br/>
+         * @param {type} value значение выбранного элемента, если нет, то значением является текущее<br/>
          * @returns {undefined}
          */
-        this.items = function(items, disabled)
+        this.items = function(items, disabled, value)
         {
-            options.value = this.value();
+            if (value !== undefined) options.value = value;
+            else options.value = that.value();
             that.clear();
             options.items = items;
             if (disabled === undefined) disabled = null;
@@ -88,7 +90,7 @@ function(core, Element, extensions)
                     option.appendTo(that);
                 }
             }
-            this.value(options.value);
+            that.value(options.value);
         };
         this.focus = function()
         {
@@ -107,8 +109,7 @@ function(core, Element, extensions)
 //Сборка
         if (options.type) this.type(options.type);
         if (options.required) this.required(options.required);
-        this.value(options.value);
-        this.items(options.items, options.disabled);
+        this.items(options.items, options.disabled, options.value);
         this.getElement().onchange = onchange;
     };
     core.proto(Select, Element);

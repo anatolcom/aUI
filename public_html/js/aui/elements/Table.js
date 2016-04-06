@@ -123,7 +123,7 @@ function(core, Element, extensions)
     }
     core.proto(Table, Element);
 //---------------------------------------------------------------------------
-        function Maper(options)
+        function Mapper(options)
     {
         options = core.extend(
         {
@@ -173,6 +173,7 @@ function(core, Element, extensions)
                 if (typeof field.onclick === "function")
                 {
                     extensions.clickable(cell);
+                    extensions.selectable(cell);
                     cell.onClick(field.onclick);
                 }
                 if (typeof field.fill === "function") field.fill.call(cell, data, entry, key);
@@ -191,19 +192,19 @@ function(core, Element, extensions)
         function fillHead(data, entry, key)
         {
             this.text(data.text);
-            this.data = { key: data.key };
+            this.data = data;
         }
         function getHead()
         {
             var head = { fields : [ ], entries : [ ] };
-            var captions = [];
+            var captions = [ ];
             for (var index in options.fields)
             {
                 var field = options.fields[index];
                 var headField = { fill : fillHead };
                 if (typeof options.onheadclick === "function") headField.onclick = options.onheadclick;
                 head.fields.push(headField);
-                captions.push({ text : field.text, key : getKey(field, index)});
+                captions.push(core.extend({ text : "", key : getKey(field, index) }, field.head));
             }
             head.entries.push(captions);
             return head;
@@ -233,6 +234,13 @@ function(core, Element, extensions)
             fillBlock(table.thead, head.fields, head.entries);
             fillBlock(table.tbody, body.fields, body.entries);
         };
+        this.fillBody = function()
+        {
+            var table = getTable();
+            var body = getBody();
+            table.tbody.clear();
+            fillBlock(table.tbody, body.fields, body.entries);
+        };
         //Сборка
         if (options.table) this.table(options.table);
         if (options.fields) this.fields(options.fields);
@@ -242,6 +250,6 @@ function(core, Element, extensions)
 //---------------------------------------------------------------------------
     Row.Cell = Cell;
     Table.Row = Row;
-    Table.Maper = Maper;
+    Table.Mapper = Mapper;
     return Table;
 });
