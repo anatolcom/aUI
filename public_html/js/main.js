@@ -75,6 +75,7 @@ function(aURL, aUI) {
     var dragItem = slist.add({ text : "Drag" }).content();
     var calendarItem = slist.add({ text : "Calendar" }).content();
     var mouseItem = slist.add({ text : "Mouse" }).content();
+    var listItem = slist.add({ text : "List" }).content();
     var tableItem = slist.add({ text : "Table" }).content();
     var linksItem = slist.add({ text : "Links" }).content();
 
@@ -158,6 +159,8 @@ function(aURL, aUI) {
     xy2.roundY(Math.round);
 
     var progressGroup = new aUI.Element({ class : "group" }).appendTo(mouseItem);
+    aUI.extensions.sizable(progressGroup);
+    progressGroup.width(200);
     var progress1 = new aUI.Progress({ width : 200 }).appendTo(progressGroup);
     //   progress1.value(30);
     var progress2 = new aUI.Progress({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
@@ -190,6 +193,7 @@ function(aURL, aUI) {
     var dockMovable = new aUI.Element({ class : "dockMovable" }).appendTo(mouseItem);
 
     var movable = new aUI.Movable({ class : "movable", text : "Move Me!" }).appendTo(dockMovable);
+    aUI.extensions.sizable(movable);
     movable.onMove(function(dX, dY) {
         movable.left(movable.left() + dX);
         movable.top(movable.top() + dY);
@@ -218,12 +222,56 @@ function(aURL, aUI) {
     var dock2 = new aUI.Element({ }).appendTo(dragItem);
     aUI.extensions.droppable(dock2);
     var drag1 = new aUI.Element({ text : "drag 1" }).appendTo(dock1);
+    aUI.extensions.sizable(drag1);
     aUI.extensions.draggable(drag1);
     var drag2 = new aUI.Element({ text : "drag 2" }).appendTo(dock1);
+    aUI.extensions.sizable(drag2);
     aUI.extensions.draggable(drag2);
     var drag3 = new aUI.Element({ text : "drag 3" }).appendTo(dock1);
+    aUI.extensions.sizable(drag3);
     aUI.extensions.draggable(drag3);
 
+
+    function updateList()
+    {
+        var countItem = 10000;
+        list.clear();
+        var startDate = new Date();
+        for (var q = 0; q < countItem; q++) list.add({ text : "item-" + q });
+        var endDate = new Date();
+        console.log("build " + countItem + " items - time: " + (endDate.getTime() - startDate.getTime()) + " ms");
+    }
+    function updateListX()
+    {
+        var countItem = 10000;
+        list.clear();
+        var startDate = new Date();
+        var parent = list.getElement();
+        function E(options)
+        {
+            var element = document.createElement("li");
+            element.textContent = options.text;
+            element.e = this;
+            this.appendTo = function(parent)
+            {
+                parent.appendChild(element);
+            };
+        }
+        for (var q = 0; q < countItem; q++)
+        {
+            var e = new E({ text : "item-" + q }).appendTo(parent);
+        }
+        var endDate = new Date();
+        console.log("build " + countItem + " items - time: " + (endDate.getTime() - startDate.getTime()) + " ms");
+    }
+    new aUI.Button({ text : "update", onclick : updateList }).appendTo(listItem);
+    new aUI.Button({ text : "updateX", onclick : updateListX }).appendTo(listItem);
+    var scrollArea = new aUI.ScrollArea().appendTo(listItem);
+    scrollArea.height(200);
+    scrollArea.width(200);
+    var list = new aUI.List().appendTo(scrollArea);
+
+    updateList();
 
 
 

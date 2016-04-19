@@ -398,6 +398,7 @@ function()
         }, options);
 //Переменные
         var that = this;
+        this.parent = null;
 //Функции
         this.getElement = function()
         {
@@ -411,15 +412,11 @@ function()
          */
         this.appendTo = function(parent)
         {
-            parent = core.getElement(parent);
-            if (typeof parent.appendChild !== "function") throw new Error("parent not contain appendChild function");
-            parent.appendChild(that.getElement());
+            that.parent = core.getElement(parent);
+            if (typeof that.parent.appendChild !== "function") throw new Error("parent not contain appendChild function");
+            that.parent.appendChild(that.getElement());
+            if (typeof that.resize === "function") that.resize();
             return that;
-        };
-        this.clear = function()
-        {
-            var element = that.getElement();
-            while (element.childNodes[0] !== undefined) element.removeChild(element.childNodes[0]);
         };
         this.remove = function()
         {
@@ -427,52 +424,57 @@ function()
             var parent = element.parentElement;
             if (parent) parent.removeChild(element);
         };
-        this.id = function(id)
-        {
-            if (id === undefined) return that.getElement().id;
-            that.getElement().id = id;
-        };
-        this.class = function(name)
-        {
-            if (name === undefined) return that.getElement().className;
-            that.getElement().className = name;
-        };
-        this.addClass = function(name)
-        {
-            that.getElement().classList.add(name);
-        };
-        this.removeClass = function(name)
-        {
-            that.getElement().classList.remove(name);
-        };
-        this.hasClass = function(name)
-        {
-            return that.getElement().classList.contains(name);
-        };
-        this.toggleClass = function(name)
-        {
-            that.getElement().classList.toggle(name);
-        };
-        this.attr = function(name, value)
-        {
-            if (value === undefined) return that.getElement().getAttribute(name);
-            that.getElement().setAttribute(name, value);
-        };
+//        this.clear = function()
+//        {
+//            var element = that.getElement();
+//            while (element.childNodes[0] !== undefined) element.removeChild(element.childNodes[0]);
+//        };
+//        this.id = function(id)
+//        {
+//            if (id === undefined) return that.getElement().id;
+//            that.getElement().id = id;
+//        };
+//        this.class = function(name)
+//        {
+//            if (name === undefined) return that.getElement().className;
+//            that.getElement().className = name;
+//        };
+//        this.addClass = function(name)
+//        {
+//            that.getElement().classList.add(name);
+//        };
+//        this.removeClass = function(name)
+//        {
+//            that.getElement().classList.remove(name);
+//        };
+//        this.hasClass = function(name)
+//        {
+//            return that.getElement().classList.contains(name);
+//        };
+//        this.toggleClass = function(name)
+//        {
+//            that.getElement().classList.toggle(name);
+//        };
+//        this.attr = function(name, value)
+//        {
+//            if (value === undefined) return that.getElement().getAttribute(name);
+//            that.getElement().setAttribute(name, value);
+//        };
 //        this.css = function(name, value)
 //        {
 //            if (value === undefined) return that.getElement().style.get(name);
 //            that.getElement().style.set(name, value);
 //        };
-        this.hidden = function(hidden)
-        {
-            if (hidden === undefined) return that.getElement().style.display === "none";
-            if (hidden) that.getElement().style.display = "none";
-            else that.getElement().style.display = "";
-        };
-        this.toggleHidden = function()
-        {
-            that.hidden(!that.hidden());
-        };
+//        this.hidden = function(hidden)
+//        {
+//            if (hidden === undefined) return that.getElement().style.display === "none";
+//            if (hidden) that.getElement().style.display = "none";
+//            else that.getElement().style.display = "";
+//        };
+//        this.toggleHidden = function()
+//        {
+//            that.hidden(!that.hidden());
+//        };
 //Сборка
         var element = document.createElement(options.element);
         element.aui = this;
@@ -480,6 +482,62 @@ function()
         if (options.class) this.class(options.class);
         if (options.addclass) this.addClass(options.addclass);
     }
+//------------------------------------------------------------------------------------------------------------------- 
+//    BaseElement.prototype.appendTo = function(parent)
+//    {  
+//        parent = core.getElement(parent);
+//        if (typeof parent.appendChild !== "function") throw new Error("parent not contain appendChild function");
+//        parent.appendChild(this.getElement());
+//        return this;
+//    };
+//    
+    BaseElement.prototype.clear = function()
+    {
+        var element = this.getElement();
+        while (element.childNodes[0] !== undefined) element.removeChild(element.childNodes[0]);
+    };
+
+    BaseElement.prototype.id = function(id)
+    {
+        if (id === undefined) return this.getElement().id;
+        this.getElement().id = id;
+    };
+    BaseElement.prototype.class = function(name)
+    {
+        if (name === undefined) return this.getElement().className;
+        this.getElement().className = name;
+    };
+    BaseElement.prototype.addClass = function(name)
+    {
+        this.getElement().classList.add(name);
+    };
+    BaseElement.prototype.removeClass = function(name)
+    {
+        this.getElement().classList.remove(name);
+    };
+    BaseElement.prototype.hasClass = function(name)
+    {
+        return this.getElement().classList.contains(name);
+    };
+    BaseElement.prototype.toggleClass = function(name)
+    {
+        this.getElement().classList.toggle(name);
+    };
+    BaseElement.prototype.attr = function(name, value)
+    {
+        if (value === undefined) return this.getElement().getAttribute(name);
+        this.getElement().setAttribute(name, value);
+    };
+    BaseElement.prototype.hidden = function(hidden)
+    {
+        if (hidden === undefined) return this.getElement().style.display === "none";
+        if (hidden) this.getElement().style.display = "none";
+        else this.getElement().style.display = "";
+    };
+    BaseElement.prototype.toggleHidden = function()
+    {
+        this.hidden(!this.hidden());
+    };
 //------------------------------------------------------------------------------------------------------------------- 
     core.BaseElement = BaseElement;
 //------------------------------------------------------------------------------------------------------------------- 

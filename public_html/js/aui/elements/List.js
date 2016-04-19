@@ -1,4 +1,4 @@
-define([ "aui/core", "./Element", "./Button"],
+define([ "aui/core", "./Element", "./Button" ],
 function(core, Element, Button)
 {
 //---------------------------------------------------------------------------
@@ -21,21 +21,32 @@ function(core, Element, Button)
 //Переменные
         var that = this;
 //Функции
-        this.index = function()
-        {
-            var element = that.getElement();
-            var parent = element.parentElement;
-            if (!parent) return undefined;
-            for (var index = 0; index < parent.childNodes.length; index++)
-            {
-                if (parent.childNodes[index] === element) return index;
-            }
-            return undefined;
-        };
+//        this.index = function()
+//        {
+//            var element = that.getElement();
+//            var parent = element.parentElement;
+//            if (!parent) return undefined;
+//            for (var index = 0; index < parent.childNodes.length; index++)
+//            {
+//                if (parent.childNodes[index] === element) return index;
+//            }
+//            return undefined;
+//        };
 //Сборка
         if (options.onchangeselected) this.onChangeSelected(options.onchangeselected);
     }
     core.proto(Item, Button);
+    Item.prototype.index = function()
+    {
+        var element = this.getElement();
+        var parent = element.parentElement;
+        if (!parent) return undefined;
+        for (var index = 0; index < parent.childNodes.length; index++)
+        {
+            if (parent.childNodes[index] === element) return index;
+        }
+        return undefined;
+    };
 //-------------------------------------------------------------------------------------------------------------------
     /**
      * <b>Спиок.</b><br/>
@@ -142,7 +153,8 @@ function(core, Element, Button)
         };
 //Сборка
         if (options.itemConstructor) this.itemConstructor(options.itemConstructor);
-    };
+    }
+    ;
     core.proto(List, Element);
 //-------------------------------------------------------------------------------------------------------------------
     List.Item = Item;

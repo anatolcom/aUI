@@ -1,5 +1,5 @@
-define([ "aui/core", "./Element" ],
-function(core, Element)
+define([ "aui/core", "./Element", "aui/extensions" ],
+function(core, Element, extensions)
 {
 //---------------------------------------------------------------------------
     function Scale(options)
@@ -15,6 +15,7 @@ function(core, Element)
         }, options);
 //    options.element = "canvas";
         Element.call(this, options);
+        extensions.sizable(this);
 //Переменные
         var that = this;
         var count = options.count; //options.end - options.begin;
@@ -30,6 +31,7 @@ function(core, Element)
             {
                 if (q % each !== 0) continue;
                 var label = new Element({ class : "val", text : q }).appendTo(that);
+                extensions.sizable(label);
                 label.getElement().style.position = "absolute";
                 labels.push(label);
             }

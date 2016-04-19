@@ -41,7 +41,7 @@ and open the template in the editor.
     &.horisontal
     {
         height: 8px;
-        width: 100px;
+        /*width: 100px;*/
         padding: 0px 5px;
         > .drag
         {
@@ -77,6 +77,7 @@ and open the template in the editor.
     &.vertical
     {
         height: 100px;
+        /*height: 100%;*/
         width: 8px;
         padding: 5px 0px;
         > .drag

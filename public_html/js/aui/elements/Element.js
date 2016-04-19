@@ -22,36 +22,47 @@ function(core, extensions)
 //        html : null
         }, options);
         core.BaseElement.call(this, options);
-        extensions.sizable(this);
+//        extensions.sizable(this);
 //Переменные
         var that = this;
 //События
 //Функции
-        var appendTo = this.appendTo;
-        this.appendTo = function(parent)
-        {
-            appendTo(parent);
-            that.resize();
-            return that;
-        };
-        this.text = function(text)
-        {
-            if (text === undefined) return that.getElement().textContent;
-            that.getElement().textContent = text;
-        };
-        this.html = function(html)
-        {
-            if (html === undefined) return that.getElement().innerHTML;
-            that.getElement().innerHTML = html;
-        };
+//        var appendTo = this.appendTo;
+//        this.appendTo = function(parent)
+//        {
+//            appendTo(parent);
+//            if (typeof that.resize === "function") that.resize();
+//            return that;
+//        };
+//        this.text = function(text)
+//        {
+//            if (text === undefined) return that.getElement().textContent;
+//            that.getElement().textContent = text;
+//        };
+//        this.html = function(html)
+//        {
+//            if (html === undefined) return that.getElement().innerHTML;
+//            that.getElement().innerHTML = html;
+//        };
 //Сборка
         if (options.text || options.text === 0 || options.text === false) this.text(options.text);
 //if (options.html || options.html === 0 || options.html === false) this.html(options.html);
-        if (options.width || options.width === 0) this.width(options.width);
-        if (options.height || options.height === 0) this.height(options.height);
+        if (options.width || options.width === 0) if (this.width) this.width(options.width);
+        if (options.height || options.height === 0) if (this.height) this.height(options.height);
     }
     core.proto(Element, core.BaseElement);
-
+//---------------------------------------------------------------------------
+    Element.prototype.text = function(text)
+    {
+        if (text === undefined) return this.getElement().textContent;
+        this.getElement().textContent = text;
+    };
+    Element.prototype.html = function(html)
+    {
+        if (html === undefined) return this.getElement().innerHTML;
+        this.getElement().innerHTML = html;
+    };
+//---------------------------------------------------------------------------
     return Element;
 //---------------------------------------------------------------------------
 });

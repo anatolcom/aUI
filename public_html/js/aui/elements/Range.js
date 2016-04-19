@@ -18,6 +18,7 @@ function(core, Element, utils, extensions)
             onchange : null
         }, options);
         Element.call(this, options);
+        extensions.sizable(this);
 //Переменные
         var that = this;
         var valueMin = new utils.NumInRange(options.valueMin, options.min, options.max);
@@ -172,8 +173,10 @@ function(core, Element, utils, extensions)
         this.getElement().style.position = "relative";
         this.onResize(onResize);
         var line = new Element({ class : "line" }).appendTo(this);
+        extensions.sizable(line);
         line.getElement().style.position = "absolute";
         var dragMin = new Element({ class : "drag min" }).appendTo(this);
+        extensions.sizable(dragMin);
         extensions.movable(dragMin);
 //    var dragMin = new aUI.Movable({ class : "drag min" }).appendTo(this);
         dragMin.getElement().style.position = "absolute";
@@ -184,6 +187,7 @@ function(core, Element, utils, extensions)
         dragMin.onResize(onResize);
         var dragMinValue = new Element({ class : "value" }).appendTo(dragMin);
         var dragMax = new Element({ class : "drag max" }).appendTo(this);
+        extensions.sizable(dragMax);
         extensions.movable(dragMax);
 //    var dragMax = new aUI.Movable({ class : "drag max" }).appendTo(this);
         dragMax.getElement().style.position = "absolute";

@@ -6,6 +6,8 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.selectable = function(owner)
     {
+        if (owner.selectable) return;
+        owner.selectable = this;
 //Переменные
         var className = "selected";
 //События
@@ -50,6 +52,8 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.sizable = function(owner)
     {
+        if (owner.sizable) return;
+        owner.sizable = this;
 //Переменные
         var element = core.getElement(owner);
 //События
@@ -142,6 +146,9 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.clickable = function(owner)
     {
+        if (owner.clickable) return;
+        owner.clickable = this;
+        
         var element = core.getElement(owner);
 //Переменные
         var fnList = [ ];
@@ -201,6 +208,8 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.validable = function(owner)
     {
+        if (owner.validable) return;
+        owner.validable = this;
 //Переменные
         var required = false;
         var validator = null;
@@ -255,6 +264,9 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.movable = function(owner)
     {
+        if (owner.movable) return;
+        owner.movable = this;
+//        extensions.sizable(owner);
         var element = core.getElement(owner);
 //События
         var onmovestart = null;
@@ -400,10 +412,13 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.draggable = function(owner)
     {
+        if (owner.draggable) return;
+        owner.draggable = this;
+        extensions.movable(owner);
+        
         var element = core.getElement(owner);
         element.classList.add("draggable");
 
-        extensions.movable(owner);
 
 //        owner.limit(10);
 
@@ -476,6 +491,9 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.droppable = function(owner)
     {
+        if (owner.droppable) return;
+        owner.droppable = this;
+
         var element = core.getElement(owner);
         element.classList.add("droppable");
 

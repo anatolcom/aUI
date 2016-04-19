@@ -15,6 +15,7 @@ function(core, Element, utils, extensions)
             onchange : null
         }, options);
         Element.call(this, options);
+        extensions.sizable(this);
 //Переменные
         var that = this;
         var value = new utils.NumInRange(options.value, options.min, options.max);
@@ -97,6 +98,7 @@ function(core, Element, utils, extensions)
         this.getElement().style.position = "relative";
         this.onResize(onResize);
         var drag = new Element({ class : "drag" }).appendTo(this);
+        extensions.sizable(drag);
         extensions.movable(drag);
         drag.getElement().style.position = "absolute";
 

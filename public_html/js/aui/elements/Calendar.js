@@ -326,7 +326,7 @@ function(core, Element, Button)
         data.head = [ ];
         for (var q = 0; q < 7; q++)
         {
-            var item = { }
+            var item = { };
             var dayOfWeekCounter = q + 1;
             if (q === 6) dayOfWeekCounter = 0;
             item.text = fn.getShortNameDayOfWeekRu(dayOfWeekCounter);

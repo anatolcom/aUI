@@ -1,5 +1,5 @@
-define([ "aui/core", "./Element" ],
-function(core, Element)
+define([ "aui/core", "./Element", "aui/extensions" ],
+function(core, Element, extensions)
 {
 //---------------------------------------------------------------------------
     /**
@@ -28,6 +28,7 @@ function(core, Element)
             vertical : "auto"
         }, options);
         Element.call(this, options);
+        extensions.sizable(this);
 //Переменные
         var that = this;
 //Функции
