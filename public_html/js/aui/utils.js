@@ -357,7 +357,6 @@ function() {
                 try
                 {
                     if (this.status !== 200) throw new Error("response status " + this.status);
-                    if (typeof onload === "function") onload(this.response);
                 }
                 catch (err)
                 {
@@ -367,6 +366,7 @@ function() {
                     if (typeof onerror === "function") onerror(errText);
                     throw new Error(errText);
                 }
+                if (typeof onload === "function") onload(this.response);
             };
             xhr.send(body);
         }
@@ -520,7 +520,7 @@ function() {
                 return current;
             }
         });
-
+        
         this.next = function()
         {
             if (that.isDone()) return;
