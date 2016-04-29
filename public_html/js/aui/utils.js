@@ -3,6 +3,12 @@ function() {
 //---------------------------------------------------------------------------
     var utils = { };
 //------------------------------------------------------------------------------------------------------------------- 
+    utils.functionOrNull = function(value) {
+        if (value === null) return null;
+        if (typeof value !== "function") throw new Error("not a function");
+        return value;
+    };
+//---------------------------------------------------------------------------
 //    utils.Range = function Range(min, max)
 //    {
 //        this.min = min;
@@ -410,6 +416,37 @@ function() {
         xhr.send();
     };
 //---------------------------------------------------------------------------
+//    utils.splitArray = function(array, size) {
+//        var s = [ ];
+//        var tail = array;
+//        while (tail.length > 0) {
+//            s.push(tail.slice(0, size));
+//            tail = tail.slice(size);
+//        }
+//        return s;
+//    };
+//---------------------------------------------------------------------------
+//    utils.isEmpty = function(object) {
+//
+//        // null and undefined are "empty"
+//        if (object === undefined) return true;
+//        if (object === null) return true;
+//
+//        // Assume if it has a length property with a non-zero value
+//        // that that property is correct.
+//        if (object.length > 0) return false;
+//        if (object.length === 0) return true;
+//
+//        // Otherwise, does it have any properties of its own?
+//        // Note that this doesn't handle
+//        // toString and valueOf enumeration bugs in IE < 9
+//        for (var key in object) {
+//            if (Object.prototype.hasOwnProperty.call(object, key)) return false;
+//        }
+//
+//        return true;
+//    };
+//---------------------------------------------------------------------------
     function Task()
     {
         var that = this;
@@ -520,7 +557,7 @@ function() {
                 return current;
             }
         });
-        
+
         this.next = function()
         {
             if (that.isDone()) return;
