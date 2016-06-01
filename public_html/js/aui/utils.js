@@ -314,14 +314,19 @@ function() {
             var xhr = new XMLHttpRequest();
             xhr.open(method, url, true);
             if (method === "POST") xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.responseType = dataType;
+            if (dataType)
+            {
+                if (dataType === "json") xhr.responseType = "text";
+                else xhr.responseType = dataType;
+            }
 
             xhr.send(body);
 
             try
             {
                 if (this.status !== 200) throw new Error("response status " + this.status);
-                return this.response;
+                if (dataType === "json") return JSON.parse(this.response);
+                else return this.response;
             }
             catch (err)
             {
@@ -357,7 +362,11 @@ function() {
             var xhr = new XMLHttpRequest();
             xhr.open(method, url, true);
             if (method === "POST") xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.responseType = dataType;
+            if (dataType)
+            {
+                if (dataType === "json") xhr.responseType = "text";
+                else xhr.responseType = dataType;
+            }
             xhr.onload = function(event)
             {
                 try
@@ -372,7 +381,11 @@ function() {
                     if (typeof onerror === "function") onerror(errText);
                     throw new Error(errText);
                 }
-                if (typeof onload === "function") onload(this.response);
+                if (typeof onload === "function")
+                {
+                    if (dataType === "json") onload(JSON.parse(this.response));
+                    else onload(this.response);
+                }
             };
             xhr.send(body);
         }
