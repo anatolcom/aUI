@@ -27,23 +27,9 @@ function(core, extensions)
         var that = this;
 //События
 //Функции
-        var appendTo = this.appendTo;
-        this.appendTo = function(parent)
-        {
-            appendTo(parent);
-            that.resize();
-            return that;
-        };
-        this.text = function(text)
-        {
-            if (text === undefined) return that.getElement().textContent;
-            that.getElement().textContent = text;
-        };
-        this.html = function(html)
-        {
-            if (html === undefined) return that.getElement().innerHTML;
-            that.getElement().innerHTML = html;
-        };
+        Object.defineProperty(this, 'appendTo', { value : this.owerrideAppendTo.bind(this, this.appendTo) });
+        Object.defineProperty(this, 'text', { value : this.text.bind(this) });
+        Object.defineProperty(this, 'html', { value : this.html.bind(this) });
 //Сборка
         if (options.text || options.text === 0 || options.text === false) this.text(options.text);
 //if (options.html || options.html === 0 || options.html === false) this.html(options.html);
@@ -51,6 +37,23 @@ function(core, extensions)
         if (options.height || options.height === 0) this.height(options.height);
     }
     core.proto(Element, core.BaseElement);
+
+    Element.prototype.owerrideAppendTo = function(appendTo, parent)
+    {
+        appendTo(parent);
+        this.resize();
+        return this;
+    };
+    Element.prototype.text = function(text)
+    {
+        if (text === undefined) return this.getElement().textContent;
+        this.getElement().textContent = text;
+    };
+    Element.prototype.html = function(html)
+    {
+        if (html === undefined) return this.getElement().innerHTML;
+        this.getElement().innerHTML = html;
+    };
 
     return Element;
 //---------------------------------------------------------------------------

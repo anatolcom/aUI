@@ -6,13 +6,14 @@ function()
 //-------------------------------------------------------------------------------------------------------------------
     var core = { };
 //-------------------------------------------------------------------------------------------------------------------
-    core.extend = function(source, target)
+    function extend(source, target)
     {
         var value = { };
         for (var index in source) value[index] = source[index];
         for (var index in target) value[index] = target[index];
         return value;
-    };
+    }
+    Object.defineProperty(core, 'extend', { value : extend.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
     /**
      * прототипирование
@@ -22,21 +23,23 @@ function()
      * 
      * https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/create
      */
-    core.proto = function(heir, base)
+    function proto(heir, base)
     {
         heir.prototype = Object.create(base.prototype);
         heir.prototype.constructor = heir;
-    };
+    }
+    Object.defineProperty(core, 'proto', { value : proto.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.construct = function(constructor, args)
+    function construct(constructor, args)
     {
         var array = [ null ];
         if (args instanceof Array) array = args;
         else for (var index in arguments) array.push(args[index]);
         return new (Function.prototype.bind.apply(constructor, array));
-    };
+    }
+    Object.defineProperty(core, 'construct', { value : construct.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.getElement = function(element)
+    function getElement(element)
     {
         if (element === undefined) throw new Error("undefined is not element");
         if (element === null) throw new Error("null is not element");
@@ -46,14 +49,15 @@ function()
         if (element[0] instanceof HTMLElement) return element[0];
         console.log("getElement", element);
         throw new Error("is not HTMLElement");
-    };
+    }
+    Object.defineProperty(core, 'getElement', { value : getElement.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
     /**
      * внешний прямоугольник
      * @param {type} target
      * @returns {data}
      */
-    core.margin = function(target)
+    function margin(target)
     {
         var element = core.getElement(target);
         var computedStyle = window.getComputedStyle(element);
@@ -74,14 +78,15 @@ function()
         data.width = element.offsetWidth + (data.left + data.right);
         data.height = element.offsetHeight + (data.top + data.bottom);
         return data;
-    };
+    }
+    Object.defineProperty(core, 'margin', { value : margin.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
     /**
      * прямоугольник border
      * @param {type} target
      * @returns {data}
      */
-    core.border = function(target)
+    function border(target)
     {
         var element = core.getElement(target);
         var computedStyle = window.getComputedStyle(element);
@@ -95,14 +100,15 @@ function()
         rect.bottom = parseInt(computedStyle.borderBottom, 10);
         if (isNaN(rect.bottom)) rect.bottom = 0;
         return rect;
-    };
+    }
+    Object.defineProperty(core, 'border', { value : border.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
     /**
      * внутренний прямоугольник
      * @param {type} target
      * @returns {data}
      */
-    core.padding = function(target)
+    function padding(target)
     {
         var element = core.getElement(target);
         var computedStyle = window.getComputedStyle(element);
@@ -123,14 +129,15 @@ function()
         data.width = element.clientWidth - (data.left + data.right);
         data.height = element.clientHeight - (data.top + data.bottom);
         return data;
-    };
+    }
+    Object.defineProperty(core, 'padding', { value : padding.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
 //    /**
 //     * внешний прямоугольник
 //     * @param {type} target
 //     * @returns {data}
 //     */
-//    core.marginRect = function(target)
+//    function marginRect(target)
 //    {
 //        var element = core.getElement(target);
 //        var computedStyle = window.getComputedStyle(element);
@@ -153,14 +160,15 @@ function()
 //        rect.width = rect.right - rect.left;
 //        rect.height = rect.bottom - rect.top;
 //        return rect;
-//    };
+//    }
+//    Object.defineProperty(core, 'marginRect', { value : marginRect.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
 //    /**
 //     * прямоугольник border
 //     * @param {type} target
 //     * @returns {data}
 //     */
-//    core.rectBorder = function(target)
+//    function rectBorder(target)
 //    {
 //        var element = core.getElement(target);
 //        var computedStyle = window.getComputedStyle(element);
@@ -177,14 +185,15 @@ function()
 //            rect.boxSizing = "border-box";
 //        }
 //        return rect;
-//    };
+//    }
+//    Object.defineProperty(core, 'rectBorder', { value : rectBorder.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
 //    /**
 //     * клиентский прямоугольник
 //     * @param {type} target
 //     * @returns {data}
 //     */
-//    core.clientRect = function(target)
+//    function clientRect(target)
 //    {
 //        var element = core.getElement(target);
 //        var computedStyle = window.getComputedStyle(element);
@@ -198,14 +207,15 @@ function()
 //            rect.bottom -= parseInt(computedStyle.borderBottom, 10);
 //        }
 //        return rect;
-//    };
+//    }
+//    Object.defineProperty(core, 'clientRect', { value : clientRect.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
 //    /**
 //     * внутренний прямоугольник
 //     * @param {type} target
 //     * @returns {data}
 //     */
-//    core.paddingRect = function(target)
+//    function paddingRect(target)
 //    {
 //        var element = core.getElement(target);
 //        var computedStyle = window.getComputedStyle(element);
@@ -240,9 +250,10 @@ function()
 //        rect.width = rect.right - rect.left;
 //        rect.height = rect.bottom - rect.top;
 //        return rect;
-//    };
+//    }
+//    Object.defineProperty(core, 'paddingRect', { value : paddingRect.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.left = function(target, value)
+    function left(target, value)
     {
         var element = core.getElement(target);
         if (value === undefined)
@@ -254,9 +265,10 @@ function()
         if (value === null) value = "";
         if (typeof value === "number") value += "px";
         element.style.left = value;
-    };
+    }
+    Object.defineProperty(core, 'left', { value : left.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.right = function(target, value)
+    function right(target, value)
     {
         var element = core.getElement(target);
         if (value === undefined)
@@ -268,9 +280,10 @@ function()
         if (value === null) value = "";
         if (typeof value === "number") value += "px";
         element.style.right = value;
-    };
+    }
+    Object.defineProperty(core, 'right', { value : right.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.top = function(target, value)
+    function top(target, value)
     {
         var element = core.getElement(target);
         if (value === undefined)
@@ -282,9 +295,10 @@ function()
         if (value === null) value = "";
         if (typeof value === "number") value += "px";
         element.style.top = value;
-    };
+    }
+    Object.defineProperty(core, 'top', { value : top.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.bottom = function(target, value)
+    function bottom(target, value)
     {
         var element = core.getElement(target);
         if (value === undefined)
@@ -296,37 +310,42 @@ function()
         if (value === null) value = "";
         if (typeof value === "number") value += "px";
         element.style.bottom = value;
-    };
+    }
+    Object.defineProperty(core, 'bottom', { value : bottom.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.width = function(target, value)
+    function width(target, value)
     {
         var element = core.getElement(target);
         if (value === undefined) return element.offsetWidth;
         if (value === null) value = "";
         if (typeof value === "number") value += "px";
         element.style.width = value;
-    };
+    }
+    Object.defineProperty(core, 'width', { value : width.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.height = function(target, value)
+    function height(target, value)
     {
         var element = core.getElement(target);
         if (value === undefined) return element.offsetHeight;
         if (value === null) value = "";
         if (typeof value === "number") value += "px";
         element.style.height = value;
-    };
+    }
+    Object.defineProperty(core, 'height', { value : height.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.clientWidth = function(target, value)
+    function clientWidth(target, value)
     {
         var element = core.getElement(target);
         if (value === undefined) return element.clientWidth;
-    };
+    }
+    Object.defineProperty(core, 'clientWidth', { value : clientWidth.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
-    core.clientHeight = function(target, value)
+    function clientHeight(target, value)
     {
         var element = core.getElement(target);
         if (value === undefined) return element.clientHeight;
-    };
+    }
+    Object.defineProperty(core, 'clientHeight', { value : clientHeight.bind(core) });
 //-------------------------------------------------------------------------------------------------------------------
 //if (typeof Element.prototype.addEventListener === 'undefined') 
 //{
@@ -344,8 +363,8 @@ function()
      * @param {function} on функция обратного вызова
      * @returns {undefined}
      */
-    core.addEvent = function(object, eventName, on)
-    {
+//    function addEvent(object, eventName, on)
+//    {
 //        if (obj.attachEvent) 
 //        {
 //            obj['e' + type + fn] = fn;
@@ -356,8 +375,40 @@ function()
 //            obj.attachEvent('on' + type, obj[type + fn]);
 //            return;
 //        } 
-        object.addEventListener(eventName, on, false);
-    };
+//        object.addEventListener(eventName, on, false);
+//    }
+    var addEvent = (function () 
+    {
+      if (document.addEventListener) 
+      {
+        return function (el, type, fn) 
+        {
+          if (el && el.nodeName || el === window) 
+          {
+            el.addEventListener(type, fn, false);
+          }
+          else if (el && el.length) 
+          {
+            for (var i = 0; i < el.length; i++) addEvent(el[i], type, fn);
+          }
+        };
+      } 
+      else 
+      {
+        return function (el, type, fn) 
+        {
+          if (el && el.nodeName || el === window) 
+          {
+            el.attachEvent('on' + type, function () { return fn.call(el, window.event); });
+          }
+          else if (el && el.length) 
+          {
+            for (var i = 0; i < el.length; i++) addEvent(el[i], type, fn);
+          }
+        };
+      }
+    })();
+    Object.defineProperty(core, 'addEvent', { value : addEvent.bind(core) });
 //------------------------------------------------------------------------------------------------------------------- 
     /**
      * Удаляет слушателя на событие eventName у объекта object и с функцией обратного вызова on.<br/>
@@ -366,7 +417,7 @@ function()
      * @param {function} on функция обратного вызова
      * @returns {undefined}
      */
-    core.removeEvent = function(object, eventName, on)
+    function removeEvent(object, eventName, on)
     {
 //        if (obj.detachEvent) 
 //        {
@@ -375,7 +426,8 @@ function()
 //            return;
 //        } 
         object.removeEventListener(eventName, on, false);
-    };
+    }
+    Object.defineProperty(core, 'removeEvent', { value : removeEvent.bind(core) });
 //------------------------------------------------------------------------------------------------------------------- 
     /**
      * <b>Элемент DOM браузера.</b><br/>
@@ -403,76 +455,19 @@ function()
         {
             return element;
         };
-        /**
-         * Добавление елемента как дочернего к указанному елементу.<br/>
-         * В качестве контейнера можно указывать только елементы проходящие проверку instanceof aUI.Element или instanceof HTMLElement
-         * @param {type} parent елемент, который станет контейнером для текушего элемента. 
-         * @returns {undefined}
-         */
-        this.appendTo = function(parent)
-        {
-            parent = core.getElement(parent);
-            if (typeof parent.appendChild !== "function") throw new Error("parent not contain appendChild function");
-            parent.appendChild(that.getElement());
-            return that;
-        };
-        this.clear = function()
-        {
-            var element = that.getElement();
-            while (element.childNodes[0] !== undefined) element.removeChild(element.childNodes[0]);
-        };
-        this.remove = function()
-        {
-            var element = that.getElement();
-            var parent = element.parentElement;
-            if (parent) parent.removeChild(element);
-        };
-        this.id = function(id)
-        {
-            if (id === undefined) return that.getElement().id;
-            that.getElement().id = id;
-        };
-        this.class = function(name)
-        {
-            if (name === undefined) return that.getElement().className;
-            that.getElement().className = name;
-        };
-        this.addClass = function(name)
-        {
-            that.getElement().classList.add(name);
-        };
-        this.removeClass = function(name)
-        {
-            that.getElement().classList.remove(name);
-        };
-        this.hasClass = function(name)
-        {
-            return that.getElement().classList.contains(name);
-        };
-        this.toggleClass = function(name)
-        {
-            that.getElement().classList.toggle(name);
-        };
-        this.attr = function(name, value)
-        {
-            if (value === undefined) return that.getElement().getAttribute(name);
-            that.getElement().setAttribute(name, value);
-        };
-//        this.css = function(name, value)
-//        {
-//            if (value === undefined) return that.getElement().style.get(name);
-//            that.getElement().style.set(name, value);
-//        };
-        this.hidden = function(hidden)
-        {
-            if (hidden === undefined) return that.getElement().style.display === "none";
-            if (hidden) that.getElement().style.display = "none";
-            else that.getElement().style.display = "";
-        };
-        this.toggleHidden = function()
-        {
-            that.hidden(!that.hidden());
-        };
+        Object.defineProperty(this, 'appendTo', { value : this.appendTo.bind(this), writable : true });
+        Object.defineProperty(this, 'clear', { value : this.clear.bind(this) });
+        Object.defineProperty(this, 'remove', { value : this.remove.bind(this), writable : true });
+        Object.defineProperty(this, 'id', { value : this.id.bind(this) });
+        Object.defineProperty(this, 'class', { value : this.class.bind(this) });
+        Object.defineProperty(this, 'addClass', { value : this.addClass.bind(this) });
+        Object.defineProperty(this, 'removeClass', { value : this.removeClass.bind(this) });
+        Object.defineProperty(this, 'hasClass', { value : this.hasClass.bind(this) });
+        Object.defineProperty(this, 'toggleClass', { value : this.toggleClass.bind(this) });
+        Object.defineProperty(this, 'attr', { value : this.attr.bind(this) });
+//        Object.defineProperty(this, 'css', { value : this.css.bind(this) });
+        Object.defineProperty(this, 'hidden', { value : this.hidden.bind(this) });
+        Object.defineProperty(this, 'toggleHidden', { value : this.toggleHidden.bind(this) });
 //Сборка
         var element = document.createElement(options.element);
         element.aui = this;
@@ -480,6 +475,78 @@ function()
         if (options.class) this.class(options.class);
         if (options.addclass) this.addClass(options.addclass);
     }
+    
+    /**
+     * Добавление елемента как дочернего к указанному елементу.<br/>
+     * В качестве контейнера можно указывать только елементы проходящие проверку instanceof aUI.Element или instanceof HTMLElement
+     * @param {type} parent елемент, который станет контейнером для текушего элемента. 
+     * @returns {undefined}
+     */
+    BaseElement.prototype.appendTo = function(parent)
+    {
+        parent = core.getElement(parent);
+        if (typeof parent.appendChild !== "function") throw new Error("parent not contain appendChild function");
+        parent.appendChild(this.getElement());
+        return this;
+    };
+    BaseElement.prototype.clear = function()
+    {
+        var element = this.getElement();
+        while (element.childNodes[0] !== undefined) element.removeChild(element.childNodes[0]);
+    };
+    BaseElement.prototype.remove = function()
+    {
+        var element = this.getElement();
+        var parent = element.parentElement;
+        if (parent) parent.removeChild(element);
+    };
+    BaseElement.prototype.id = function(id)
+    {
+        if (id === undefined) return this.getElement().id;
+        this.getElement().id = id;
+    };
+    BaseElement.prototype.class = function(name)
+    {
+        if (name === undefined) return this.getElement().className;
+        this.getElement().className = name;
+    };
+    BaseElement.prototype.addClass = function(name)
+    {
+        this.getElement().classList.add(name);
+    };
+    BaseElement.prototype.removeClass = function(name)
+    {
+        this.getElement().classList.remove(name);
+    };
+    BaseElement.prototype.hasClass = function(name)
+    {
+        return this.getElement().classList.contains(name);
+    };
+    BaseElement.prototype.toggleClass = function(name)
+    {
+        this.getElement().classList.toggle(name);
+    };
+    BaseElement.prototype.attr = function(name, value)
+    {
+        if (value === undefined) return this.getElement().getAttribute(name);
+        this.getElement().setAttribute(name, value);
+    };
+//        BaseElement.prototype.css = function(name, value)
+//        {
+//            if (value === undefined) return this.getElement().style.get(name);
+//            this.getElement().style.set(name, value);
+//        };
+    BaseElement.prototype.hidden = function(hidden)
+    {
+        if (hidden === undefined) return this.getElement().style.display === "none";
+        if (hidden) this.getElement().style.display = "none";
+        else this.getElement().style.display = "";
+    };
+    BaseElement.prototype.toggleHidden = function()
+    {
+        this.hidden(!this.hidden());
+    };
+    
 //------------------------------------------------------------------------------------------------------------------- 
     core.BaseElement = BaseElement;
 //------------------------------------------------------------------------------------------------------------------- 

@@ -14,6 +14,7 @@ function(aURL, aUI) {
     console.dir(aUI);
 //    var aUtils = aUI.utils; 
     var aurl = new aURL();
+    var fillSectionList;
     function changeSections()
     {
         if (typeof fillSectionList === "function") fillSectionList(this.value);
@@ -95,6 +96,7 @@ function(aURL, aUI) {
 
     var memo = new aUI.Memo({ placeholder : "Memo" }).appendTo(fieldInputs.value);
     memo.validator(new aUI.validators.Pattern("[ а-яА-ЯёЁ\n\t]{0,}"));
+    memo.required(true);
 
     btn1.onClick(btn2.toggleSelect, edit.focus);
     btn2.onClick(btn2.toggleSelect, memo.value, "текст", memo.focus);
@@ -214,7 +216,7 @@ function(aURL, aUI) {
 
 
     var dock1 = new aUI.Element({ }).appendTo(dragItem);
-//    aUI.extensions.droppable(dock1);
+    aUI.extensions.droppable(dock1);
     var dock2 = new aUI.Element({ }).appendTo(dragItem);
     aUI.extensions.droppable(dock2);
     var drag1 = new aUI.Element({ text : "drag 1" }).appendTo(dock1);

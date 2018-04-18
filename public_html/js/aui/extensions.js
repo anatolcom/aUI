@@ -4,254 +4,281 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     var extensions = { };
 //-------------------------------------------------------------------------------------------------------------------
-    extensions.selectable = function(owner)
+    Object.defineProperty(extensions, 'selectable', { value : function(owner) { new Selectable(owner); } });
+
+    function Selectable(owner)
     {
-//Переменные
-        var className = "selected";
-//События
-        var onchangeselected = null;
-//Функции
-        owner.selectedClass = function(name)
-        {
-            if (name === undefined) return className;
-            if (typeof name !== "string") throw new Error("name for selectedClass not a string");
-            className = name;
-        };
-        owner.select = function()
-        {
-            if (owner.selected()) return;
-            owner.addClass(className);
-            if (typeof onchangeselected === "function") onchangeselected.call(owner);
-        };
-        owner.unselect = function()
-        {
-            if (!owner.selected()) return;
-            owner.removeClass(className);
-            if (typeof onchangeselected === "function") onchangeselected.call(owner);
-        };
-        owner.selected = function(value)
-        {
-            if (value === undefined) return owner.hasClass(className);
-            if (value) owner.select();
-            else owner.unselect();
-        };
-        owner.toggleSelect = function()
-        {
-            owner.toggleClass(className);
-            if (typeof onchangeselected === "function") onchangeselected.call(owner);
-        };
-        owner.onChangeSelected = function(fn)
-        {
-            if (fn === undefined) return onchangeselected;
-            if (typeof fn !== "function" && fn !== null) throw new Error("fn for onChangeSelected not a function");
-            onchangeselected = fn;
-        };
+        //Переменные
+        this.owner = owner;
+        this.className = "selected";
+        //События
+        this.onchangeselected = null;    
+        //Функции
+        //Сборка
+        Object.defineProperty(owner, 'selectedClass', { value : this.selectedClass.bind(this) });
+        Object.defineProperty(owner, 'select', { value : this.select.bind(this) });
+        Object.defineProperty(owner, 'unselect', { value : this.unselect.bind(this) });
+        Object.defineProperty(owner, 'selected', { value : this.selected.bind(this) });
+        Object.defineProperty(owner, 'toggleSelect', { value : this.toggleSelect.bind(this) });
+        Object.defineProperty(owner, 'onChangeSelected', { value : this.onChangeSelected.bind(this) });
+    }
+    Selectable.prototype.selectedClass = function(name)
+    {
+        if (name === undefined) return this.className;
+        if (typeof name !== "string") throw new Error("name for selectedClass not a string");
+        this.className = name;
+    };
+    Selectable.prototype.select = function()
+    {
+        if (this.owner.selected()) return;
+        this.owner.addClass(this.className);
+        if (typeof this.onchangeselected === "function") this.onchangeselected.call(this.owner);
+    };
+    Selectable.prototype.unselect = function()
+    {
+        if (!this.owner.selected()) return;
+        this.owner.removeClass(this.className);
+        if (typeof this.onchangeselected === "function") this.onchangeselected.call(this.owner);
+    };
+    Selectable.prototype.selected = function(value)
+    {
+        if (value === undefined) return this.owner.hasClass(this.className);
+        if (value) this.owner.select();
+        else this.owner.unselect();
+    };
+    Selectable.prototype.toggleSelect = function()
+    {
+        this.owner.toggleClass(this.className);
+        if (typeof this.onchangeselected === "function") this.onchangeselected.call(this.owner);
+    };
+    Selectable.prototype.onChangeSelected = function(fn)
+    {
+        if (fn === undefined) return this.onchangeselected;
+        if (typeof fn !== "function" && fn !== null) throw new Error("fn for onChangeSelected not a function");
+        this.onchangeselected = fn;
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extensions.sizable = function(owner)
+    Object.defineProperty(extensions, 'sizable', { value : function(owner) { new Sizable(owner); } });
+
+    function Sizable(owner)
     {
-//Переменные
-        var element = core.getElement(owner);
-//События
-        var onresize = null;
-//Функции
-        owner.left = function(value)
+        //Переменные
+        var that = this;
+        this.owner = owner;
+        this.element = core.getElement(owner);
+        //События
+        this.onresize = null;
+        //Функции
+        function resize()
         {
-            if (value === undefined)
-            {
-                var computedStyle = window.getComputedStyle(element);
-                var marginLeft = parseInt(computedStyle.marginLeft, 10);
-                return element.offsetLeft - marginLeft;
-            }
-            if (value === null) value = "";
-            if (typeof value === "number") value += "px";
-            element.style.left = value;
-        };
-        owner.right = function(value)
+            if (that.onresize) that.onresize.apply(owner, arguments);
+        }
+        //Сборка
+        Object.defineProperty(owner, 'left', { value : this.left.bind(this) });
+        Object.defineProperty(owner, 'right', { value : this.right.bind(this) });
+        Object.defineProperty(owner, 'top', { value : this.top.bind(this) });
+        Object.defineProperty(owner, 'bottom', { value : this.bottom.bind(this) });
+        Object.defineProperty(owner, 'width', { value : this.width.bind(this) });
+        Object.defineProperty(owner, 'height', { value : this.height.bind(this) });
+        Object.defineProperty(owner, 'clientWidth', { value : this.clientWidth.bind(this) });
+        Object.defineProperty(owner, 'clientHeight', { value : this.clientHeight.bind(this) });
+        Object.defineProperty(owner, 'onResize', { value : this.onResize.bind(this) });
+        Object.defineProperty(owner, 'resize', { value : resize });
+        core.addEvent(this.element, "resize", resize);
+    }
+    Sizable.prototype.left = function(value)
+    {
+        if (value === undefined)
         {
-            if (value === undefined)
-            {
-                var computedStyle = window.getComputedStyle(element);
-                var marginRight = parseInt(computedStyle.marginRight, 10);
-                return element.offsetRight - marginRight;
-            }
-            if (value === null) value = "";
-            if (typeof value === "number") value += "px";
-            element.style.right = value;
-        };
-        owner.top = function(value)
+            var computedStyle = window.getComputedStyle(this.element);
+            var marginLeft = parseInt(computedStyle.marginLeft, 10);
+            return this.element.offsetLeft - marginLeft;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        this.element.style.left = value;
+    };
+    Sizable.prototype.right = function(value)
+    {
+        if (value === undefined)
         {
-            if (value === undefined)
-            {
-                var computedStyle = window.getComputedStyle(element);
-                var marginTop = parseInt(computedStyle.marginTop, 10);
-                return element.offsetTop - marginTop;
-            }
-            if (value === null) value = "";
-            if (typeof value === "number") value += "px";
-            element.style.top = value;
-        };
-        owner.bottom = function(value)
+            var computedStyle = window.getComputedStyle(this.element);
+            var marginRight = parseInt(computedStyle.marginRight, 10);
+            return this.element.offsetRight - marginRight;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        this.element.style.right = value;
+    };
+    Sizable.prototype.top = function(value)
+    {
+        if (value === undefined)
         {
-            if (value === undefined)
-            {
-                var computedStyle = window.getComputedStyle(element);
-                var marginBottom = parseInt(computedStyle.marginBottom, 10);
-                return element.offsetBottom - marginBottom;
-            }
-            if (value === null) value = "";
-            if (typeof value === "number") value += "px";
-            element.style.bottom = value;
-        };
-        owner.width = function(value)
+            var computedStyle = window.getComputedStyle(this.element);
+            var marginTop = parseInt(computedStyle.marginTop, 10);
+            return this.element.offsetTop - marginTop;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        this.element.style.top = value;
+    };
+    Sizable.prototype.bottom = function(value)
+    {
+        if (value === undefined)
         {
-            if (value === undefined) return element.offsetWidth;
-            if (value === null) value = "";
-            if (typeof value === "number") value += "px";
-            element.style.width = value;
-            if (onresize) onresize.call(owner);
-        };
-        owner.height = function(value)
-        {
-            if (value === undefined) return element.offsetHeight;
-            if (value === null) value = "";
-            if (typeof value === "number") value += "px";
-            element.style.height = value;
-            if (onresize) onresize.call(owner);
-        };
-        owner.clientWidth = function(value)
-        {
-            if (value === undefined) return element.clientWidth;
-        };
-        owner.clientHeight = function(value)
-        {
-            if (value === undefined) return element.clientHeight;
-        };
-        owner.onResize = function(fn)
-        {
-            if (fn === undefined) return onresize;
-            if (typeof fn !== "function" && fn !== null) throw new Error("fn for onResize not a function");
-            onresize = fn;
-        };
-        owner.resize = function()
-        {
-            if (onresize) onresize.call(owner);
-        };
-        core.addEvent(element, "resize", owner.resize);
+            var computedStyle = window.getComputedStyle(this.element);
+            var marginBottom = parseInt(computedStyle.marginBottom, 10);
+            return this.element.offsetBottom - marginBottom;
+        }
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        this.element.style.bottom = value;
+    };
+    Sizable.prototype.width = function(value)
+    {
+        if (value === undefined) return this.element.offsetWidth;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        this.element.style.width = value;
+        if (this.onresize) this.onresize.call(this.owner);
+    };
+    Sizable.prototype.height = function(value)
+    {
+        if (value === undefined) return this.element.offsetHeight;
+        if (value === null) value = "";
+        if (typeof value === "number") value += "px";
+        this.element.style.height = value;
+        if (this.onresize) this.onresize.call(this.owner);
+    };
+    Sizable.prototype.clientWidth = function(value)
+    {
+        if (value === undefined) return this.element.clientWidth;
+    };
+    Sizable.prototype.clientHeight = function(value)
+    {
+        if (value === undefined) return this.element.clientHeight;
+    };
+    Sizable.prototype.onResize = function(fn)
+    {
+        if (fn === undefined) return this.onresize;
+        if (typeof fn !== "function" && fn !== null) throw new Error("fn for onResize not a function");
+        this.onresize = fn;
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extensions.clickable = function(owner)
+    Object.defineProperty(extensions, 'clickable', { value : function(owner) { new Clickable(owner); } });
+
+    function Clickable(owner)
     {
-        var element = core.getElement(owner);
-//Переменные
-        var fnList = [ ];
-//События
-        var onclick = null;
-//Функции
-        owner.onClick = function(fn)
+        //Переменные
+        var that = this;
+        this.owner = owner;
+        this.element = core.getElement(owner);
+        this.fnList = [ ];
+        //События
+        this.onclick = null;
+        //Функции
+        function click()
         {
-///console.log(arguments);
-            if (arguments.length === 0) return onclick;
-//        if (fn === undefined) return onclick;
-            if ((arguments.length === 1) && (arguments[0] === null))
-//        if (fn === null)
-            {
-                onclick = null;
-                return;
-            }
-            if ((arguments.length === 1) && (typeof arguments[0] === "function"))
-//        if (typeof fn === "function")
-            {
-                onclick = arguments[0];
-                return;
-            }
-            if (typeof arguments[0] !== "function") throw new Error("type of onclick arguments[0] \"" + typeof arguments[0] + "\" is not a function");
-            for (var index in arguments)
-            {
-                if (typeof arguments[index] === "function") fnList.push({ fn : arguments[index], args : [ ] });
-                else fnList[fnList.length - 1].args.push(arguments[index]);
-            }
-            onclick = function()
-            {
-//                console.log(fnList);
-                for (var index in fnList) fnList[index].fn.apply(owner, fnList[index].args);
-            };
+            if (that.onclick) that.onclick.apply(owner, arguments);
+        }
+        //Сборка
+        Object.defineProperty(owner, 'onClick', { value : this.onClick.bind(this) });
+        Object.defineProperty(owner, 'click', { value : click });
+        this.element.onclick = click;
+   }
+    Clickable.prototype.onClick = function(fn)
+    {
+        if (arguments.length === 0) return this.onclick;
+        if ((arguments.length === 1) && (arguments[0] === null))
+        {
+            this.onclick = null;
+            return;
+        }
+        if ((arguments.length === 1) && (typeof arguments[0] === "function"))
+        {
+            this.onclick = arguments[0];
+            return;
+        }
+        if (typeof arguments[0] !== "function") throw new Error("type of onclick arguments[0] \"" + typeof arguments[0] + "\" is not a function");
+        for (var index in arguments)
+        {
+            if (typeof arguments[index] === "function") this.fnList.push({ fn : arguments[index], args : [ ] });
+            else this.fnList[this.fnList.length - 1].args.push(arguments[index]);
+        }
+        var that = this;
+        this.onclick = function()
+        {
+            for (var index in that.fnList) that.fnList[index].fn.apply(that.owner, that.fnList[index].args);
+        };
 //        if (fn instanceof Array)
 //        {
 //            var isArrayFunction = true;
 //            for (var index in fn) if (typeof fn[index] !== "function") isArrayFunction = false;
 //            if (isArrayFunction)
 //            {
-//                onclick = function()
+//                this.onclick = function()
 //                {
-//                    for (var index in fn) fn[index].apply(owner, arguments);
+//                    for (var index in fn) fn[index].apply(this.owner, arguments);
 //                };
 //                return;
 //            }
 //        }
 //        throw new Error("type of onclick fn \"" + typeof fn + "\" is not a function");
-        };
-        owner.click = function()
-        {
-            if (onclick) onclick.apply(owner, arguments);
-        };
-//Сборка
-        element.onclick = owner.click;
     };
 //-------------------------------------------------------------------------------------------------------------------
-    extensions.validable = function(owner)
+    Object.defineProperty(extensions, 'validable', { value : function(owner) { new Validable(owner); } });
+    
+    function Validable(owner)
     {
 //Переменные
-        var required = false;
-        var validator = null;
+        var that = this;
+        this.owner = owner;
+        this.element = core.getElement(owner);
+        this.isRequired = false;
+        this.validatorRef = null;
 //События
-        var onvalidate = null;
+
 //Функции
-//field.setCustomValidity("Invalid field."); will make the field invalid.
-//field.setCustomValidity(""); will make the field valid unless it fails an HTML5 constraint.
-        function onValidate()
-        {
-            if (validate(owner.value(), required)) owner.removeClass("invalid");
-            else owner.addClass("invalid");
-        }
-        function validate(value, required)
-        {
-            if (value.length === 0) return !required;
-            if (validator) return validator.validate(value);
-            return true;
-        }
         /**
          * Обязательность заполнения.<br/>
          * @param {Boolean | undefined} value true - обязательно, false - не обязательно, undefined - возврат текущего значения.
          * @returns {Boolean | undefined}
          */
-        owner.required = function(value)
-        {
-            if (value === undefined) return required;
-            required = value;
-        };
-        owner.validator = function(value)
-        {
-            if (value === undefined) return validator;
-            validator = value;
-        };
-        owner.invalid = function()
-        {
-            onValidate();
-            return owner.hasClass("invalid");
-        };
-        owner.onValidate = function(fn)
-        {
-            if (fn === undefined) return onvalidate;
-            if (typeof fn !== "function" && fn !== null) throw new Error("fn for onValidate not a function");
-            onvalidate = fn;
-        };
-        owner.validate = onValidate;
+        Object.defineProperty(owner, 'required', { value : this.required.bind(this) });
+        Object.defineProperty(owner, 'validator', { value : this.validator.bind(this) });
+        Object.defineProperty(owner, 'validate', { value : this.validate.bind(this) });
+        Object.defineProperty(owner, 'invalid', { value : this.invalid.bind(this) });
 //Сборка
-        var element = core.getElement(owner);
-        element.onfocus = onValidate;
-        element.onkeyup = onValidate;
+//        this.element.onfocus = owner.validate;
+        this.element.onblur = owner.validate;
+        this.element.onkeyup = owner.validate;
     };
+    Validable.prototype.isValid = function(value)
+    {
+        if (value.length === 0) return !this.isRequired;
+        if (this.validatorRef) return this.validatorRef.validate(value);
+        return true;
+    };
+    Validable.prototype.required = function(value)
+    {
+        if (value === undefined) return this.isRequired;
+        this.isRequired = value;
+    };
+    Validable.prototype.validator = function(value)
+    {
+        if (value === undefined) return this.validatorRef;
+        this.validatorRef = value;
+    };
+    Validable.prototype.validate = function()
+    {
+        if (this.isValid(this.owner.value())) this.owner.removeClass("invalid");
+        else this.owner.addClass("invalid");
+    };    
+    Validable.prototype.invalid = function()
+    {
+        this.validate();
+        return this.owner.hasClass("invalid");
+    };   
 //-------------------------------------------------------------------------------------------------------------------
     extensions.movable = function(owner)
     {
@@ -291,6 +318,8 @@ function(core)
         {
 //            move({ x : event.clientX, y : event.clientY });
             move({ x : event.pageX, y : event.pageY });
+            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+            else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onTouchStart(event)
         {
@@ -314,6 +343,8 @@ function(core)
         {
             var touch = event.touches[0];
             move({ x : touch.pageX, y : touch.pageY });
+            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+            else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onDragStart()
         {
@@ -408,7 +439,7 @@ function(core)
 //        owner.limit(10);
 
         var backup = null;
-
+        var droppableElement = null;
 
         function save(element)
         {
@@ -437,9 +468,26 @@ function(core)
             element.style.bottom = backup.style.bottom;
             element.style.zIndex = backup.style.zIndex;
         }
-        owner.onMoveStart(function(point)
+        function findDroppableElement(point) 
+        {
+            var x = point.x - document.documentElement.scrollLeft;
+            var y = point.y - document.documentElement.scrollTop;
+            element.style.visibility = "hidden";
+            var droppable = document.elementFromPoint(x, y).closest('.droppable');
+            element.style.visibility = "";
+            if (droppable !== null && droppable.aui !== undefined) return droppable;
+            return null;
+        }
+        function droppableReadyOn(element){
+            if (element !== null) element.classList.add("redy");
+        }
+        function droppableReadyOff(element){
+            if (element !== null) element.classList.remove("redy");
+        }
+        owner.onMoveStart(function()
         {
             save(element);
+            droppableElement = null;
             var computedStyle = window.getComputedStyle(element);
             var left = parseInt(computedStyle.paddingLeft, 10);
             if (isNaN(left)) left = 0;
@@ -447,56 +495,43 @@ function(core)
             if (isNaN(top)) top = 0;
             var rect = element.getBoundingClientRect();
             element.style.position = "absolute";
-            window.auiCurrentDragObject = owner;//??????????????????????????
             document.body.appendChild(element);
             element.style.left = rect.left - left + window.scrollX + "px";
             element.style.top = rect.top - top + window.scrollY + "px";
         });
         owner.onMoveEnd(function()
         {
-            rollback(element);
-            delete window.auiCurrentDragObject;//??????????????????????????
+            if (droppableElement === null) 
+            {
+                rollback(element);
+                return ;
+            } 
+            droppableReadyOff(droppableElement);
+            droppableElement.insertBefore(element, null);
+            element.style.position = backup.style.position;
+            element.style.left = backup.style.left;
+            element.style.top = backup.style.top;
+            element.style.right = backup.style.right;
+            element.style.bottom = backup.style.bottom;
+            element.style.zIndex = backup.style.zIndex;
         });
-        owner.onMove(function(dX, dY)
+        owner.onMove(function(dX, dY, point)
         {
             owner.left(owner.left() + dX);
             owner.top(owner.top() + dY);
+            var foundElement = findDroppableElement(point);
+            if (droppableElement !== foundElement) {
+                droppableReadyOff(droppableElement);
+                droppableElement = foundElement;
+                droppableReadyOn(droppableElement);
+            }
         });
-
-        var dock = undefined;
-        owner.dock = function(value)
-        {
-            if (value === undefined) return dock;
-            dock = value;
-        };
-
-
-//https://learn.javascript.ru/drag-and-drop
     };
 //-------------------------------------------------------------------------------------------------------------------
     extensions.droppable = function(owner)
     {
         var element = core.getElement(owner);
         element.classList.add("droppable");
-
-        function notAcceptable()
-        {
-            if (typeof window.auiCurrentDragObject !== "object") return 1;
-            if (typeof window.auiCurrentDragObject.dock !== "function") return 2;
-            if (window.auiCurrentDragObject.dock() === owner) return 3;
-            return false;
-        }
-        function onMove(event)
-        {
-//            console.log("notAcceptable", notAcceptable());
-            if (notAcceptable()) return;
-            window.auiCurrentDragObject.dock(owner);
-            element.classList.add("redy");
-            console.log(event);
-        }
-        core.addEvent(element, "mousemove", onMove);
-        core.addEvent(element, "touchmove", onMove);
-//https://learn.javascript.ru/drag-and-drop
     };
 //-------------------------------------------------------------------------------------------------------------------
     return extensions;
