@@ -1,5 +1,5 @@
-define([ "aui/core", "./Element" ],
-function(core, Element)
+define([ "aui/core", "./Element", "aui/utils" ],
+function(core, Element, utils)
 {
 //---------------------------------------------------------------------------
     function Scale(options)
@@ -29,7 +29,8 @@ function(core, Element)
             for (var q = 0; q <= count; q++)
             {
                 if (q % each !== 0) continue;
-                var label = new Element({ class : "val", text : q }).appendTo(that);
+                var text = String(utils.convertRangedValue(q, 0, count, options.begin, options.end));
+                var label = new Element({ class : "val", text : text }).appendTo(that);
                 label.getElement().style.position = "absolute";
                 labels.push(label);
             }
@@ -69,7 +70,6 @@ function(core, Element)
                 if (q % each === 0)
                 {
                     h = 0;
-                    var text = String(q);
                     var label = labels[index];
                     var wt = label.width();
                     label.top(b);

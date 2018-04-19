@@ -154,10 +154,10 @@ function(aURL, aUI) {
     new aUI.DateSelector({ }).appendTo(calendarItem);
 
 
-    var xy1 = new aUI.XY().appendTo(mouseItem);
-    var xy2 = new aUI.XY().appendTo(mouseItem);
-    xy2.roundX(Math.round);
-    xy2.roundY(Math.round);
+//    var xy1 = new aUI.XY().appendTo(mouseItem);
+//    var xy2 = new aUI.XY().appendTo(mouseItem);
+//    xy2.roundX(Math.round);
+//    xy2.roundY(Math.round);
 
     var progressGroup = new aUI.Element({ class : "group" }).appendTo(mouseItem);
     var progress1 = new aUI.Progress({ width : 200 }).appendTo(progressGroup);
@@ -174,18 +174,26 @@ function(aURL, aUI) {
     range1.round(Math.round);
     range1.valueMax(6);
     range1.valueMin(1);
+    
+    var scale1 = new aUI.Scale({ height : 6, width : 200 }).appendTo(progressGroup);
 
-    var scale = new aUI.Scale({ height : 6, width : 200 }).appendTo(progressGroup);
+    var range2 = new aUI.Range({ min : -3.5, max : 4, width : 200  }).appendTo(progressGroup);
+    range2.round(0.1);
+    range2.valueMax(7);
+    range2.valueMin(-2);
+    
+    var scale2 = new aUI.Scale({ begin : -3.5, end : 4, height : 6, width : 200 }).appendTo(progressGroup);
+
 
     var switch1 = new aUI.Switch().appendTo(progressGroup);
 
     var scroll3 = new aUI.Scroll({ height : 200, orientation : "vertical", onchange : progress2.value }).appendTo(mouseItem);
     scroll3.value(70);
 
-    var range2 = new aUI.Range({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
-    range2.round(0.1);
-    range2.valueMax(40);
-    range2.valueMin(20);
+    var range3 = new aUI.Range({ height : 200, orientation : "vertical" }).appendTo(mouseItem);
+    range3.round(0.1);
+    range3.valueMax(40);
+    range3.valueMin(20);
 
 
 
@@ -219,6 +227,8 @@ function(aURL, aUI) {
     aUI.extensions.droppable(dock1);
     var dock2 = new aUI.Element({ }).appendTo(dragItem);
     aUI.extensions.droppable(dock2);
+    var dock3 = new aUI.Element({ }).appendTo(dragItem);
+    aUI.extensions.droppable(dock3);
     var drag1 = new aUI.Element({ text : "drag 1" }).appendTo(dock1);
     aUI.extensions.draggable(drag1);
     var drag2 = new aUI.Element({ text : "drag 2" }).appendTo(dock1);

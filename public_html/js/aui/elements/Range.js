@@ -84,7 +84,10 @@ function(core, Element, utils, extensions)
             {
                 if (valueMax.value() < valueMin.value()) valueMin.value(valueMax.value());
             }
-            else if (valueMin.value() > valueMax.value()) valueMax.value(valueMin.value());
+            else 
+            {
+                if (valueMin.value() > valueMax.value()) valueMax.value(valueMin.value());
+            }
             posMin.value(utils.convertRangedValue(valueMin.value(), valueMin.min(), valueMin.max(), posMin.min(), posMin.max()));
             if (fractionDigits === null) dragMinValue.text(valueMin.value());
             else dragMinValue.text(valueMin.value().toFixed(fractionDigits));
@@ -96,7 +99,10 @@ function(core, Element, utils, extensions)
             {
                 if (valueMin.value() > valueMax.value()) valueMax.value(valueMin.value());
             }
-            else if (valueMax.value() < valueMin.value()) valueMin.value(valueMax.value());
+            else 
+            {
+                if (valueMax.value() < valueMin.value()) valueMin.value(valueMax.value());
+            }
             posMax.value(utils.convertRangedValue(valueMax.value(), valueMax.min(), valueMax.max(), posMax.min(), posMax.max()));
             if (fractionDigits === null) dragMaxValue.text(valueMax.value());
             else dragMaxValue.text(valueMax.value().toFixed(fractionDigits));
@@ -150,7 +156,6 @@ function(core, Element, utils, extensions)
                 if (fn === 0) roundDigits = 0;
                 else roundDigits = 1 / fn;
                 fractionDigits = Math.round(roundDigits / 10);
-//            console.log(fractionDigits);
                 options.round = roundValue;
                 return;
             }
