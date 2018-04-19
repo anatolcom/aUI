@@ -230,15 +230,15 @@ function(core)
     
     function Validable(owner)
     {
-//Переменные
+        //Переменные
         var that = this;
         this.owner = owner;
         this.element = core.getElement(owner);
         this.isRequired = false;
         this.validatorRef = null;
-//События
+        //События
 
-//Функции
+        //Функции
         /**
          * Обязательность заполнения.<br/>
          * @param {Boolean | undefined} value true - обязательно, false - не обязательно, undefined - возврат текущего значения.
@@ -248,7 +248,7 @@ function(core)
         Object.defineProperty(owner, 'validator', { value : this.validator.bind(this) });
         Object.defineProperty(owner, 'validate', { value : this.validate.bind(this) });
         Object.defineProperty(owner, 'invalid', { value : this.invalid.bind(this) });
-//Сборка
+        //Сборка
 //        this.element.onfocus = owner.validate;
         this.element.onblur = owner.validate;
         this.element.onkeyup = owner.validate;
@@ -282,12 +282,8 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.movable = function(owner)
     {
+        //Переменные
         var element = core.getElement(owner);
-//События
-        var onmovestart = null;
-        var onmoveend = null;
-        var onmove = null;
-//Переменные
         var startPoint = { x : 0, y : 0 };
         var keepedPoint = { x : 0, y : 0 };
         var currentPoint = { x : 0, y : 0 };
@@ -296,7 +292,11 @@ function(core)
         var lockX = false;
         var lockY = false;
         var isRefreshOffsetOnMove = true;
-//Функции
+        //События
+        var onmovestart = null;
+        var onmoveend = null;
+        var onmove = null;
+        //Функции
         function onMouseDown(event)
         {
             core.addEvent(document, "mousemove", onMouseMove);
@@ -431,10 +431,11 @@ function(core)
 //-------------------------------------------------------------------------------------------------------------------
     extensions.draggable = function(owner)
     {
+        extensions.movable(owner);
+        //Переменные
         var element = core.getElement(owner);
         element.classList.add("draggable");
 
-        extensions.movable(owner);
 
 //        owner.limit(10);
 

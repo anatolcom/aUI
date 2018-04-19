@@ -182,6 +182,10 @@ menu.circle > *:active
     display: block;
 }
 
+.slist > .scrollarea 
+{
+    max-height: 600px;
+}
 
 .slist > .scrollarea > ul > li > .content > *
 {

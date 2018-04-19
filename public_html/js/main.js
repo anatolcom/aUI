@@ -289,21 +289,21 @@ function(aURL, aUI) {
     slist.select(aurl.get("selected"));
     slist.onChangeSelected(changeTopSection);
 
-    var dragManager = new DragManager();
-
-    dragManager.onDragCancel = function(dragObject)
-    {
-        dragObject.avatar.rollback();
-    };
-
-    dragManager.onDragEnd = function(dragObject, dropElem)
-    {
-        dragObject.elem.style.display = "none";
-        dropElem.classList.add('computer-smile');
-        setTimeout(function()
-        {
-            dropElem.classList.remove('computer-smile');
-        }, 200);
-    };
+//    var dragManager = new DragManager();
+//
+//    dragManager.onDragCancel = function(dragObject)
+//    {
+//        dragObject.avatar.rollback();
+//    };
+//
+//    dragManager.onDragEnd = function(dragObject, dropElem)
+//    {
+//        dragObject.elem.style.display = "none";
+//        dropElem.classList.add('computer-smile');
+//        setTimeout(function()
+//        {
+//            dropElem.classList.remove('computer-smile');
+//        }, 200);
+//    };
 }
 );
