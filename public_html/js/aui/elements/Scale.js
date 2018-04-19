@@ -11,7 +11,8 @@ function(core, Element, utils)
             begin : 0,
             end : 10,
             count : 10,
-            each : 5
+            each : 5,
+            indent : 8
         }, options);
 //    options.element = "canvas";
         Element.call(this, options);
@@ -55,7 +56,7 @@ function(core, Element, utils)
 //            ce.width = rect.right - rect.left;
 //            ce.height = rect.bottom - rect.top;
             ce.width = rect.width;
-            ce.height = rect.height;
+            ce.height = rect.height - options.indent;
             var ctx = ce.getContext("2d");
             ctx.clearRect(0, 0, ce.width, ce.height); //Очистка области
             ctx.strokeStyle = computedStyle.color;

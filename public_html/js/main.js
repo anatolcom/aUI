@@ -175,14 +175,16 @@ function(aURL, aUI) {
     range1.valueMax(6);
     range1.valueMin(1);
     
-    var scale1 = new aUI.Scale({ height : 6, width : 200 }).appendTo(progressGroup);
+    var scale1 = new aUI.Scale({ height : 16, width : 200 }).appendTo(progressGroup);
 
-    var range2 = new aUI.Range({ min : -3.5, max : 4, width : 200  }).appendTo(progressGroup);
+    var scale2 = new aUI.Scale({ begin : -5, end : 10, count : 10, each : 2, height : 12, width : 200 }).appendTo(progressGroup);
+    //scale2.round(0.1);
+
+    var range2 = new aUI.Range({ min : -5, max : 10, width : 200  }).appendTo(progressGroup);
     range2.round(0.1);
     range2.valueMax(7);
     range2.valueMin(-2);
     
-    var scale2 = new aUI.Scale({ begin : -3.5, end : 4, height : 6, width : 200 }).appendTo(progressGroup);
 
 
     var switch1 = new aUI.Switch().appendTo(progressGroup);
