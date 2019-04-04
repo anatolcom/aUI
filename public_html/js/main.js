@@ -225,18 +225,21 @@ function(aURL, aUI) {
 
 
 
-    var dock1 = new aUI.Element({ }).appendTo(dragItem);
+    var dock1 = new aUI.Element({ text : "dock 1"  }).appendTo(dragItem);
     aUI.extensions.droppable(dock1);
-    var dock2 = new aUI.Element({ }).appendTo(dragItem);
+    var dock2 = new aUI.Element({ text : "dock 2"  }).appendTo(dragItem);
     aUI.extensions.droppable(dock2);
-    var dock3 = new aUI.Element({ }).appendTo(dragItem);
+    var dock3 = new aUI.Element({ text : "dock 3"  }).appendTo(dragItem);
     aUI.extensions.droppable(dock3);
     var drag1 = new aUI.Element({ text : "drag 1" }).appendTo(dock1);
     aUI.extensions.draggable(drag1);
-    var drag2 = new aUI.Element({ text : "drag 2" }).appendTo(dock1);
+    aUI.extensions.droppable(drag1);
+    var drag2 = new aUI.Element({ text : "drag 2" }).appendTo(dock2);
     aUI.extensions.draggable(drag2);
-    var drag3 = new aUI.Element({ text : "drag 3" }).appendTo(dock1);
+    aUI.extensions.droppable(drag2);
+    var drag3 = new aUI.Element({ text : "drag 3" }).appendTo(dock3);
     aUI.extensions.draggable(drag3);
+    aUI.extensions.droppable(drag3);
 
 
 
@@ -288,22 +291,5 @@ function(aURL, aUI) {
     }
     slist.select(aurl.get("selected"));
     slist.onChangeSelected(changeTopSection);
-
-//    var dragManager = new DragManager();
-//
-//    dragManager.onDragCancel = function(dragObject)
-//    {
-//        dragObject.avatar.rollback();
-//    };
-//
-//    dragManager.onDragEnd = function(dragObject, dropElem)
-//    {
-//        dragObject.elem.style.display = "none";
-//        dropElem.classList.add('computer-smile');
-//        setTimeout(function()
-//        {
-//            dropElem.classList.remove('computer-smile');
-//        }, 200);
-//    };
 }
 );

@@ -297,54 +297,64 @@ function(core)
         var onmoveend = null;
         var onmove = null;
         //Функции
+        function preventDefault(event) 
+        {
+            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
+            else event.returnValue = false; // Вариант Internet Explorer:
+        }
+        function stopPropagation(event)
+        {
+            if (event.stopPropagation) event.stopPropagation(); // Вариант стандарта W3C:
+        }
         function onMouseDown(event)
         {
+            console.log(this, event);
+            stopPropagation(event);
+            preventDefault(event);
             core.addEvent(document, "mousemove", onMouseMove);
             core.addEvent(document, "mouseup", onMouseUp);
 //            prepareStart({ x : event.clientX, y : event.clientY });
             prepareStart({ x : event.pageX, y : event.pageY });
-            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-            else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onMouseUp(event)
         {
+            stopPropagation(event);
+            preventDefault(event);
             core.removeEvent(document, "mousemove", onMouseMove);
             core.removeEvent(document, "mouseup", onMouseUp);
             moveEnd(currentPoint);
-            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-            else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onMouseMove(event)
         {
+            stopPropagation(event);
+            preventDefault(event);
 //            move({ x : event.clientX, y : event.clientY });
             move({ x : event.pageX, y : event.pageY });
-            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-            else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onTouchStart(event)
         {
+            stopPropagation(event);
+            preventDefault(event);
             var touch = event.touches[0];
             if (touch.target !== element) return;
             core.addEvent(element, "touchmove", onTouchMove);
             core.addEvent(element, "touchend", onTouchEnd);
             prepareStart({ x : touch.pageX, y : touch.pageY });
-            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-            else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onTouchEnd(event)
         {
+            stopPropagation(event);
+            preventDefault(event);
             core.removeEvent(element, "touchmove", onTouchMove);
             core.removeEvent(element, "touchend", onTouchEnd);
             moveEnd(currentPoint);
-            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-            else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onTouchMove(event)
         {
+            stopPropagation(event);
+            preventDefault(event);
             var touch = event.touches[0];
             move({ x : touch.pageX, y : touch.pageY });
-            if (event.preventDefault) event.preventDefault(); // Вариант стандарта W3C:
-            else event.returnValue = false; // Вариант Internet Explorer:
         }
         function onDragStart()
         {
@@ -425,7 +435,8 @@ function(core)
         };
 //Сборка
         element.ondragstart = onDragStart;
-        element.onmousedown = onMouseDown;
+//        element.onmousedown = onMouseDown;
+        core.addEvent(element, "mousedown", onMouseDown);
         core.addEvent(element, "touchstart", onTouchStart);
     };
 //-------------------------------------------------------------------------------------------------------------------
@@ -435,7 +446,6 @@ function(core)
         //Переменные
         var element = core.getElement(owner);
         element.classList.add("draggable");
-
 
 //        owner.limit(10);
 
@@ -461,6 +471,7 @@ function(core)
         }
         function rollback(element)
         {
+            if (backup === null) return;
             backup.parent.insertBefore(element, backup.nextSibling);
             element.style.position = backup.style.position;
             element.style.left = backup.style.left;
@@ -479,10 +490,12 @@ function(core)
             if (droppable !== null && droppable.aui !== undefined) return droppable;
             return null;
         }
-        function droppableReadyOn(element){
+        function droppableReadyOn(element)
+        {
             if (element !== null) element.classList.add("redy");
         }
-        function droppableReadyOff(element){
+        function droppableReadyOff(element)
+        {
             if (element !== null) element.classList.remove("redy");
         }
         owner.onMoveStart(function()
@@ -521,7 +534,8 @@ function(core)
             owner.left(owner.left() + dX);
             owner.top(owner.top() + dY);
             var foundElement = findDroppableElement(point);
-            if (droppableElement !== foundElement) {
+            if (droppableElement !== foundElement) 
+            {
                 droppableReadyOff(droppableElement);
                 droppableElement = foundElement;
                 droppableReadyOn(droppableElement);
