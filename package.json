@@ -13,6 +13,7 @@
         "scss_mini" : "node-sass --output-style compressed -o dist/mini/css public_html/scss",
         "build" : "npm run js && npm run scss",
         "build_mini" : "npm run js_mini && npm run scss_mini",
-        "build_all" : "npm run build && npm run build_mini"
+        "build_all" : "npm run build && npm run build_mini",
+        "publish" : "npm publish"
     }
 }

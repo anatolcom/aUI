@@ -253,10 +253,10 @@ function() {
     /*
      
      //создаём экземпляр
-     aURL = new AURL();
+     aURL = new aURL();
      
      //регистрирация метода changeCount под именем "changeCount" для ключа "count" вызываемого при изменеии урла
-     aURL.setListner("changeCount", "count" , changeCount);
+     aURL.setListener("changeCount", "count" , changeCount);
      
      //инициализация включает считывание текущего урла и его разбор
      aURL.init();

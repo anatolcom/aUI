@@ -88,11 +88,11 @@ function() {
      this.bottom = 0;
      this.width = function()
      {
-     return right - left;              
+     return right - left;
      };
      this.height = function()
      {
-     return bottom - top;              
+     return bottom - top;
      };
      };*/
 //-------------------------------------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ function() {
         return b;
     };
 //------------------------------------------------------------------------------------------------------------------- 
-    /** 
+    /**
      * Преобразование числа number в строку с минимальной длиной length, при необходимости дополняет строку символом 0.<br/>
      * Если число не вмещается в строку длиной length, то формируется строка необходимой длинны.<br/>
      * @param {Number} number число, переводимое в строку.
@@ -146,7 +146,7 @@ function() {
      * <b>mm</b> - минуты,<br/>
      * <b>ss</b> - секунды,<br/>
      * <b>SSS</b> - миллисекунды.<br/>
-     * @example 
+     * @example
      * yyyy-MM-dd'T'HH:mm:ss.SSS<br/>
      * dd.MM.yyyy'г.'<br/>
      * @returns {String}
@@ -188,7 +188,7 @@ function() {
 //---------------------------------------------------------------------------
     /**
      * Преобразование строки value в дату в соответствии с форматом format.<br/>
-     * @param {String} value строка. например 
+     * @param {String} value строка. например
      * @param {String} format формат:<br/>
      * <b>yyyy</b> - год,<br/>
      * <b>MM</b> - месяц,<br/>
@@ -197,7 +197,7 @@ function() {
      * <b>mm</b> - минуты,<br/>
      * <b>ss</b> - секунды,<br/>
      * <b>SSS</b> - миллисекунды.<br/>
-     * @example 
+     * @example
      * yyyy-MM-dd'T'HH:mm:ss.SSS<br/>
      * dd.MM.yyyy'г.'<br/>
      * @returns {Date}
@@ -294,18 +294,34 @@ function() {
         }).join('&');
     };
 //---------------------------------------------------------------------------
+    function responseType(dataType) {
+        if (dataType === "json") return "text";
+        return dataType;
+    }
+//---------------------------------------------------------------------------
+    function responseData(dataType, response) {
+        if (dataType === "json") {
+            try {
+                return JSON.parse(response);
+            } catch (err) {
+                return response;
+            }
+        }
+        return response;
+    }
+//---------------------------------------------------------------------------
     /**
      * Вызов WEB метода в синхронном режиме
+     * @param {string} method метод (например GET, POST)
      * @param {string} url адрес
      * @param {string | object} param параметры в формате вебстроки "name1=value1&name2=value2" или в виде объекта
      * @param {string} dataType тип возвращаемых данных (например json, xml)
      * @returns {string}
      */
-    utils.sync = function(url, param, dataType)
+    utils.sync = function(method, url, param, dataType)
     {
         try
         {
-            var method = "POST";
             var p = utils.toUriParams(param);
             var body = null;
             if (method === "POST") body = p;
@@ -314,34 +330,30 @@ function() {
             var xhr = new XMLHttpRequest();
             xhr.open(method, url, true);
             if (method === "POST") xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            if (dataType)
-            {
-                if (dataType === "json") xhr.responseType = "text";
-                else xhr.responseType = dataType;
-            }
+            if (dataType) xhr.responseType = responseType(dataType);
 
             xhr.send(body);
 
             try
             {
-                if (this.status !== 200) throw new Error("response status " + this.status);
-                if (dataType === "json") return JSON.parse(this.response);
-                else return this.response;
+                if (xhr.status !== 200) throw new Error("response status " + xhr.status);
+                return responseData(dataType, xhr.response);
             }
             catch (err)
             {
-                var errText = err.message + ". : sync " + url + " return error: \"" + this.statusText + "\"";
+                var errText = err.message + ". : sync " + method + " " + url + " return error: \"" + xhr.statusText + "\"";
                 throw new Error(errText);
             }
         }
         catch (err)
         {
-            throw new Error("async " + url + " (" + err.message + ")");
+            throw new Error("sync " + method + " " + url + " (" + err.message + ")");
         }
     };
 //---------------------------------------------------------------------------
     /**
      * Вызов WEB метода в асинхронном режиме
+     * @param {string} method метод (например GET, POST)
      * @param {string} url адрес
      * @param {string | object} param параметры в формате вебстроки "name1=value1&name2=value2" или в виде объекта
      * @param {string} dataType тип возвращаемых данных (например json, xml)
@@ -349,11 +361,10 @@ function() {
      * @param {function} onerror функция обратного вызова в случае ошибки
      * @returns {string}
      */
-    utils.async = function(url, param, dataType, onload, onerror)
+    utils.async = function(method, url, param, dataType, onload, onerror)
     {
         try
         {
-            var method = "POST";
             var p = utils.toUriParams(param);
             var body = null;
             if (method === "POST") body = p;
@@ -362,11 +373,7 @@ function() {
             var xhr = new XMLHttpRequest();
             xhr.open(method, url, true);
             if (method === "POST") xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            if (dataType)
-            {
-                if (dataType === "json") xhr.responseType = "text";
-                else xhr.responseType = dataType;
-            }
+            if (dataType) xhr.responseType = responseType(dataType);
             xhr.onload = function(event)
             {
                 try
@@ -381,11 +388,7 @@ function() {
                     if (typeof onerror === "function") onerror(errText);
                     throw new Error(errText);
                 }
-                if (typeof onload === "function")
-                {
-                    if (dataType === "json") onload(JSON.parse(this.response));
-                    else onload(this.response);
-                }
+                if (typeof onload === "function") onload(responseData(dataType, xhr.response));
             };
             xhr.send(body);
         }
@@ -427,6 +430,84 @@ function() {
             }
         };
         xhr.send();
+    };
+//---------------------------------------------------------------------------
+    //https://developer.mozilla.org/ru/docs/Web/API/File/Using_files_from_web_applications
+    // function createThrobber(img) {
+    //     this.update = function (value) {
+    //         console.log(value);
+    //     }
+    //     return this;
+    // }
+//---------------------------------------------------------------------------
+    utils.upload = function (url, img, file) {
+        //this.ctrl = createThrobber(img);
+        var xhr = new XMLHttpRequest();
+        var that = this;
+        xhr.upload.addEventListener("progress", function (e) {
+            if (e.lengthComputable) {
+                //var percentage = Math.round((e.loaded * 100) / e.total);
+                //that.ctrl.update(percentage);
+            }
+        }, false);
+
+        xhr.upload.addEventListener("load", function (e) {
+            //that.ctrl.update(100);
+            //var canvas = that.ctrl.ctx.canvas;
+            //canvas.parentNode.removeChild(canvas);
+        }, false);
+        xhr.open("POST", url);
+
+        xhr.overrideMimeType(file.type + "; charset=x-user-defined-binary");
+
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+            xhr.send(evt.target.result);
+        };
+        reader.readAsBinaryString(file);
+    };
+//---------------------------------------------------------------------------
+    /**
+     * Uploading файлов в режиме multipart/form-data
+     *
+     * пример создания formData:
+     * var formData = new FormData();
+     * for (var index = 0; index < files.length; index++) {
+     *      var file = files[index];
+     *      formData.append(file.name, file);
+     *  }
+     * @param url
+     * @param img
+     * @param files
+     */
+    utils.uploadMultipart = function (url, img, formData) {
+        //this.ctrl = createThrobber(img);
+        var xhr = new XMLHttpRequest();
+
+        var that = this;
+        // xhr.upload.addEventListener("progress", function (e) {
+        //     if (e.lengthComputable) {
+        //         //var percentage = Math.round((e.loaded * 100) / e.total);
+        //         //that.ctrl.update(percentage);
+        //     }
+        // }, false);
+
+        // xhr.upload.addEventListener("load", function (e) {
+        //     //that.ctrl.update(100);
+        //     //var canvas = that.ctrl.ctx.canvas;
+        //     //canvas.parentNode.removeChild(canvas);
+        // }, false);
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState === 4) {
+                if (this.status === 200) console.log(this.responseText);
+                else console.error(this.responseText);
+            }
+        };
+
+        xhr.open("POST", url, true);
+        //xhr.overrideMimeType("multipart/form-data; charset=x-user-defined-binary");
+        xhr.send(formData);
     };
 //---------------------------------------------------------------------------
 //    utils.splitArray = function(array, size) {

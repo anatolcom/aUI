@@ -58,6 +58,8 @@ Movable, XY
     aUI.proto = core.proto;
     aUI.construct = core.construct;
     aUI.getElement = core.getElement;
+    aUI.addEvent = core.addEvent;
+    aUI.removeEvent = core.removeEvent;
 //-------------------------------------------------------------------------------------------------------------------
     aUI.utils = utils;
 //-------------------------------------------------------------------------------------------------------------------
